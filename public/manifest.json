@@ -1,0 +1,23 @@
+{
+  "short_name": "Maestro PRO",
+  "name": "Maestro Studio PRO: AI Music Producer",
+  "description": "Engenharia reversa de estilo e produção musical com inteligência artificial.",
+  "icons": [
+    {
+      "src": "/icone_maestro.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icone_maestro.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0a0a0c",
+  "background_color": "#0a0a0c"
+}
