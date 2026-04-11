@@ -228,7 +228,8 @@ const ADVANCED_INSTRUMENTS = [
     { name: 'Violino', icon: '🎻' }, { name: 'Viola', icon: '🎻' }, { name: 'Cello', icon: '🎻' },
     { name: 'Contrabaixo Acústico', icon: '🎻' }, { name: 'Seção de Cordas', icon: '🎻' }, { name: 'Quarteto de Cordas', icon: '🎻' },
     { name: 'Harpa Orquestral', icon: '✨' }, { name: 'Trompete', icon: '🎺' }, { name: 'Trombone', icon: '🎺' },
-    { name: 'Saxofone', icon: '🎷' }, { name: 'Flauta', icon: '🌬️' }, { name: 'Clarinete', icon: '🌬️' }
+    { name: 'Saxofone', icon: '🎷' }, { name: 'Flauta', icon: '🌬️' }, { name: 'Clarinete', icon: '🌬️' },
+    { name: 'Assobio (Whistle)', icon: '😗' }
   ]},
   { label: 'Bateria Completa', items: [
     { name: 'Caixa', icon: '🥁' }, { name: 'Bumbo', icon: '🥁' }, { name: 'Chimbal', icon: '🟡' }, { name: 'Tons', icon: '🥁' },
