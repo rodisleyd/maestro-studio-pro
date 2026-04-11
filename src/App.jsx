@@ -40,6 +40,8 @@ const VOCAL_ARCHETYPES = [
   { id: 'Deep Soul', label: 'Deep Soul', desc: 'Grave e emotivo' },
   { id: 'Dreamy Pop', label: 'Dreamy Pop', desc: 'Etéreo e com ar' },
   { id: 'Soulful R&B', label: 'Soulful R&B', desc: 'Seda e veludo' },
+  { id: 'Spoken Narrator', label: 'Male Narrator', desc: 'Fala/Narração (Homem)' },
+  { id: 'Female Narrator', label: 'Female Narrator', desc: 'Fala/Narração (Mulher)' },
 ];
 
 const BPM_RANGES = [
@@ -452,7 +454,7 @@ function App() {
     2. IDIOMA VOCAL: Especifique sempre "Vocals in Brazilian Portuguese" no final_prompt para garantir o sotaque correto.
     3. FUSÃO DE GÊNEROS: Se houver um gênero secundário, descreva uma transição ou mistura fluida.
     4. CONTROLE DE PERCUSSÃO: Se a percussão não for solicitada, NÃO use termos de bateria.
-    5. DNA VOCAL: Integre o "Arquétipo Vocal" na descrição.
+    5. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher "Spoken Narrator" ou "Female Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice" ou "spoken female voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
     6. STYLE TAGS: String de tags curtas em INGLÊS.
     7. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use modo manual no Suno", "Sugerido 120 BPM").
     8. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO (ex: {"Intro": "A heavy atmospheric intro...", "Verse 1": "Minimalistic drums...", "Chorus": "...", "Outro": "..."}). NUNCA DEIXE NULO.
@@ -615,6 +617,24 @@ function App() {
       const newVal = currentVal.substring(0, start) + insertText + currentVal.substring(end);
       setCustomLyrics(newVal);
       
+      setTimeout(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + insertText.length;
+        textarea.focus();
+      }, 0);
+    } else {
+      setCustomLyrics(prev => prev + insertText);
+    }
+  };
+
+  const insertTag = (tag) => {
+    const insertText = `\n[${tag}]\n`;
+    const textarea = lyricsTextareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const currentVal = customLyrics;
+      const newVal = currentVal.substring(0, start) + insertText + currentVal.substring(end);
+      setCustomLyrics(newVal);
       setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + insertText.length;
         textarea.focus();
@@ -1233,6 +1253,30 @@ function App() {
                           {copySuccess ? <><CheckCheck className="w-3 h-3 text-green-400" /> Copiado Tudo!</> : <><CopyIcon className="w-3 h-3" /> Copiar Letra Completa</>}
                         </button>
                       </div>
+
+                      {/* QUICK TAGS (Apenas no Modo Produtor) */}
+                      {isProMode && (
+                        <div className="flex flex-wrap gap-2 mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                          <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest self-center mr-2">Tags Rápidas:</span>
+                          {[
+                            { label: 'Intro Falada', tag: 'Intro - spoken' },
+                            { label: 'Intro', tag: 'Intro' },
+                            { label: 'Verso', tag: 'Verse' },
+                            { label: 'Refrão', tag: 'Chorus' },
+                            { label: 'Ponte', tag: 'Bridge' },
+                            { label: 'Solo', tag: 'Guitar Solo' },
+                            { label: 'Final', tag: 'Outro' }
+                          ].map(t => (
+                            <button 
+                              key={t.tag}
+                              onClick={() => insertTag(t.tag)}
+                              className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[9px] font-bold text-slate-400 hover:bg-orange-500 hover:text-black hover:border-orange-500 transition-all active:scale-95"
+                            >
+                              {t.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                       
                       <div className="relative group">
                         <textarea
