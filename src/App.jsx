@@ -455,9 +455,10 @@ function App() {
     3. FUSÃO DE GÊNEROS: Se houver um gênero secundário, descreva uma transição ou mistura fluida.
     4. CONTROLE DE PERCUSSÃO: Se a percussão não for solicitada, NÃO use termos de bateria.
     5. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher "Spoken Narrator" ou "Female Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice" ou "spoken female voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
-    6. STYLE TAGS: String de tags curtas em INGLÊS.
-    7. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use modo manual no Suno", "Sugerido 120 BPM").
-    8. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO (ex: {"Intro": "A heavy atmospheric intro...", "Verse 1": "Minimalistic drums...", "Chorus": "...", "Outro": "..."}). NUNCA DEIXE NULO.
+    6. SOUND DESIGN (SFX): Se instrumentos da seção "Efeitos & Ambiência (SFX)" forem selecionados, você devera descrever o ambiente de forma CINEMÁTICA E DETALHADA no final_prompt e na musical_structure. Use tags técnicas em inglês como [SFX: Rain], [SFX: Thunder], [Sound of birds in the background], etc. Priorize descrições imersivas em inglês (ex: "Cinematic intro with heavy rain and distant thunder").
+    7. STYLE TAGS: String de tags curtas em INGLÊS.
+    8. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use modo manual no Suno", "Sugerido 120 BPM").
+    9. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO (ex: {"Intro": "A heavy atmospheric intro with [SFX: Rain]...", "Verse 1": "Minimalistic drums...", "Chorus": "...", "Outro": "..."}). NUNCA DEIXE NULO.
     
     JSON:
     {
@@ -626,8 +627,17 @@ function App() {
     }
   };
 
-  const insertTag = (tag) => {
-    const insertText = `\n[${tag}]\n`;
+  const insertTag = (tag, type = 'structural') => {
+    let finalTag = tag;
+    
+    // Se for SFX, tenta extrair o nome em inglês entre parênteses
+    if (type === 'sfx') {
+      const match = tag.match(/\(([^)]+)\)/);
+      const englishName = match ? match[1] : tag;
+      finalTag = `SFX: ${englishName}`;
+    }
+
+    const insertText = `\n[${finalTag}]\n`;
     const textarea = lyricsTextareaRef.current;
     if (textarea) {
       const start = textarea.selectionStart;
@@ -1013,18 +1023,28 @@ function App() {
                             {group.items.map(item => {
                               const isSelected = selectedInstruments.includes(item.name);
                               return (
-                                <button 
-                                  key={item.name}
-                                  type="button"
-                                  onClick={() => {
-                                    if (isSelected) setSelectedInstruments(selectedInstruments.filter(i => i !== item.name));
-                                    else setSelectedInstruments([...selectedInstruments, item.name]);
-                                  }}
-                                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[9px] font-bold transition-all ${isSelected ? 'bg-orange-500 text-black border-orange-500 shadow-md shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-orange-500/30 hover:text-white'}`}
-                                >
-                                  <span className="text-xs">{item.icon}</span>
-                                  <span>{item.name}</span>
-                                </button>
+                                <div key={item.name} className="flex items-center gap-1">
+                                  <button 
+                                    type="button"
+                                    onClick={() => {
+                                      if (isSelected) setSelectedInstruments(selectedInstruments.filter(i => i !== item.name));
+                                      else setSelectedInstruments([...selectedInstruments, item.name]);
+                                    }}
+                                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[9px] font-bold transition-all ${isSelected ? 'bg-orange-500 text-black border-orange-500 shadow-md shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-orange-500/30 hover:text-white'}`}
+                                  >
+                                    <span className="text-xs">{item.icon}</span>
+                                    <span>{item.name}</span>
+                                  </button>
+                                  {isProMode && (
+                                    <button 
+                                      onClick={() => insertTag(item.name, group.label.includes('SFX') ? 'sfx' : 'structural')}
+                                      className="p-2 bg-white/5 hover:bg-orange-500 hover:text-black rounded-xl border border-white/5 transition-all"
+                                      title="Inserir na Letra"
+                                    >
+                                      <ArrowRight className="w-3 h-3" />
+                                    </button>
+                                  )}
+                                </div>
                               );
                             })}
                           </div>
