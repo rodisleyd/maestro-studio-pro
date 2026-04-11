@@ -260,6 +260,13 @@ const ADVANCED_INSTRUMENTS = [
   ]},
   { label: 'Percussão Moderna', items: [
     { name: 'Pads Eletrônicos', icon: '⏹️' }, { name: 'Drum Machine', icon: '💻' }, { name: 'Samples', icon: '🗂️' }, { name: 'Sound FX', icon: '🔊' }
+  ]},
+  { label: 'Efeitos & Ambiência (SFX)', items: [
+    { name: 'Chuva (Rain)', icon: '🌧️' }, { name: 'Vento (Wind)', icon: '🌬️' }, { name: 'Trovão (Thunder)', icon: '⛈️' },
+    { name: 'Ondas do Mar (Waves)', icon: '🌊' }, { name: 'Natureza (Birds/Forest)', icon: '🍃' }, { name: 'Palmas (Claps)', icon: '👏' },
+    { name: 'Sirene (Siren)', icon: '🚨' }, { name: 'Apito (Referee)', icon: '📣' }, { name: 'Tic-Tac (Relógio)', icon: '⏱️' },
+    { name: 'Ruído de Vinil (Vinyl)', icon: '📻' }, { name: 'Multidão (Crowd)', icon: '👥' }, { name: 'Passos (Footsteps)', icon: '👣' },
+    { name: 'Impacto Cinematográfico', icon: '💥' }
   ]}
 ];
 
