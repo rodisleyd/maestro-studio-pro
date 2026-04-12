@@ -59,6 +59,19 @@ const BPM_RANGES = [
 
 const TIME_SIGNATURES = ['4/4', '3/4', '6/8', '2/4', '5/4', '7/8'];
 
+const VOCAL_TONES = [
+  { id: 'grave', label: 'Grave', value: 'deep voice, low-pitched vocals' },
+  { id: 'normal', label: 'Normal', value: '' },
+  { id: 'agudo', label: 'Agudo', value: 'high-pitched voice, higher tone' }
+];
+
+const VOCAL_TEXTURES = [
+  { id: 'limpa', label: 'Limpa', value: 'clean crystal clear vocals' },
+  { id: 'rustica', label: 'Rústica', value: 'raw unpolished gravelly texture' },
+  { id: 'rouca', label: 'Rouca', value: 'raspy hoarse husky vocals' }
+];
+
+
 const MUSICAL_KEYS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 const SCALES = ['MAIOR', 'MENOR NATURAL', 'MENOR HARMÔNICA', 'MENOR MELÓDICA', 'PENTATÔNICA', 'BLUES'];
@@ -305,7 +318,10 @@ function App() {
   const [negativePrompt, setNegativePrompt] = useState('');
   const [showExpertOptions, setShowExpertOptions] = useState(false);
   const [isProMode, setIsProMode] = useState(false);
+  const [vocalTone, setVocalTone] = useState('normal');
+  const [vocalTextures, setVocalTextures] = useState([]);
   const [smartSuggestion, setSmartSuggestion] = useState(null);
+
   const [isComparisonMode, setIsComparisonMode] = useState(false);
   const [promptA, setPromptA] = useState(null);
   const fileInputRef = useRef(null);
@@ -487,10 +503,13 @@ function App() {
       const expertContext = `
         Gênero Secundário: ${secondaryGenre || 'Nenhum'}
         Arquétipo Vocal: ${vocalArchetype || 'Automático'}
+        Timbre Vocal: ${VOCAL_TONES.find(t => t.id === vocalTone)?.label || 'Normal'}
+        Texturas Vocais: ${vocalTextures.length > 0 ? vocalTextures.map(id => VOCAL_TEXTURES.find(t => t.id === id)?.label).join(', ') : 'Nenhuma'}
         Instrumentos Selecionados: ${selectedInstruments.join(', ') || 'Automático'}
         BPM / Andamento: ${selectedBpm || 'Automático'}
         Compasso: ${timeSignature || 'Automático'}
         Tom & Modo: ${musicalKey ? `${musicalKey} ${keyMode}` : 'Automático'}
+
         Escala: ${scale || 'Automático'}
         Progressão de Acordes: ${chordProgression || 'Automático'}
         Groove / Feel: ${groove || 'Automático'}
@@ -600,7 +619,10 @@ function App() {
     setVocalArchetype('');
     setSecondaryGenre('');
     setNegativePrompt('');
+    setVocalTone('normal');
+    setVocalTextures([]);
     setCustomLyrics('');
+
     setSelectedBpm('');
     setTimeSignature('4/4');
     setMusicalKey('');
@@ -836,6 +858,55 @@ function App() {
                       </button>
                     ))}
                   </div>
+
+               {/* REFINAMENTO DE VOZ */}
+               <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Refinamento de Voz</label>
+                    <span className="text-[8px] font-bold text-orange-500/50 uppercase">Timbre & Textura</span>
+                  </div>
+
+                  {/* TIMBRE (TONE) */}
+                  <div className="bg-black/20 p-3 rounded-2xl border border-white/5">
+                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-2">Timbre (Pitch)</p>
+                    <div className="flex gap-1.5">
+                      {VOCAL_TONES.map(t => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => setVocalTone(t.id)}
+                          className={`flex-1 py-1.5 rounded-lg text-[9px] font-bold transition-all border ${vocalTone === t.id ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-orange-500/30'}`}
+                        >
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* TEXTURAS (TEXTURES) - MULTI SELECTION */}
+                  <div className="bg-black/20 p-3 rounded-2xl border border-white/5">
+                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-2">Texturas (Múltipla Escolha)</p>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {VOCAL_TEXTURES.map(t => {
+                        const isSelected = vocalTextures.includes(t.id);
+                        return (
+                          <button
+                            key={t.id}
+                            type="button"
+                            onClick={() => {
+                              if (isSelected) setVocalTextures(vocalTextures.filter(id => id !== t.id));
+                              else setVocalTextures([...vocalTextures, t.id]);
+                            }}
+                            className={`py-1.5 rounded-lg text-[9px] font-bold transition-all border ${isSelected ? 'bg-white border-white text-black shadow-md' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-white/20'}`}
+                          >
+                            {t.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+               </div>
+
                </div>
 
                {/* SISTEMA DE ESTRUTURA MUSICAL */}
