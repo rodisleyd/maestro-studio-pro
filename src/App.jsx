@@ -814,20 +814,18 @@ function App() {
 
           {/* PAINEL PRODUTOR */}
           {isProMode && (
-            <div className="space-y-6 mb-8 p-6 bg-orange-500/5 rounded-[32px] border border-orange-500/10 animate-in fade-in slide-in-from-top-4 duration-500 relative overflow-hidden">
+            <div className="space-y-8 mb-8 p-6 bg-orange-500/5 rounded-[32px] border border-orange-500/10 animate-in fade-in slide-in-from-top-4 duration-500 relative overflow-hidden">
                <div className="absolute top-0 right-0 p-4 opacity-5">
                  <Settings2 className="w-20 h-20 rotate-12" />
                </div>
 
-               <div className="flex items-center gap-2 mb-2">
-                 <div className="w-1 h-4 bg-orange-500 rounded-full"></div>
-                 <h3 className="text-[11px] font-black uppercase tracking-widest text-white">Controle de DNA Musical</h3>
-               </div>
-
                {/* FUSÃO DE GÊNERO */}
                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Gênero Secundário</label>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                      Gênero Secundário
+                    </label>
                     <span className="text-[8px] font-bold text-orange-500/50 uppercase">Fusão Híbrida</span>
                   </div>
                   <input 
@@ -840,9 +838,12 @@ function App() {
                </div>
 
                {/* DNA VOCAL */}
-               <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">DNA Vocal (Arquétipo)</label>
+               <div className="pt-4 border-t border-white/5">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                      DNA Vocal (Arquétipo)
+                    </label>
                     <span className="text-[8px] font-bold text-orange-500/50 uppercase">Textura Visual</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -860,9 +861,12 @@ function App() {
                   </div>
 
                {/* REFINAMENTO DE VOZ */}
-               <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Refinamento de Voz</label>
+               <div className="space-y-4 pt-6 border-t border-white/5">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                      Refinamento de Voz
+                    </label>
                     <span className="text-[8px] font-bold text-orange-500/50 uppercase">Timbre & Textura</span>
                   </div>
 
@@ -910,7 +914,7 @@ function App() {
                </div>
 
                {/* SISTEMA DE ESTRUTURA MUSICAL */}
-               <div>
+               <div className="pt-4 border-t border-white/5">
                   <button 
                     type="button"
                     onClick={() => setShowStructureSystem(!showStructureSystem)}
@@ -932,7 +936,10 @@ function App() {
                       <div className="space-y-6">
                         {/* BPM */}
                         <div>
-                          <p className="text-[9px] font-black tracking-[0.2em] text-slate-500 mb-3 uppercase">Andamento (BPM)</p>
+                          <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 mb-3 uppercase flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                            Andamento (BPM)
+                          </p>
                           <div className="flex flex-col gap-2">
                             {BPM_RANGES.map(b => (
                               <button key={b.id} type="button" onClick={() => setSelectedBpm(selectedBpm === b.label ? '' : b.label)} className={`py-2 px-3 rounded-xl border text-[9px] font-bold transition-all ${selectedBpm === b.label ? 'bg-orange-500 text-black border-orange-500 shadow-md shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-orange-500/30 hover:text-white'}`}>
@@ -944,7 +951,10 @@ function App() {
 
                         {/* COMPASSO */}
                         <div>
-                          <p className="text-[9px] font-black tracking-[0.2em] text-slate-500 mb-3 uppercase">Compasso</p>
+                          <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 mb-3 uppercase flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                            Compasso
+                          </p>
                           <div className="flex flex-wrap gap-2">
                             {TIME_SIGNATURES.map(t => (
                               <button key={t} type="button" onClick={() => setTimeSignature(t)} className={`py-2 px-4 rounded-xl border text-[9px] font-bold transition-all ${timeSignature === t ? 'bg-white text-black border-white shadow-md' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-white/30 hover:text-white'}`}>
@@ -956,8 +966,8 @@ function App() {
 
                         {/* TOM */}
                         <div>
-                          <p className="text-[9px] font-black tracking-[0.2em] text-slate-500 mb-3 uppercase flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500/50"></span> Tom (Key) & Modo
+                          <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 mb-3 uppercase flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span> Tom (Key) & Modo
                           </p>
                           <div className="flex flex-wrap gap-1.5 mb-2">
                             {MUSICAL_KEYS.map(k => (
@@ -977,8 +987,8 @@ function App() {
                       <div className="space-y-6">
                         {/* ESCALAS */}
                         <div>
-                          <p className="text-[9px] font-black tracking-[0.2em] text-slate-500 mb-3 uppercase flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500/50"></span> Escalas
+                          <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 mb-3 uppercase flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span> Escalas
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {SCALES.map(s => (
@@ -992,8 +1002,8 @@ function App() {
                         {/* PROGRESSÕES */}
                         <div>
                           <div className="flex flex-wrap items-center justify-between mb-3 gap-3">
-                            <p className="text-[9px] font-black tracking-[0.2em] text-slate-500 uppercase flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-orange-500/50 flex-shrink-0"></span> Progressões de Acordes
+                            <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 uppercase flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50 flex-shrink-0"></span> Progressões de Acordes
                             </p>
                             <button type="button" onClick={handleMagicGenerator} className="flex-1 min-w-fit flex items-center justify-center gap-1.5 px-3 py-2 bg-[#121212] border border-orange-500/20 text-orange-500 rounded-lg text-[8px] font-black hover:bg-orange-500 hover:text-black transition-all shadow-md active:scale-95">
                               <Sparkles className="w-2.5 h-2.5 flex-shrink-0" /> GERADOR MÁGICO
@@ -1010,8 +1020,8 @@ function App() {
 
                         {/* GROOVE / FEEL */}
                         <div>
-                          <p className="text-[9px] font-black tracking-[0.2em] text-slate-500 mb-3 uppercase flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500/50"></span> Groove / Feel
+                          <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 mb-3 uppercase flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span> Groove / Feel
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {GROOVES.map(g => (
@@ -1024,8 +1034,8 @@ function App() {
 
                         {/* EMOÇÃO MUSICAL */}
                         <div>
-                          <p className="text-[9px] font-black tracking-[0.2em] text-slate-500 mb-3 uppercase flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500/50"></span> Emoção Musical
+                          <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 mb-3 uppercase flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span> Emoção Musical
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {EMOTIONS.map(e => (
@@ -1071,7 +1081,7 @@ function App() {
                </div>
 
                {/* ORQUESTRADOR AVANÇADO */}
-               <div>
+               <div className="pt-4 border-t border-white/5">
                   <button 
                     type="button"
                     onClick={() => setShowOrchestrator(!showOrchestrator)}
