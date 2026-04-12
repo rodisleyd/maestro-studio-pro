@@ -37,13 +37,15 @@ const ALL_GENRES = [
 
 // Constantes de Configuração Profissional (Inspirado no Magic Prompt)
 const VOCAL_ARCHETYPES = [
+  { id: 'Male Vocal', label: 'Male Vocal', desc: 'Vocal Masculino (Cantado)' },
+  { id: 'Female Vocal', label: 'Female Vocal', desc: 'Vocal Feminino (Cantado)' },
+  { id: 'Child Vocal', label: 'Child Vocal', desc: 'Vocal Juvenil/Infantil (Cantado)' },
   { id: 'Modern Pop', label: 'Modern Pop', desc: 'Limpo e produzido' },
   { id: 'Rock Grit', label: 'Rock Grit', desc: 'Energia e drive' },
   { id: 'Intimate Folk', label: 'Intimate Folk', desc: 'Suave e acústico' },
   { id: 'Deep Soul', label: 'Deep Soul', desc: 'Grave e emotivo' },
   { id: 'Dreamy Pop', label: 'Dreamy Pop', desc: 'Etéreo e com ar' },
   { id: 'Soulful R&B', label: 'Soulful R&B', desc: 'Seda e veludo' },
-  { id: 'Child Vocal', label: 'Child Vocal', desc: 'Juvenil e inocente' },
   { id: 'Spoken Narrator', label: 'Male Narrator', desc: 'Fala/Narração (Homem)' },
   { id: 'Female Narrator', label: 'Female Narrator', desc: 'Fala/Narração (Mulher)' },
   { id: 'Child Narrator', label: 'Child Narrator', desc: 'Fala/Narração (Criança)' },
@@ -475,7 +477,7 @@ function App() {
     2. IDIOMA VOCAL: Especifique sempre "Vocals in Brazilian Portuguese" no final_prompt para garantir o sotaque correto.
     3. FUSÃO DE GÊNEROS: Se houver um gênero secundário, descreva uma transição ou mistura fluida.
     4. CONTROLE DE PERCUSSÃO: Se a percussão não for solicitada, NÃO use termos de bateria.
-    5. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher vocal de criança, use tags como "children's vocal", "child voice" ou "kids vocal". Se escolher "Spoken Narrator", "Female Narrator" ou "Child Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice", "spoken female voice" ou "spoken child voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
+    5. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher "Male Vocal" ou "Female Vocal", especifique claramente o gênero e que é voz cantada. Se escolher vocal de criança, use tags como "children's vocal", "child voice" ou "kids vocal". Se escolher "Spoken Narrator", "Female Narrator" ou "Child Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice", "spoken female voice" ou "spoken child voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
     6. SOUND DESIGN (SFX): Se instrumentos da seção "Efeitos & Ambiência (SFX)" forem selecionados, você devera descrever o ambiente de forma CINEMÁTICA E DETALHADA no final_prompt e na musical_structure. Use tags técnicas em inglês como [SFX: Rain], [SFX: Thunder], [Sound of birds in the background], etc. Priorize descrições imersivas em inglês (ex: "Cinematic intro with heavy rain and distant thunder").
     7. STYLE TAGS: String de tags curtas em INGLÊS.
     8. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use modo manual no Suno", "Sugerido 120 BPM").
