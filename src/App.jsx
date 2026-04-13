@@ -346,6 +346,25 @@ function App() {
   const [proggenStyle, setProggenStyle] = useState(PROGGEN_STYLES[0]);
   const [isProggenStylesOpen, setIsProggenStylesOpen] = useState(false);
 
+  const [showArranger, setShowArranger] = useState(false);
+  const [arrangerStep, setArrangerStep] = useState(1);
+  const [arrangerData, setArrangerData] = useState({
+    intention: { message: '', feeling: '', mood: '' },
+    references: { links: '', preferences: '', nature: 'similar' },
+    vocal: { singer: '', range: '', gender: '', strength: '', focus: '' },
+    structure: { defined: 'Não', helpNeeded: false, chorusGrowth: '' },
+    style: { main: '', mix: '', defineForMe: false },
+    rhythm: { tempo: '', nature: '', groove: '' },
+    harmony: { hasChords: 'Não', complexity: '', flavor: '' },
+    instrumentation: { instruments: [], defineForMe: false, nature: '' },
+    dynamics: { start: '', chorus: '', transitions: '' },
+    production: { era: '', texture: '' },
+    objective: { platform: '', projectType: '' },
+    freedom: { level: 'Moderada', changesAllowed: [] },
+    lyrics: { text: '', analyzeMetric: false },
+    extra: { highlightedWords: '', unchangeableParts: '', keyMoment: '' }
+  });
+
   const handleMagicGenerator = () => {
     setShowProggenModal(true);
   };
@@ -571,6 +590,69 @@ function App() {
     }
   };
 
+  const generateArrangerPrompt = async () => {
+    if (!apiKey) {
+      setError("Falta a API Key no ficheiro .env (VITE_GEMINI_API_KEY)");
+      return;
+    }
+
+    setIsGenerating(true);
+    setError(null);
+
+    const systemPrompt = `És o "Arranjador Mestre do Maestro Studio Pro", um produtor musical lendário que sabe absolutamente TUDO sobre o Suno AI e engenharia de prompts. 
+    A tua missão é analisar os resultados de uma entrevista profunda com o usuário e gerar o melhor prompt possível para o Suno.
+
+    SAÍDA ESPERADA (JSON):
+    {
+      "analysis": "Breve visão geral do arranjador em PT-BR sobre o que estamos criando.",
+      "style_prompt": "String curta de tags em INGLÊS para a caixa de 'Style' do Suno (max 120-150 chars).",
+      "structured_lyrics": "A letra formatada com metatags do Suno [Intro], [Verse], [Chorus], etc. Se houver letra fornecida, analise a métrica. Se não, sugira a estrutura.",
+      "production_tips": "Dicas técnicas master (ex: usar extend no Suno, colocar tags de reverb nas letras, etc) em PT-BR."
+    }
+
+    CONHECIMENTO SUNO:
+    - Tags estruturais: [Intro], [Verse], [Pre-Chorus], [Chorus], [Bridge], [Solo], [Break], [Outro].
+    - Tags de estilo: [Genre: ...], [Mood: ...], [Vocal: ...], [Tempo: ...].
+    - Macetes: Usar vírgulas, não exagerar em tags contrárias, usar [Style: ...] dentro da letra no Custom Mode para mudanças de clima.
+    - Se houver letra, analise a métrica e sugira quebras de linha que façam sentido musical.
+    `;
+
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: JSON.stringify(arrangerData) }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { responseMimeType: "application/json" }
+        })
+      });
+
+      if (!response.ok) throw new Error("Erro na API do Gemini");
+      
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      const result = JSON.parse(text);
+      
+      // Adaptar o resultado do arranjador para o formato da análise do maestro para exibição
+      setMaestroAnalysis({
+        genre: result.style_prompt,
+        style_analysis: result.analysis,
+        final_prompt: result.style_prompt,
+        production_tips: result.production_tips,
+        musical_structure: { "Master Arrangement": result.structured_lyrics }
+      });
+      setCustomLyrics(result.structured_lyrics);
+      setShowArranger(false);
+      setArrangerStep(1);
+    } catch (err) {
+      console.error(err);
+      setError(`O Arranjador teve um problema: ${err.message}`);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const saveToLibrary = () => {
     if (!maestroAnalysis) return;
     const newEntry = { 
@@ -710,6 +792,13 @@ function App() {
               {tab}
             </button>
           ))}
+          <button
+            onClick={() => setShowArranger(true)}
+            className="flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/20 hover:scale-105 transition-all group"
+          >
+            <Award className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+            Arranjador PRO
+          </button>
           <button onClick={clearAll} className="px-3 text-slate-500 hover:text-white transition-colors" title="Limpar">
              <RotateCcw className="w-4 h-4" />
           </button>
@@ -1514,6 +1603,726 @@ function App() {
       )}
 
       {/* MODAL PROGGEN */}
+      {/* MODAL ARRANJADOR PRO */}
+      {showArranger && (
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[60] flex items-center justify-center p-0 md:p-10 overflow-hidden">
+          <div className="bg-[#111] w-full h-full md:max-w-5xl md:max-h-[85vh] md:rounded-[50px] border border-white/10 shadow-[0_0_100px_rgba(139,92,246,0.1)] flex flex-col relative animate-in fade-in zoom-in-95 duration-500">
+            
+            {/* PROGRESS BAR */}
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-white/5 overflow-hidden md:rounded-t-[50px]">
+              <div 
+                className="h-full bg-gradient-to-r from-violet-600 via-indigo-500 to-fuchsia-500 transition-all duration-700 ease-out"
+                style={{ width: `${(arrangerStep / 7) * 100}%` }}
+              ></div>
+            </div>
+
+            {/* HEADER */}
+            <div className="p-8 md:p-12 pb-6 flex items-start justify-between">
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-indigo-700 rounded-3xl flex items-center justify-center shadow-lg shadow-violet-500/20 rotate-3">
+                  <Award className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter leading-none mb-2">
+                    Estúdio do <span className="text-violet-500">Arranjador</span>
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-2 py-1 rounded-md">
+                      Fase {arrangerStep} de 7
+                    </span>
+                    <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest animate-pulse">
+                      Suno Pro Expert Ativo
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => { setShowArranger(false); setArrangerStep(1); }} 
+                className="bg-white/5 hover:bg-white/10 p-3 rounded-2xl text-slate-400 hover:text-white transition-all active:scale-90"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* CONTENT AREA */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar px-8 md:px-12 pb-12">
+              <div className="max-w-3xl mx-auto">
+                {/* RENDER STEPS HERE */}
+                {arrangerStep === 1 && (
+                  <div className="space-y-10 animate-in slide-in-from-bottom-5 fade-in duration-500">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">01</span>
+                        Qual é a intenção e a alma da música?
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Mensagem Principal</label>
+                          <textarea 
+                            className="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-sm outline-none focus:border-violet-500/50 transition-all min-h-[120px] resize-none"
+                            placeholder="Sobre o que fala a música? Ex: Superação, um amor de verão..."
+                            value={arrangerData.intention.message}
+                            onChange={(e) => setArrangerData({...arrangerData, intention: {...arrangerData.intention, message: e.target.value}})}
+                          />
+                        </div>
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Sentimento ao Ouvir</label>
+                          <textarea 
+                            className="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-sm outline-none focus:border-violet-500/50 transition-all min-h-[120px] resize-none"
+                            placeholder="Ex: Felicidade extrema, arrependimento profundo..."
+                            value={arrangerData.intention.feeling}
+                            onChange={(e) => setArrangerData({...arrangerData, intention: {...arrangerData.intention, feeling: e.target.value}})}
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-8">
+                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block mb-3">Vibe Predominante</label>
+                         <div className="flex flex-wrap gap-2">
+                           {['Introspectiva', 'Energética', 'Emocional', 'Comercial'].map(vibe => (
+                             <button
+                               key={vibe}
+                               onClick={() => setArrangerData({...arrangerData, intention: {...arrangerData.intention, mood: vibe}})}
+                               className={`px-6 py-3 rounded-2xl text-xs font-bold transition-all ${arrangerData.intention.mood === vibe ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+                             >
+                               {vibe}
+                             </button>
+                           ))}
+                         </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">02</span>
+                         DNA & Referências
+                      </h3>
+                      <div className="space-y-6">
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Links de Referência (YouTube/Spotify)</label>
+                          <input 
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50 transition-all"
+                            placeholder="Cole links aqui separados por vírgula..."
+                            value={arrangerData.references.links}
+                            onChange={(e) => setArrangerData({...arrangerData, references: {...arrangerData.references, links: e.target.value}})}
+                          />
+                        </div>
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">O que você gosta nelas?</label>
+                          <textarea 
+                            className="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-sm outline-none focus:border-violet-500/50 transition-all min-h-[100px] resize-none"
+                            placeholder="Gosto do timbre da bateria, do clima sombrio, etc..."
+                            value={arrangerData.references.preferences}
+                            onChange={(e) => setArrangerData({...arrangerData, references: {...arrangerData.references, preferences: e.target.value}})}
+                          />
+                        </div>
+                         <div className="flex items-center gap-4">
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mr-2">Estilo de Criação:</span>
+                            {['Parecido', 'Inspirado'].map(nat => (
+                              <button
+                                key={nat}
+                                onClick={() => setArrangerData({...arrangerData, references: {...arrangerData.references, nature: nat}})}
+                                className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${arrangerData.references.nature === nat ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white/5 text-slate-500'}`}
+                              >
+                                {nat}
+                              </button>
+                            ))}
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {arrangerStep === 2 && (
+                  <div className="space-y-10 animate-in slide-in-from-right-5 fade-in duration-500">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">03</span>
+                        Sobre a Voz & Intérprete
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Perfil de Voz</label>
+                          <div className="grid grid-cols-2 gap-2">
+                             {['Masculina', 'Feminina', 'Infantil', 'Coral/Dupla'].map(g => (
+                               <button
+                                 key={g}
+                                 onClick={() => setArrangerData({...arrangerData, vocal: {...arrangerData.vocal, gender: g}})}
+                                 className={`px-4 py-3 rounded-xl text-xs font-bold transition-all ${arrangerData.vocal.gender === g ? 'bg-violet-600 text-white' : 'bg-white/5 text-slate-400'}`}
+                               >
+                                 {g}
+                               </button>
+                             ))}
+                          </div>
+                          <div className="grid grid-cols-3 gap-2">
+                             {['Grave', 'Média', 'Aguda'].map(r => (
+                               <button
+                                 key={r}
+                                 onClick={() => setArrangerData({...arrangerData, vocal: {...arrangerData.vocal, range: r}})}
+                                 className={`px-3 py-3 rounded-xl text-[10px] font-bold transition-all ${arrangerData.vocal.range === r ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-400'}`}
+                               >
+                                 {r}
+                               </button>
+                             ))}
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Foco da Performance</label>
+                          <select 
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white outline-none focus:border-violet-500/50 appearance-none cursor-pointer"
+                            value={arrangerData.vocal.strength}
+                            onChange={(e) => setArrangerData({...arrangerData, vocal: {...arrangerData.vocal, strength: e.target.value}})}
+                          >
+                            <option value="" className="bg-black">Selecione uma força...</option>
+                            <option value="Interpretação Emocional" className="bg-black">Interpretação Emocional</option>
+                            <option value="Potência Vocal" className="bg-black">Potência Vocal</option>
+                            <option value="Técnica / Virtuosismo" className="bg-black">Técnica / Virtuosismo</option>
+                          </select>
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Valorizar na Música:</label>
+                            <div className="flex flex-wrap gap-2">
+                               {['Letra', 'Melodia', 'Performance'].map(f => (
+                                 <button
+                                   key={f}
+                                   onClick={() => setArrangerData({...arrangerData, vocal: {...arrangerData.vocal, focus: f}})}
+                                   className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${arrangerData.vocal.focus === f ? 'bg-fuchsia-600 text-white shadow-lg shadow-fuchsia-500/20' : 'bg-white/5 text-slate-500'}`}
+                                 >
+                                   {f}
+                                 </button>
+                               ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">04</span>
+                        Estrutura da Música
+                      </h3>
+                      <div className="bg-white/5 border border-white/10 rounded-[30px] p-8 space-y-8">
+                         <div className="flex flex-col md:flex-row gap-6 justify-between">
+                            <div className="space-y-3">
+                              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Já tem estrutura definida?</span>
+                              <div className="flex gap-2">
+                                {['Sim', 'Não'].map(v => (
+                                  <button
+                                    key={v}
+                                    onClick={() => setArrangerData({...arrangerData, structure: {...arrangerData.structure, defined: v}})}
+                                    className={`px-6 py-2 rounded-xl text-[10px] font-black transition-all ${arrangerData.structure.defined === v ? 'bg-white text-black' : 'bg-white/5 text-slate-500'}`}
+                                  >
+                                    {v}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                               <input 
+                                 type="checkbox" 
+                                 className="w-5 h-5 accent-violet-500 cursor-pointer"
+                                 checked={arrangerData.structure.helpNeeded}
+                                 onChange={(e) => setArrangerData({...arrangerData, structure: {...arrangerData.structure, helpNeeded: e.target.checked}})}
+                               />
+                               <span className="text-xs font-bold text-slate-300">Quero ajuda para melhorar a estrutura</span>
+                            </div>
+                         </div>
+                         <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">O refrão deve crescer ou já está forte?</label>
+                            <input 
+                              className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-sm text-slate-300 outline-none focus:border-violet-500/50 transition-all"
+                              placeholder="Ex: Precisa de uma explosão épica, ou ser sutil..."
+                              value={arrangerData.structure.chorusGrowth}
+                              onChange={(e) => setArrangerData({...arrangerData, structure: {...arrangerData.structure, chorusGrowth: e.target.value}})}
+                            />
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {arrangerStep === 3 && (
+                  <div className="space-y-10 animate-in slide-in-from-right-5 fade-in duration-500">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">05</span>
+                        Gênero Musical & Estilo
+                      </h3>
+                      <div className="space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                           <div className="space-y-3">
+                              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Gênero Principal</label>
+                              <input 
+                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
+                                placeholder="MPB, Trap, Gospel, Jazz..."
+                                value={arrangerData.style.main}
+                                onChange={(e) => setArrangerData({...arrangerData, style: {...arrangerData.style, main: e.target.value}})}
+                              />
+                           </div>
+                           <div className="space-y-3">
+                              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Mistura de Estilos (Opcional)</label>
+                              <input 
+                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
+                                placeholder="Ex: Trap + Sertanejo, Indie + Samba..."
+                                value={arrangerData.style.mix}
+                                onChange={(e) => setArrangerData({...arrangerData, style: {...arrangerData.style, mix: e.target.value}})}
+                              />
+                           </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-4 bg-violet-500/10 border border-violet-500/20 rounded-3xl">
+                           <input 
+                             type="checkbox" 
+                             className="w-6 h-6 accent-violet-500 cursor-pointer"
+                             checked={arrangerData.style.defineForMe}
+                             onChange={(e) => setArrangerData({...arrangerData, style: {...arrangerData.style, defineForMe: e.target.checked}})}
+                           />
+                           <div>
+                              <p className="text-xs font-black text-white uppercase tracking-tighter">Deixar o Arranjador definir o melhor estilo</p>
+                              <p className="text-[9px] text-slate-500 uppercase font-black">Com base em todas as outras informações passadas</p>
+                           </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">06</span>
+                        Ritmo & Andamento
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Velocidade</label>
+                            <div className="flex flex-col gap-2">
+                               {['Lenta (Balada)', 'Média', 'Rápida'].map(t => (
+                                 <button
+                                   key={t}
+                                   onClick={() => setArrangerData({...arrangerData, rhythm: {...arrangerData.rhythm, tempo: t}})}
+                                   className={`w-full py-3 rounded-xl text-xs font-bold transition-all ${arrangerData.rhythm.tempo === t ? 'bg-white text-black' : 'bg-white/5 text-slate-400'}`}
+                                 >
+                                   {t}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Intenção Rítmica</label>
+                            <div className="flex flex-col gap-2">
+                               {['Mais Levada', 'Mais Marcada'].map(n => (
+                                 <button
+                                   key={n}
+                                   onClick={() => setArrangerData({...arrangerData, rhythm: {...arrangerData.rhythm, nature: n}})}
+                                   className={`w-full py-3 rounded-xl text-xs font-bold transition-all ${arrangerData.rhythm.nature === n ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-400'}`}
+                                 >
+                                   {n}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Groove</label>
+                            <div className="flex flex-col gap-2">
+                               {['Orgânico (Bateria Real)', 'Eletrônico (Beat)'].map(g => (
+                                 <button
+                                   key={g}
+                                   onClick={() => setArrangerData({...arrangerData, rhythm: {...arrangerData.rhythm, groove: g}})}
+                                   className={`w-full py-3 rounded-xl text-xs font-bold transition-all ${arrangerData.rhythm.groove === g ? 'bg-fuchsia-600 text-white' : 'bg-white/5 text-slate-400'}`}
+                                 >
+                                   {g}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {arrangerStep === 4 && (
+                  <div className="space-y-10 animate-in slide-in-from-right-5 fade-in duration-500">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">07</span>
+                        Harmonia
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Já tem cifra ou melodia?</label>
+                            <div className="flex gap-2">
+                                {['Sim', 'Não'].map(v => (
+                                  <button
+                                    key={v}
+                                    onClick={() => setArrangerData({...arrangerData, harmony: {...arrangerData.harmony, hasChords: v}})}
+                                    className={`px-8 py-3 rounded-xl text-xs font-bold transition-all ${arrangerData.harmony.hasChords === v ? 'bg-white text-black' : 'bg-white/5 text-slate-400'}`}
+                                  >
+                                    {v}
+                                  </button>
+                                ))}
+                            </div>
+                         </div>
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Complexidade Harmônica</label>
+                            <div className="flex flex-col gap-2">
+                               {['Simples e Direta', 'Mais Sofisticada (Acordes Ricos)'].map(c => (
+                                 <button
+                                   key={c}
+                                   onClick={() => setArrangerData({...arrangerData, harmony: {...arrangerData.harmony, complexity: c}})}
+                                   className={`w-full py-3 rounded-xl text-xs font-bold transition-all ${arrangerData.harmony.complexity === c ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-400'}`}
+                                 >
+                                   {c}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                      <div className="mt-8 space-y-3">
+                         <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Sabor da Harmonia</label>
+                         <div className="flex flex-wrap gap-2">
+                            {['Popular/Pop', 'Artístico', 'Jazzístico', 'Eclesiástico/Gospel'].map(f => (
+                              <button
+                                key={f}
+                                onClick={() => setArrangerData({...arrangerData, harmony: {...arrangerData.harmony, flavor: f}})}
+                                className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase transition-all ${arrangerData.harmony.flavor === f ? 'bg-violet-600 text-white shadow-lg' : 'bg-white/5 text-slate-500'}`}
+                              >
+                                {f}
+                              </button>
+                            ))}
+                         </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">08</span>
+                        Instrumentação
+                      </h3>
+                      <div className="space-y-6">
+                         <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block mb-4">Escolha os instrumentos base:</label>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                               {['Violão', 'Piano', 'Guitarra', 'Orquestra', 'Sintetizadores', 'Metais', 'Percussão Latina', 'Bateria Pesada'].map(i => (
+                                 <button
+                                   key={i}
+                                   onClick={() => {
+                                      const current = arrangerData.instrumentation.instruments;
+                                      const next = current.includes(i) ? current.filter(x => x !== i) : [...current, i];
+                                      setArrangerData({...arrangerData, instrumentation: {...arrangerData.instrumentation, instruments: next}});
+                                   }}
+                                   className={`px-4 py-3 rounded-xl text-xs font-bold transition-all border ${arrangerData.instrumentation.instruments.includes(i) ? 'bg-fuchsia-600/20 border-fuchsia-500 text-white' : 'bg-transparent border-white/5 text-slate-500 hover:border-white/20'}`}
+                                 >
+                                   {i}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                         <div className="flex flex-col md:flex-row gap-6 mt-4">
+                            <div className="flex-1 space-y-3">
+                               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Densidade Musical</label>
+                               <div className="flex gap-2">
+                                  {['Minimalista', 'Cheia (Camadas)'].map(n => (
+                                    <button
+                                      key={n}
+                                      onClick={() => setArrangerData({...arrangerData, instrumentation: {...arrangerData.instrumentation, nature: n}})}
+                                      className={`flex-1 py-3 rounded-xl text-xs font-bold transition-all ${arrangerData.instrumentation.nature === n ? 'bg-white text-black' : 'bg-white/5 text-slate-400'}`}
+                                    >
+                                      {n}
+                                    </button>
+                                  ))}
+                               </div>
+                            </div>
+                            <div className="flex items-center gap-3 p-4 bg-violet-500/10 border border-violet-500/20 rounded-3xl mt-6">
+                               <input 
+                                 type="checkbox" 
+                                 className="w-6 h-6 accent-violet-500 cursor-pointer"
+                                 checked={arrangerData.instrumentation.defineForMe}
+                                 onChange={(e) => setArrangerData({...arrangerData, instrumentation: {...arrangerData.instrumentation, defineForMe: e.target.checked}})}
+                               />
+                               <span className="text-[10px] font-black text-white uppercase tracking-tighter">Deixar o Arranjador definir o resto</span>
+                            </div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {arrangerStep === 5 && (
+                  <div className="space-y-10 animate-in slide-in-from-right-5 fade-in duration-500">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">09</span>
+                        Dinâmica & Crescimento
+                      </h3>
+                      <div className="space-y-6">
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-3">
+                               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Início da Música</label>
+                               <div className="flex gap-2">
+                                  {['Começar Simples', 'Começar Intensa'].map(s => (
+                                    <button
+                                      key={s}
+                                      onClick={() => setArrangerData({...arrangerData, dynamics: {...arrangerData.dynamics, start: s}})}
+                                      className={`flex-1 py-4 rounded-2xl text-xs font-bold transition-all ${arrangerData.dynamics.start === s ? 'bg-white text-black shadow-lg shadow-white/10' : 'bg-white/5 text-slate-400'}`}
+                                    >
+                                      {s}
+                                    </button>
+                                  ))}
+                               </div>
+                            </div>
+                            <div className="space-y-3">
+                               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">O Refrão deve...</label>
+                               <div className="flex gap-2">
+                                  {['Explodir', 'Manter Vibe'].map(c => (
+                                    <button
+                                      key={c}
+                                      onClick={() => setArrangerData({...arrangerData, dynamics: {...arrangerData.dynamics, chorus: c}})}
+                                      className={`flex-1 py-4 rounded-2xl text-xs font-bold transition-all ${arrangerData.dynamics.chorus === c ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-400'}`}
+                                    >
+                                      {c}
+                                    </button>
+                                  ))}
+                               </div>
+                            </div>
+                         </div>
+                         <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Viradas & Transições</label>
+                            <textarea 
+                              className="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-sm outline-none focus:border-violet-500/50"
+                              placeholder="Ex: Quero um drop pesado antes do refrão, ou pausas dramáticas..."
+                              value={arrangerData.dynamics.transitions}
+                              onChange={(e) => setArrangerData({...arrangerData, dynamics: {...arrangerData.dynamics, transitions: e.target.value}})}
+                            />
+                         </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">10</span>
+                        Produção & Sonoridade
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Estilo de Produção</label>
+                            <div className="grid grid-cols-2 gap-2">
+                               {['Moderno (Streaming)', 'Vintage / Retrô', 'Acústico Cru', 'Cinematográfico'].map(e => (
+                                 <button
+                                   key={e}
+                                   onClick={() => setArrangerData({...arrangerData, production: {...arrangerData.production, era: e}})}
+                                   className={`px-4 py-3 rounded-xl text-[10px] font-black transition-all ${arrangerData.production.era === e ? 'bg-violet-600 text-white' : 'bg-white/5 text-slate-500'}`}
+                                 >
+                                   {e}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Textura do Som</label>
+                            <div className="flex gap-2">
+                               {['Mais Limpo', 'Mais Sujo/Rústico'].map(t => (
+                                 <button
+                                   key={t}
+                                   onClick={() => setArrangerData({...arrangerData, production: {...arrangerData.production, texture: t}})}
+                                   className={`flex-1 py-4 rounded-2xl text-xs font-bold transition-all ${arrangerData.production.texture === t ? 'bg-fuchsia-600 text-white' : 'bg-white/5 text-slate-400'}`}
+                                 >
+                                   {t}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {arrangerStep === 6 && (
+                  <div className="space-y-10 animate-in slide-in-from-right-5 fade-in duration-500">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">11</span>
+                        Objetivo & Canal
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Onde será usada?</label>
+                            <div className="grid grid-cols-2 gap-2">
+                               {['Spotify/Streaming', 'Redes Sociais', 'Show ao Vivo', 'Trilha Sonora'].map(o => (
+                                 <button
+                                   key={o}
+                                   onClick={() => setArrangerData({...arrangerData, objective: {...arrangerData.objective, platform: o}})}
+                                   className={`px-4 py-3 rounded-xl text-[10px] font-black transition-all ${arrangerData.objective.platform === o ? 'bg-violet-600 text-white' : 'bg-white/5 text-slate-500'}`}
+                                 >
+                                   {o}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                         <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Tipo de Projeto</label>
+                            <div className="flex gap-2">
+                               {['Autoral Artístico', 'Comercial/Jingle'].map(p => (
+                                 <button
+                                   key={p}
+                                   onClick={() => setArrangerData({...arrangerData, objective: {...arrangerData.objective, projectType: p}})}
+                                   className={`flex-1 py-4 rounded-2xl text-xs font-bold transition-all ${arrangerData.objective.projectType === p ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-400'}`}
+                                 >
+                                   {p}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">12</span>
+                        Liberdade Criativa do Arranjador
+                      </h3>
+                      <div className="bg-white/5 border border-white/10 rounded-[30px] p-8 space-y-6">
+                         <div className="space-y-4">
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block text-center">Nível de Liberdade</span>
+                            <div className="flex justify-between gap-2">
+                               {['Siga a Risca', 'Moderada', 'Liberdade Total'].map(l => (
+                                 <button
+                                   key={l}
+                                   onClick={() => setArrangerData({...arrangerData, freedom: {...arrangerData.freedom, level: l}})}
+                                   className={`flex-1 py-4 rounded-2xl text-xs font-bold transition-all ${arrangerData.freedom.level === l ? 'bg-violet-600 text-white shadow-xl rotate-1' : 'bg-white/5 text-slate-500 opacity-50'}`}
+                                 >
+                                   {l}
+                                 </button>
+                               ))}
+                            </div>
+                         </div>
+                         <div className="space-y-4 pt-4 border-t border-white/5">
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">O Arranjador pode alterar:</span>
+                            <div className="flex flex-wrap gap-3">
+                               {['Melodia', 'Estrutura', 'Harmonia', 'Instrumentação'].map(c => (
+                                 <label key={c} className="flex items-center gap-3 bg-black/40 px-5 py-3 rounded-xl border border-white/5 cursor-pointer hover:bg-white/5">
+                                    <input 
+                                      type="checkbox" 
+                                      className="accent-violet-500"
+                                      checked={arrangerData.freedom.changesAllowed.includes(c)}
+                                      onChange={(e) => {
+                                         const current = arrangerData.freedom.changesAllowed;
+                                         const next = e.target.checked ? [...current, c] : current.filter(x => x !== c);
+                                         setArrangerData({...arrangerData, freedom: {...arrangerData.freedom, changesAllowed: next}});
+                                      }}
+                                    />
+                                    <span className="text-xs font-bold text-slate-300">{c}</span>
+                                 </label>
+                               ))}
+                            </div>
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {arrangerStep === 7 && (
+                  <div className="space-y-10 animate-in slide-in-from-right-5 fade-in duration-500">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">13</span>
+                        Letra & Métrica (Opcional)
+                      </h3>
+                      <div className="space-y-6">
+                         <div className="relative group">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-[30px] blur opacity-20 group-focus-within:opacity-40 transition duration-1000"></div>
+                            <textarea 
+                              className="relative w-full h-80 bg-[#0c0c0c] border border-white/10 rounded-[30px] p-8 text-sm leading-relaxed outline-none focus:border-violet-500/50 resize-none custom-scrollbar"
+                              placeholder="Cole sua letra aqui se já houver uma... O Arranjador irá sugerir tags e métrica musical."
+                              value={arrangerData.lyrics.text}
+                              onChange={(e) => setArrangerData({...arrangerData, lyrics: {...arrangerData.lyrics, text: e.target.value}})}
+                            />
+                         </div>
+                         <div className="flex items-center gap-3 p-6 bg-indigo-500/10 border border-indigo-500/20 rounded-3xl">
+                            <input 
+                              type="checkbox" 
+                              className="w-6 h-6 accent-indigo-500 cursor-pointer"
+                              checked={arrangerData.lyrics.analyzeMetric}
+                              onChange={(e) => setArrangerData({...arrangerData, lyrics: {...arrangerData.lyrics, analyzeMetric: e.target.checked}})}
+                            />
+                            <div>
+                               <p className="text-xs font-black text-white uppercase tracking-tighter">Ativar Análise de Métrica Profissional</p>
+                               <p className="text-[9px] text-slate-500 uppercase font-black">O Arranjador vai sugerir divisões rítmicas para cada linha da sua letra baseado no Suno.</p>
+                            </div>
+                         </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-white/5">
+                      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">+</span>
+                         Toques Finais (Extras)
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Palavras ou Frases a Destacar</label>
+                            <input 
+                              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
+                              placeholder="Ex: No refrão, destaque 'Liberdade'..."
+                              value={arrangerData.extra.highlightedWords}
+                              onChange={(e) => setArrangerData({...arrangerData, extra: {...arrangerData.extra, highlightedWords: e.target.value}})}
+                            />
+                         </div>
+                         <div className="space-y-3">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Parte que NÃO pode mudar</label>
+                            <input 
+                              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
+                              placeholder="Ex: A melodia do verso 1 deve ser mantida..."
+                              value={arrangerData.extra.unchangeableParts}
+                              onChange={(e) => setArrangerData({...arrangerData, extra: {...arrangerData.extra, unchangeableParts: e.target.value}})}
+                            />
+                         </div>
+                         <div className="md:col-span-2 space-y-3 mt-4">
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Momento Mais Importante da Música</label>
+                            <input 
+                              className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
+                              placeholder="Qual o clímax? Ex: A virada instrumental final..."
+                              value={arrangerData.extra.keyMoment}
+                              onChange={(e) => setArrangerData({...arrangerData, extra: {...arrangerData.extra, keyMoment: e.target.value}})}
+                            />
+                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            </div>
+
+            {/* NAV ACTIONS */}
+            <div className="p-8 md:p-12 pt-6 border-t border-white/5 backdrop-blur-3xl bg-black/20 flex justify-between items-center md:rounded-b-[50px]">
+              <button 
+                onClick={() => arrangerStep > 1 ? setArrangerStep(arrangerStep - 1) : setShowArranger(false)}
+                className="flex items-center gap-2 px-8 py-4 rounded-2xl text-[10px] font-black uppercase text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+              >
+                {arrangerStep === 1 ? 'Cancelar' : 'Voltar'}
+              </button>
+              
+              <button 
+                onClick={() => {
+                  if (arrangerStep < 7) setArrangerStep(arrangerStep + 1);
+                  else generateArrangerPrompt();
+                }}
+                disabled={isGenerating}
+                className="flex items-center gap-3 px-10 py-4 rounded-2xl text-[10px] font-black uppercase bg-white text-black hover:bg-violet-500 hover:text-white shadow-xl shadow-white/5 transition-all active:scale-95 disabled:opacity-50"
+              >
+                {isGenerating ? (
+                  <>
+                    <RotateCcw className="w-3 h-3 animate-spin" />
+                    Gerando Arranjo...
+                  </>
+                ) : (
+                  <>
+                    {arrangerStep === 7 ? 'Finalizar & Gerar Prompt' : 'Próxima Fase'}
+                    <ArrowRight className="w-3 h-3" />
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showProggenModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-[#161616] w-full max-w-md rounded-[40px] border border-white/5 shadow-2xl flex flex-col relative animate-in zoom-in-95 duration-200">
