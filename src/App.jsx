@@ -326,6 +326,8 @@ function App() {
   const audioPreviewRef = useRef(null);
   const [activePreviewGenre, setActivePreviewGenre] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showNamingModal, setShowNamingModal] = useState(false);
+  const [tempName, setTempName] = useState('');
 
   const [isComparisonMode, setIsComparisonMode] = useState(false);
   const [promptA, setPromptA] = useState(null);
@@ -658,21 +660,22 @@ function App() {
 
   const saveToLibrary = () => {
     if (!maestroAnalysis) return;
-    
-    const defaultName = maestroAnalysis.genre || "Nova Sessão";
-    const name = prompt("Dê um nome para esta sessão:", defaultName);
-    
-    if (name === null) return; // Cancelou o salvamento
+    setTempName(maestroAnalysis.genre || "");
+    setShowNamingModal(true);
+  };
 
+  const confirmSave = () => {
+    if (!maestroAnalysis) return;
     const newEntry = { 
       ...maestroAnalysis, 
       id: crypto.randomUUID(), 
       timestamp: new Date().toISOString(),
       isFavorite: false,
-      customName: name
+      customName: tempName || maestroAnalysis.genre || "Nova Sessão"
     };
     persistData([newEntry, ...savedPrompts]);
     setSaveSuccess(true);
+    setShowNamingModal(false);
     setTimeout(() => setSaveSuccess(false), 2000);
   };
 
@@ -2506,8 +2509,55 @@ function App() {
           <button onClick={() => setError(null)} className="ml-4 hover:bg-white/20 p-2 rounded-xl transition-colors"><X className="w-4 h-4" /></button>
         </div>
       )}
+      {/* MODAL DE NOMEAÇÃO PREMIUM */}
+      {showNamingModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+          <div className="bg-[#121212] w-full max-w-md rounded-[40px] border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] p-8 animate-in zoom-in-95 duration-200 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-500"></div>
+            
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                <Edit3 className="w-6 h-6 text-orange-500" />
+              </div>
+              <div>
+                <h2 className="text-xl font-black text-white uppercase tracking-tighter">Nomear Prompt</h2>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dê um título para sua obra-mestra</p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="relative group">
+                <input 
+                  autoFocus
+                  type="text"
+                  value={tempName}
+                  onChange={(e) => setTempName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && confirmSave()}
+                  placeholder="Ex: Pop Rock Épico - Base 01"
+                  className="w-full bg-white/5 border border-white/5 rounded-2xl px-6 py-5 text-sm font-bold text-white outline-none focus:border-orange-500/30 focus:ring-4 focus:ring-orange-500/5 transition-all text-center"
+                />
+              </div>
+
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => setShowNamingModal(false)}
+                  className="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white hover:bg-white/5 transition-all"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  onClick={confirmSave}
+                  className="flex-1 bg-white text-black py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 hover:text-white shadow-xl shadow-orange-500/10 transition-all active:scale-95"
+                >
+                  Confirmar & Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;
