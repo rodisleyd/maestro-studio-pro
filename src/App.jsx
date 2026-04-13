@@ -325,6 +325,7 @@ function App() {
   const [smartSuggestion, setSmartSuggestion] = useState(null);
   const audioPreviewRef = useRef(null);
   const [activePreviewGenre, setActivePreviewGenre] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const [isComparisonMode, setIsComparisonMode] = useState(false);
   const [promptA, setPromptA] = useState(null);
@@ -657,12 +658,18 @@ function App() {
 
   const saveToLibrary = () => {
     if (!maestroAnalysis) return;
+    
+    const defaultName = maestroAnalysis.genre || "Nova Sessão";
+    const name = prompt("Dê um nome para esta sessão:", defaultName);
+    
+    if (name === null) return; // Cancelou o salvamento
+
     const newEntry = { 
       ...maestroAnalysis, 
       id: crypto.randomUUID(), 
       timestamp: new Date().toISOString(),
       isFavorite: false,
-      customName: ''
+      customName: name
     };
     persistData([newEntry, ...savedPrompts]);
     setSaveSuccess(true);
@@ -1583,19 +1590,36 @@ function App() {
       {/* BIBLIOTECA LOCAL */}
       {savedPrompts.length > 0 && (
         <section className="max-w-6xl mx-auto mt-20 border-t border-white/10 pt-16">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
             <h2 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
               <History className="w-6 h-6 text-orange-500" /> Histórico de Sessões
             </h2>
-            <div className="flex gap-2">
-               <span className="text-[10px] font-bold text-slate-500 uppercase px-4 py-2 bg-white/5 rounded-full border border-white/5">
+
+            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+               <div className="relative group w-full md:w-64">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-orange-500 transition-colors" />
+                  <input 
+                    type="text"
+                    placeholder="Buscar prompt ou gênero..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full bg-white/5 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-orange-500/30 transition-all"
+                  />
+               </div>
+               <span className="text-[10px] font-bold text-slate-500 uppercase px-4 py-3 bg-white/5 rounded-full border border-white/5 whitespace-nowrap">
                  {savedPrompts.length} Prompts Guardados
                </span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {savedPrompts.map(p => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {savedPrompts
+              .filter(p => 
+                p.customName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                p.genre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                p.style_analysis?.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((p) => (
               <div key={p.id} className="bg-[#161616] border border-white/5 p-6 rounded-[30px] group relative hover:border-orange-500/30 transition-all shadow-xl flex flex-col justify-between">
                 <div className="absolute top-5 right-5 flex gap-1">
                   <button 
