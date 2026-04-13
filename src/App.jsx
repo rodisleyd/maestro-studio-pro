@@ -323,6 +323,8 @@ function App() {
   const [vocalTone, setVocalTone] = useState('normal');
   const [vocalTextures, setVocalTextures] = useState([]);
   const [smartSuggestion, setSmartSuggestion] = useState(null);
+  const audioPreviewRef = useRef(null);
+  const [activePreviewGenre, setActivePreviewGenre] = useState(null);
 
   const [isComparisonMode, setIsComparisonMode] = useState(false);
   const [promptA, setPromptA] = useState(null);
@@ -763,6 +765,41 @@ function App() {
     } else {
       setCustomLyrics(prev => prev + insertText);
     }
+  };
+
+  const playGenrePreview = (genre) => {
+    if (audioPreviewRef.current) {
+      audioPreviewRef.current.pause();
+      audioPreviewRef.current = null;
+    }
+
+    const fileName = genre.toLowerCase().replace(/\s+/g, '');
+    const audio = new Audio(`/previews/${fileName}.mp3`);
+    audio.volume = 0.5;
+    
+    audio.play().catch(e => {
+      // Falha silenciosa se o arquivo não existir
+      console.log(`Prévia não encontrada para: ${fileName}.mp3`);
+    });
+
+    audioPreviewRef.current = audio;
+    setActivePreviewGenre(genre);
+
+    // Stop after 10 seconds automatically
+    setTimeout(() => {
+      if (audioPreviewRef.current === audio) {
+        stopGenrePreview();
+      }
+    }, 10000);
+  };
+
+  const stopGenrePreview = () => {
+    if (audioPreviewRef.current) {
+      audioPreviewRef.current.pause();
+      audioPreviewRef.current.currentTime = 0;
+      audioPreviewRef.current = null;
+    }
+    setActivePreviewGenre(null);
   };
 
   const renderSafe = (v) => (typeof v === 'object' ? JSON.stringify(v) : v || "");
@@ -1510,6 +1547,8 @@ function App() {
                      {ALL_GENRES.map((genre) => (
                        <button
                         key={genre}
+                        onMouseEnter={() => playGenrePreview(genre)}
+                        onMouseLeave={() => stopGenrePreview()}
                         onClick={() => {
                            setUserQuery(`Música estilo ${genre}`);
                            setBaseGenre(genre);
@@ -1517,9 +1556,16 @@ function App() {
                            setActiveTab('MANUAL');
                            window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
-                        className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-[10px] font-bold text-slate-400 hover:bg-orange-500 hover:border-orange-500 hover:text-black transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+                        className={`px-3 py-1.5 border rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap flex items-center gap-2 ${activePreviewGenre === genre ? 'bg-orange-500 border-orange-500 text-black scale-105' : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'}`}
                        >
                          {genre}
+                         {activePreviewGenre === genre && (
+                           <div className="flex gap-0.5 items-end h-3">
+                              <div className="w-0.5 bg-black animate-[musicBar_0.8s_ease-in-out_infinite] h-full"></div>
+                              <div className="w-0.5 bg-black animate-[musicBar_1.1s_ease-in-out_infinite] h-2/3"></div>
+                              <div className="w-0.5 bg-black animate-[musicBar_0.9s_ease-in-out_infinite] h-4/5"></div>
+                           </div>
+                         )}
                        </button>
                      ))}
                   </div>
