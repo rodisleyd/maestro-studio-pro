@@ -777,46 +777,42 @@ function App() {
     }
   };
 
-  const playGenrePreview = async (genre) => {
+  const playGenrePreview = (genre) => {
+    // 1. Limpar qualquer áudio tocando
     if (audioPreviewRef.current) {
       audioPreviewRef.current.pause();
       audioPreviewRef.current = null;
     }
 
+    // 2. Definir animação instantaneamente
+    setActivePreviewGenre(genre);
+
     const fileName = genre.toLowerCase().replace(/\s+/g, '');
     const audioPath = `/previews/${fileName}.mp3`;
 
     try {
-      // Verifica se o ficheiro existe silenciosamente
-      const check = await fetch(audioPath, { method: 'HEAD' });
-      if (!check.ok) {
-        console.warn(`Arquivo não encontrado: ${audioPath}`);
-        return;
-      }
-
       const audio = new Audio(audioPath);
       audio.volume = 0.5;
-      
+      audioPreviewRef.current = audio;
+
       const playPromise = audio.play();
       
       if (playPromise !== undefined) {
-        playPromise.then(() => {
-          audioPreviewRef.current = audio;
-          setActivePreviewGenre(genre);
-
-          // Parar após 10 segundos
-          setTimeout(() => {
-            if (audioPreviewRef.current === audio) {
-              stopGenrePreview();
-            }
-          }, 10000);
-        }).catch(error => {
-          // Erro de Autoplay ou Interrupção
-          console.log("Reprodução bloqueada pelo navegador:", error.message);
+        playPromise.catch(error => {
+          // Erro de Autoplay ou arquivo ausente
+          console.log("Aguardando interação ou áudio não encontrado:", fileName);
         });
       }
+
+      // Parar automaticamente após 10 segundos
+      setTimeout(() => {
+        if (audioPreviewRef.current === audio) {
+          stopGenrePreview();
+        }
+      }, 10000);
+
     } catch (e) {
-      console.error("Erro ao carregar prévia:", e);
+      // Falha silenciosa
     }
   };
 
