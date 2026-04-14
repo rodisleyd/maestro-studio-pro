@@ -623,20 +623,27 @@ function App() {
     `;
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: JSON.stringify(arrangerData) }] }],
           systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: { responseMimeType: "application/json" }
+          generationConfig: { 
+            responseMimeType: "application/json",
+            temperature: 0.8
+          }
         })
       });
 
-      if (!response.ok) throw new Error("Erro na API do Gemini");
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error?.message || "Erro na API do Gemini");
+      }
       
       const data = await response.json();
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error("A IA não retornou uma resposta válida.");
       const result = JSON.parse(text);
       
       // Adaptar o resultado do arranjador para o formato da análise do maestro para exibição
