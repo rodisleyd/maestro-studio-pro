@@ -777,30 +777,47 @@ function App() {
     }
   };
 
-  const playGenrePreview = (genre) => {
+  const playGenrePreview = async (genre) => {
     if (audioPreviewRef.current) {
       audioPreviewRef.current.pause();
       audioPreviewRef.current = null;
     }
 
     const fileName = genre.toLowerCase().replace(/\s+/g, '');
-    const audio = new Audio(`/previews/${fileName}.mp3`);
-    audio.volume = 0.5;
-    
-    audio.play().catch(e => {
-      // Falha silenciosa se o arquivo não existir
-      console.log(`Prévia não encontrada para: ${fileName}.mp3`);
-    });
+    const audioPath = `/previews/${fileName}.mp3`;
 
-    audioPreviewRef.current = audio;
-    setActivePreviewGenre(genre);
-
-    // Stop after 10 seconds automatically
-    setTimeout(() => {
-      if (audioPreviewRef.current === audio) {
-        stopGenrePreview();
+    try {
+      // Verifica se o ficheiro existe silenciosamente
+      const check = await fetch(audioPath, { method: 'HEAD' });
+      if (!check.ok) {
+        console.warn(`Arquivo não encontrado: ${audioPath}`);
+        return;
       }
-    }, 10000);
+
+      const audio = new Audio(audioPath);
+      audio.volume = 0.5;
+      
+      const playPromise = audio.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          audioPreviewRef.current = audio;
+          setActivePreviewGenre(genre);
+
+          // Parar após 10 segundos
+          setTimeout(() => {
+            if (audioPreviewRef.current === audio) {
+              stopGenrePreview();
+            }
+          }, 10000);
+        }).catch(error => {
+          // Erro de Autoplay ou Interrupção
+          console.log("Reprodução bloqueada pelo navegador:", error.message);
+        });
+      }
+    } catch (e) {
+      console.error("Erro ao carregar prévia:", e);
+    }
   };
 
   const stopGenrePreview = () => {
