@@ -27,11 +27,11 @@ const apiKey = getEnvVariable('VITE_GEMINI_API_KEY');
 const ALL_GENRES = [
   "Afrobeat", "Alternative", "Ambient", "Balada Pop", "Bluegrass", "Blues", "Bossa Nova", "Brega", 
   "Chillwave", "Classical", "Cordel", "Country", "Dancehall", "Disco", "Drum & Bass", "Dubstep", 
-  "Electronic", "Flamenco", "Folk", "Funk", "Garage Rock", "Gospel", "Grunge", "Hardstyle", 
+  "Electronic", "Flamenco", "Folk", "Forró", "Funk", "Garage Rock", "Gospel", "Grunge", "Guarania", "Hardstyle", 
   "Hip-Hop", "House", "Indie", "Indie Pop", "Indie Rock", "Industrial", "Instrumental", "J-Pop", 
-  "Jazz", "K-Pop", "Klezmer", "Latin", "Lo-Fi", "Math Rock", "Metal", "MPB", "New Wave", 
+  "Jazz", "K-Pop", "Klezmer", "Lambada", "Latin", "Lo-Fi", "Math Rock", "Metal", "MPB", "New Wave", 
   "Ópera", "Pagode", "Phonk", "Podcast", "Pop", "Post-Rock", "Psychedelic Rock", "Punk", "R&B", 
-  "Rap", "Reggae", "Reggaeton", "Rock", "Samba", "Sertanejo", "Ska", "Soul", "Soundtrack", 
+  "Rap", "Reggae", "Reggaeton", "Repente", "Rock", "Samba", "Sertanejo", "Sertanejo Raiz", "Sertanejo Universitário", "Ska", "Soul", "Soundtrack", 
   "Surf Music", "Synthwave", "Tango", "Techno", "Trance", "Trap", "Valsa", "Vaporwave"
 ];
 
@@ -189,8 +189,13 @@ const QUICK_EXAMPLES = [
   // BRASIL
   { label: 'Bossa Nova', query: 'Samba suave com violão de nylon e voz sussurrada', genre: 'Bossa Nova / Jazz', category: 'Brasil' },
   { label: 'Samba Raiz', query: 'Roda de samba clássica com cavaco e pandeiro', genre: 'Samba', category: 'Brasil' },
+  { label: 'Forró Pé de Serra', query: 'Ritmo nordestino animado com sanfona, triângulo e zabumba', genre: 'Forró', category: 'Brasil' },
+  { label: 'Repente Nordestino', query: 'Duelo poético improvisado com violas e métrica rigorosa', genre: 'Repente', category: 'Brasil' },
   { label: 'Funk Brasil', query: 'Batidão de favela com graves potentes', genre: 'Funk Carioca', category: 'Brasil' },
   { label: 'MPB Moderna', query: 'Música Popular Brasileira com toques eletrônicos', genre: 'MPB / Nu-Jazz', category: 'Brasil' },
+  { label: 'Sertanejo Universitário', query: 'Sertanejo moderno com arranjos pop, guitarras e sanfona animada', genre: 'Sertanejo Universitário', category: 'Brasil' },
+  { label: 'Sertanejo Raiz', query: 'Sertanejo tradicional com violas caipiras e duo vocal harmônico', genre: 'Sertanejo Raiz', category: 'Brasil' },
+  { label: 'Guarania', query: 'Ritmo fronteiriço cadenciado e sentimental com violões e harpa', genre: 'Guarania', category: 'Brasil' },
 
   // URBANO
   { label: 'Melodic Trap', query: 'Trap moderno com sintetizadores etéreos e 808s', genre: 'Melodic Trap', category: 'Urbano' },
@@ -794,7 +799,10 @@ function App() {
     // 2. Definir animação instantaneamente
     setActivePreviewGenre(genre);
 
-    const fileName = genre.toLowerCase().replace(/\s+/g, '');
+    const fileName = genre.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, '');
     const audioPath = `/previews/${fileName}.mp3`;
 
     try {
