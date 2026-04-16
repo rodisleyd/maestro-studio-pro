@@ -215,7 +215,7 @@ const ADVANCED_INSTRUMENTS = [
     { name: 'Viola Caipira', icon: '🎸' }, { name: 'Cavaquinho', icon: '🪕' }, { name: 'Fingerstyle', icon: '🤌' }, 
     { name: 'Violão Percussivo', icon: '🥁' }, { name: 'Flamenco', icon: '💃' }, { name: 'Fingerpicking', icon: '🤏' }, 
     { name: 'Strumming', icon: '🎸' }, { name: 'Harmônicos', icon: '✨' }, { name: 'Rasgueado', icon: '🤏' },
-    { name: 'Harpa', icon: '✨' }, { name: 'Lira', icon: '🎼' }
+    { name: 'Harpa', icon: '✨' }, { name: 'Lira', icon: '🎼' }, { name: 'Ukulele', icon: '🪕' }
   ]},
   { label: 'Contrabaixos', items: [
     { name: 'Baixo Elétrico (4 cordas)', icon: '🎸' }, { name: 'Baixo 5 Cordas', icon: '🎸' }, { name: 'Baixo 6 Cordas', icon: '🎸' },
@@ -256,7 +256,7 @@ const ADVANCED_INSTRUMENTS = [
     { name: 'Contrabaixo Acústico', icon: '🎻' }, { name: 'Seção de Cordas', icon: '🎻' }, { name: 'Quarteto de Cordas', icon: '🎻' },
     { name: 'Harpa Orquestral', icon: '✨' }, { name: 'Trompete', icon: '🎺' }, { name: 'Trombone', icon: '🎺' },
     { name: 'Saxofone', icon: '🎷' }, { name: 'Flauta', icon: '🌬️' }, { name: 'Clarinete', icon: '🌬️' },
-    { name: 'Assobio (Whistle)', icon: '😗' }
+    { name: 'Gaita (Harmonica)', icon: '👄' }, { name: 'Tuba', icon: '🎺' }, { name: 'Assobio (Whistle)', icon: '😗' }
   ]},
   { label: 'Bateria Completa', items: [
     { name: 'Caixa', icon: '🥁' }, { name: 'Bumbo', icon: '🥁' }, { name: 'Chimbal', icon: '🟡' }, { name: 'Tons', icon: '🥁' },
@@ -267,7 +267,7 @@ const ADVANCED_INSTRUMENTS = [
     { name: 'Pandeiro', icon: '🥁' }, { name: 'Surdo de Samba', icon: '🥁' }, { name: 'Tamborim', icon: '🥁' },
     { name: 'Cuíca', icon: '🐻' }, { name: 'Agogô', icon: '🔔' }, { name: 'Reco-Reco', icon: '🥢' },
     { name: 'Ganzá', icon: '🥁' }, { name: 'Caixa de Samba', icon: '🥁' }, { name: 'Repique de Mão', icon: '👏' },
-    { name: 'Atabaque', icon: '🥁' }
+    { name: 'Atabaque', icon: '🥁' }, { name: 'Berimbau', icon: '🏹' }
   ]},
   { label: 'Percussão Latina', items: [
     { name: 'Congas', icon: '🥁' }, { name: 'Bongôs', icon: '🥁' }, { name: 'Timbales', icon: '🥁' },
@@ -283,7 +283,7 @@ const ADVANCED_INSTRUMENTS = [
   { label: 'Percussão Orquestral', items: [
     { name: 'Tímpanos', icon: '🥁' }, { name: 'Xilofone', icon: '🎹' }, { name: 'Vibrafone', icon: '🎹' },
     { name: 'Marimba', icon: '🎹' }, { name: 'Triângulo', icon: '📐' }, { name: 'Pratos Orquestrais', icon: '🟡' },
-    { name: 'Glockenspiel', icon: '🔔' }
+    { name: 'Glockenspiel', icon: '🔔' }, { name: 'Sinos (Bells)', icon: '🔔' }
   ]},
   { label: 'Percussão Moderna', items: [
     { name: 'Pads Eletrônicos', icon: '⏹️' }, { name: 'Drum Machine', icon: '💻' }, { name: 'Samples', icon: '🗂️' }, { name: 'Sound FX', icon: '🔊' }
