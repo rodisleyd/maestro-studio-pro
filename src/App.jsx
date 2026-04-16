@@ -289,11 +289,19 @@ const ADVANCED_INSTRUMENTS = [
     { name: 'Pads Eletrônicos', icon: '⏹️' }, { name: 'Drum Machine', icon: '💻' }, { name: 'Samples', icon: '🗂️' }, { name: 'Sound FX', icon: '🔊' }
   ]},
   { label: 'Efeitos & Ambiência (SFX)', items: [
-    { name: 'Chuva (Rain)', icon: '🌧️' }, { name: 'Vento (Wind)', icon: '🌬️' }, { name: 'Trovão (Thunder)', icon: '⛈️' },
-    { name: 'Ondas do Mar (Waves)', icon: '🌊' }, { name: 'Natureza (Birds/Forest)', icon: '🍃' }, { name: 'Palmas (Claps)', icon: '👏' },
-    { name: 'Sirene (Siren)', icon: '🚨' }, { name: 'Apito (Referee)', icon: '📣' }, { name: 'Tic-Tac (Relógio)', icon: '⏱️' },
-    { name: 'Ruído de Vinil (Vinyl)', icon: '📻' }, { name: 'Multidão (Crowd)', icon: '👥' }, { name: 'Passos (Footsteps)', icon: '👣' },
-    { name: 'Impacto Cinematográfico', icon: '💥' }
+    { name: 'Chuva (Rain)', icon: '🌧️', prompt: 'heavy rain pouring with clear water drops hitting surfaces, cinematic ambience, clearly audible' },
+    { name: 'Vento (Wind)', icon: '🌬️', prompt: 'strong wind blowing, howling sound, atmospheric and immersive, clearly audible' },
+    { name: 'Trovão (Thunder)', icon: '⛈️', prompt: 'distant thunder rumbling occasionally, adding tension to the scene, clearly audible' },
+    { name: 'Ondas do Mar (Waves)', icon: '🌊', prompt: 'ocean waves gently crashing on the shore, relaxing beach ambience, clearly audible' },
+    { name: 'Natureza (Birds/Forest)', icon: '🍃', prompt: 'forest ambience with birds chirping, leaves rustling, peaceful natural environment, clearly audible' },
+    { name: 'Palmas (Claps)', icon: '👏', prompt: 'crowd clapping in sync, energetic and lively, clearly audible' },
+    { name: 'Sirene (Siren)', icon: '🚨', prompt: 'distant police siren echoing in the background, urban atmosphere, clearly audible' },
+    { name: 'Apito (Referee)', icon: '📣', prompt: 'sharp referee whistle sound, short and piercing, clearly audible' },
+    { name: 'Tic-Tac (Relógio)', icon: '⏱️', prompt: 'clear ticking clock sound, repetitive and noticeable, clearly audible' },
+    { name: 'Ruído de Vinil (Vinyl)', icon: '📻', prompt: 'vinyl crackle noise, lo-fi texture, nostalgic sound, clearly audible' },
+    { name: 'Multidão (Crowd)', icon: '👥', prompt: 'crowd murmuring and reacting, stadium-like atmosphere, clearly audible' },
+    { name: 'Passos (Footsteps)', icon: '👣', prompt: 'clear footsteps sound on hard floor, rhythmic and noticeable, clearly audible' },
+    { name: 'Impacto Cinematográfico', icon: '💥', prompt: 'cinematic impact braam, heavy and powerful hit, prominent in the mix' }
   ]}
 ];
 
@@ -507,10 +515,11 @@ function App() {
     3. FUSÃO DE GÊNEROS: Se houver um gênero secundário, descreva uma transição ou mistura fluida.
     4. CONTROLE DE PERCUSSÃO: Se a percussão não for solicitada, NÃO use termos de bateria.
     5. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher "Male Vocal" ou "Female Vocal", especifique claramente o gênero e que é voz cantada. Se escolher vocal de criança, use tags como "children's vocal", "child voice" ou "kids vocal". Se escolher "Spoken Narrator", "Female Narrator" ou "Child Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice", "spoken female voice" ou "spoken child voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
-    6. SOUND DESIGN (SFX): Se instrumentos da seção "Efeitos & Ambiência (SFX)" forem selecionados, você devera descrever o ambiente de forma CINEMÁTICA E DETALHADA no final_prompt e na musical_structure. Use tags técnicas em inglês como [SFX: Rain], [SFX: Thunder], [Sound of birds in the background], etc. Priorize descrições imersivas em inglês (ex: "Cinematic intro with heavy rain and distant thunder").
-    7. STYLE TAGS: String de tags curtas em INGLÊS.
-    8. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use modo manual no Suno", "Sugerido 120 BPM").
-    9. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO (ex: {"Intro": "A heavy atmospheric intro with [SFX: Rain]...", "Verse 1": "Minimalistic drums...", "Chorus": "...", "Outro": "..."}). NUNCA DEIXE NULO.
+    6. SOUND DESIGN (SFX): Se instrumentos da seção "Efeitos & Ambiência (SFX)" forem selecionados, você devera descrever o ambiente de forma CINEMÁTICA no final_prompt e na musical_structure. NUNCA use tags técnicas curtas como [SFX: Rain]. Em vez disso, use descrições ricas e explícitas (ex: "ambient sound of heavy rain in the background, constant and clearly audible"). Use termos como "clearly audible", "not subtle" e "prominent in the mix" para forçar o Suno a não esconder o efeito. 
+    7. SFX INTRO HACK (PRO): Para efeitos de impacto, você pode usar a direção: "The track begins with [Efeito] sounds for a few seconds, then instruments gradually fade in".
+    8. STYLE TAGS: String de tags curtas em INGLÊS.
+    9. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use modo manual no Suno", "Sugerido 120 BPM").
+    10. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. NUNCA DEIXE NULO.
     
     JSON:
     {
@@ -624,6 +633,7 @@ function App() {
     - Tags estruturais: [Intro], [Verse], [Pre-Chorus], [Chorus], [Bridge], [Solo], [Break], [Outro].
     - Tags de estilo: [Genre: ...], [Mood: ...], [Vocal: ...], [Tempo: ...].
     - Macetes: Usar vírgulas, não exagerar em tags contrárias, usar [Style: ...] dentro da letra no Custom Mode para mudanças de clima.
+    - SFX PRO: No Suno, evite [SFX: Rain]. Use frases descritivas como "ambient sound of rain, clearly audible". Se quiser destaque, sugira: "The track starts with only [SFX] for 3 seconds, then piano fades in".
     - Se houver letra, analise a métrica e sugira quebras de linha que façam sentido musical.
     `;
 
@@ -762,14 +772,15 @@ function App() {
     }
   };
 
-  const insertTag = (tag, type = 'structural') => {
-    let finalTag = tag;
+  const insertTag = (item, type = 'structural') => {
+    let finalTag = typeof item === 'object' ? item.name : item;
     
-    // Se for SFX, tenta extrair o nome em inglês entre parênteses
-    if (type === 'sfx') {
-      const match = tag.match(/\(([^)]+)\)/);
-      const englishName = match ? match[1] : tag;
-      finalTag = `SFX: ${englishName}`;
+    if (type === 'sfx' && typeof item === 'object' && item.prompt) {
+      finalTag = item.prompt;
+    } else if (type === 'sfx') {
+       const match = finalTag.match(/\(([^)]+)\)/);
+       const englishName = match ? match[1] : finalTag;
+       finalTag = `ambient sound of ${englishName}, clearly audible`;
     }
 
     const insertText = `\n[${finalTag}]\n`;
@@ -1289,7 +1300,7 @@ function App() {
                                   </button>
                                   {isProMode && (
                                     <button 
-                                      onClick={() => insertTag(item.name, group.label.includes('SFX') ? 'sfx' : 'structural')}
+                                      onClick={() => insertTag(item, group.label.includes('SFX') ? 'sfx' : 'structural')}
                                       className="p-2 bg-white/5 hover:bg-orange-500 hover:text-black rounded-xl border border-white/5 transition-all"
                                       title="Inserir na Letra"
                                     >
