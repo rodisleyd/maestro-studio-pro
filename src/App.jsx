@@ -515,11 +515,11 @@ function App() {
     3. FUSÃO DE GÊNEROS: Se houver um gênero secundário, descreva uma transição ou mistura fluida.
     4. CONTROLE DE PERCUSSÃO: Se a percussão não for solicitada, NÃO use termos de bateria.
     5. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher "Male Vocal" ou "Female Vocal", especifique claramente o gênero e que é voz cantada. Se escolher vocal de criança, use tags como "children's vocal", "child voice" ou "kids vocal". Se escolher "Spoken Narrator", "Female Narrator" ou "Child Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice", "spoken female voice" ou "spoken child voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
-    6. SOUND DESIGN (SFX): Se instrumentos da seção "Efeitos & Ambiência (SFX)" forem selecionados, você devera descrever o ambiente de forma CINEMÁTICA no final_prompt e na musical_structure. NUNCA use tags técnicas curtas como [SFX: Rain]. Em vez disso, use descrições ricas e explícitas (ex: "ambient sound of heavy rain in the background, constant and clearly audible"). Use termos como "clearly audible", "not subtle" e "prominent in the mix" para forçar o Suno a não esconder o efeito. 
-    7. SFX INTRO HACK (PRO): Para efeitos de impacto, você pode usar a direção: "The track begins with [Efeito] sounds for a few seconds, then instruments gradually fade in".
-    8. STYLE TAGS: String de tags curtas em INGLÊS.
-    9. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use modo manual no Suno", "Sugerido 120 BPM").
-    10. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. NUNCA DEIXE NULO.
+    6. SOUND DESIGN (SFX): Se SFX forem selecionados, use terminologia técnica no final_prompt como "Field Recording", "Nature soundscape", "Diegetic Sound" e "Atmospheric Texture". NUNCA use tags técnicas curtas como [SFX: Rain].
+    7. STYLE TAGS (CRÍTICO): String de tags curtas em INGLÊS. MÁXIMO DE 120 CARACTERES. PRIORIDADE: Se houver SFX, as tags de SFX DEVEM vir no INÍCIO da string (ex: "Nature soundscape, Field recording, Birds, Wind, Indie Pop...").
+    8. SFX INTRO HACK (ESTRUTURA): Comandos de tempo e transição literal (ex: "começar só com vento por 5 segundos") DEVEM ser colocados dentro do bloco "Intro" (ou o bloco inicial) da "musical_structure", formatados como "[Intro: Ambient sounds only for 5 seconds, no instruments]".
+    9. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
+    10. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing.
     
     JSON:
     {
@@ -528,8 +528,8 @@ function App() {
       "key": "Tom",
       "style_analysis": "Análise em PT-BR",
       "instruments": ["Lista"],
-      "style_tags": "Tags em EN",
-      "final_prompt": "Master Prompt em EN",
+      "style_tags": "Tags em EN (MAX 120 chars, SFX First)",
+      "final_prompt": "Master Prompt curto em EN",
       "production_tips": "Dicas em PT-BR",
       "musical_structure": null
     }`;
@@ -633,7 +633,7 @@ function App() {
     - Tags estruturais: [Intro], [Verse], [Pre-Chorus], [Chorus], [Bridge], [Solo], [Break], [Outro].
     - Tags de estilo: [Genre: ...], [Mood: ...], [Vocal: ...], [Tempo: ...].
     - Macetes: Usar vírgulas, não exagerar em tags contrárias, usar [Style: ...] dentro da letra no Custom Mode para mudanças de clima.
-    - SFX PRO: No Suno, evite [SFX: Rain]. Use frases descritivas como "ambient sound of rain, clearly audible". Se quiser destaque, sugira: "The track starts with only [SFX] for 3 seconds, then piano fades in".
+    - SFX PRO CALIBRADO: No Suno, evite [SFX: Rain] no Style. Use "Field recording of rain" no início das tags. No Lyrics (structured_lyrics), use comandos de tempo no Intro, ex: [Intro: Rain sounds only, then piano fades in]. Limite Style a 120 caracteres.
     - Se houver letra, analise a métrica e sugira quebras de linha que façam sentido musical.
     `;
 
@@ -780,7 +780,7 @@ function App() {
     } else if (type === 'sfx') {
        const match = finalTag.match(/\(([^)]+)\)/);
        const englishName = match ? match[1] : finalTag;
-       finalTag = `ambient sound of ${englishName}, clearly audible`;
+       finalTag = `Field recording of ${englishName}, nature soundscape, clearly audible`;
     }
 
     const insertText = `\n[${finalTag}]\n`;
