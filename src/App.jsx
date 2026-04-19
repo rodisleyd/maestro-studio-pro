@@ -26,7 +26,7 @@ const apiKey = getEnvVariable('VITE_GEMINI_API_KEY');
 
 const ALL_GENRES = [
   "Afrobeat", "Alternative", "Ambient", "Balada Pop", "Bluegrass", "Blues", "Bossa Nova", "Brega", 
-  "Chillwave", "Classical", "Cordel", "Country", "Dancehall", "Disco", "Drum & Bass", "Dubstep", 
+  "Chillwave", "Chorinho", "Classical", "Cordel", "Country", "Dancehall", "Disco", "Drum & Bass", "Dubstep", 
   "Electronic", "Flamenco", "Folk", "Forró", "Funk", "Garage Rock", "Gospel", "Grunge", "Guarania", "Hardstyle", 
   "Hip-Hop", "House", "Indie", "Indie Pop", "Indie Rock", "Industrial", "Instrumental", "J-Pop", 
   "Jazz", "K-Pop", "Klezmer", "Lambada", "Latin", "Lo-Fi", "Math Rock", "Metal", "MPB", "New Wave", 
@@ -189,6 +189,7 @@ const QUICK_EXAMPLES = [
   // BRASIL
   { label: 'Bossa Nova', query: 'Samba suave com violão de nylon e voz sussurrada', genre: 'Bossa Nova / Jazz', category: 'Brasil' },
   { label: 'Samba Raiz', query: 'Roda de samba clássica com cavaco e pandeiro', genre: 'Samba', category: 'Brasil' },
+  { label: 'Chorinho', query: 'Choro clássico e virtuoso com ênfase no cavaquinho, violão de 7 cordas e pandeiro', genre: 'Chorinho', category: 'Brasil' },
   { label: 'Forró Pé de Serra', query: 'Ritmo nordestino animado com sanfona, triângulo e zabumba', genre: 'Forró', category: 'Brasil' },
   { label: 'Repente Nordestino', query: 'Duelo poético improvisado com violas e métrica rigorosa', genre: 'Repente', category: 'Brasil' },
   { label: 'Funk Brasil', query: 'Batidão de favela com graves potentes', genre: 'Funk Carioca', category: 'Brasil' },
@@ -419,6 +420,13 @@ function App() {
       vocal: 'Dreamy Pop',
       instruments: ['Violão Nylon', 'Piano Acústico', 'Baixo Elétrico', 'Pandeiro', 'Flauta'],
       negative: 'distorted, metal, trap'
+    },
+    'Chorinho': {
+      label: 'Estilo Chorinho (Brasil)',
+      genre: 'Chorinho / Samba-Choro',
+      vocal: 'None',
+      instruments: ['Cavaquinho', 'Violão Nylon', 'Violão 7 Cordas', 'Pandeiro', 'Flauta'],
+      negative: 'electronic, synth, heavy drums, electric guitar, trap, metal'
     }
   };
 
