@@ -345,6 +345,9 @@ function App() {
   const [isComparisonMode, setIsComparisonMode] = useState(false);
   const [promptA, setPromptA] = useState(null);
   const fileInputRef = useRef(null);
+  const imageInputRef = useRef(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [customLyrics, setCustomLyrics] = useState('');
   const lyricsTextareaRef = useRef(null);
   const [showOrchestrator, setShowOrchestrator] = useState(false);
@@ -495,8 +498,9 @@ function App() {
     }
     else if (activeTab === 'INFLUÊNCIA') finalQuery = `Artista: ${referenceInput}. Detalhes: ${userQuery}`;
     else if (activeTab === 'DNA ÁUDIO') finalQuery = `Referência: ${selectedFile?.name}. Instruções: ${userQuery}`;
+    else if (activeTab === 'INSIGHT VISUAL') finalQuery = `Imagem de Referência: ${imageFile?.name}. Instruções: ${userQuery}`;
 
-    if (!finalQuery.trim() && !selectedFile) return;
+    if (!finalQuery.trim() && !selectedFile && !imageFile) return;
 
     if (!apiKey) {
       setError("Falta a API Key no ficheiro .env (VITE_GEMINI_API_KEY)");
@@ -520,13 +524,14 @@ function App() {
     8. SFX INTRO HACK (ESTRUTURA): Comandos de tempo e transição literal (ex: "começar só com vento por 5 segundos") DEVEM ser colocados dentro do bloco "Intro" (ou o bloco inicial) da "musical_structure", formatados como "[Intro: Ambient sounds only for 5 seconds, no instruments]".
     9. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
     10. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing.
+    11. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
     
     JSON:
     {
       "genre": "Género",
       "bpm": "BPM",
       "key": "Tom",
-      "style_analysis": "Análise em PT-BR",
+      "style_analysis": "Análise em PT-BR (inclua a interpretação visual se houver imagem)",
       "instruments": ["Lista"],
       "style_tags": "Tags em EN (MAX 120 chars, SFX First)",
       "final_prompt": "Master Prompt curto em EN",
@@ -571,6 +576,21 @@ function App() {
           });
         } catch (e) {
           console.error("Erro ao processar áudio:", e);
+        }
+      }
+
+      // Se tiver imagem e estiver na aba INSIGHT VISUAL, envia a imagem para a IA
+      if (imageFile && activeTab === 'INSIGHT VISUAL') {
+        try {
+          const base64Data = await fileToBase64(imageFile);
+          parts.push({
+            inline_data: {
+              mime_type: imageFile.type,
+              data: base64Data
+            }
+          });
+        } catch (e) {
+          console.error("Erro ao processar imagem:", e);
         }
       }
 
@@ -867,7 +887,7 @@ function App() {
 
         {/* NAVEGAÇÃO SUPERIOR */}
         <div className="bg-[#121212] p-1.5 rounded-full border border-white/5 flex gap-1">
-          {['MANUAL', 'INFLUÊNCIA', 'DNA ÁUDIO'].map((tab) => (
+          {['MANUAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -946,6 +966,53 @@ function App() {
                 <textarea
                   className="w-full h-24 bg-[#0f0f0f] rounded-2xl p-4 border border-white/5 text-slate-300 text-sm outline-none"
                   placeholder="Instruções para análise..."
+                  value={userQuery}
+                  onChange={(e) => setUserQuery(e.target.value)}
+                />
+              </div>
+            )}
+
+            {activeTab === 'INSIGHT VISUAL' && (
+              <div className="space-y-4">
+                <div 
+                  onClick={() => imageInputRef.current.click()}
+                  className="w-full h-48 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white/5 transition-all group relative overflow-hidden"
+                >
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Preview" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity" />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center opacity-5">
+                       <Music className="w-24 h-24 rotate-12" />
+                    </div>
+                  )}
+                  <div className="relative z-10 flex flex-col items-center p-4">
+                    <Upload className="w-6 h-6 text-slate-500 group-hover:text-orange-500 mb-1" />
+                    <span className="text-[10px] font-black text-slate-500 uppercase px-4 text-center truncate w-full">
+                      {imageFile ? imageFile.name : 'Carregar Imagem de Referência'}
+                    </span>
+                    <p className="text-[8px] text-slate-600 mt-1 uppercase font-bold tracking-tighter">JPG, PNG, WEBP</p>
+                  </div>
+                  <input type="file" ref={imageInputRef} className="hidden" accept="image/*" onChange={e => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setImageFile(file);
+                      const reader = new FileReader();
+                      reader.onloadend = () => setImagePreview(reader.result);
+                      reader.readAsDataURL(file);
+                    }
+                  }} />
+                </div>
+                {imageFile && (
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setImageFile(null); setImagePreview(null); }}
+                    className="w-full py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 text-[9px] font-black uppercase rounded-xl transition-all"
+                  >
+                    Remover Imagem
+                  </button>
+                )}
+                <textarea
+                  className="w-full h-20 bg-[#0f0f0f] rounded-2xl p-4 border border-white/5 text-slate-300 text-sm outline-none"
+                  placeholder="Descreva o que a imagem deve inspirar..."
                   value={userQuery}
                   onChange={(e) => setUserQuery(e.target.value)}
                 />
