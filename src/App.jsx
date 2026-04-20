@@ -362,6 +362,14 @@ function App() {
   const [groove, setGroove] = useState('');
   const [emotion, setEmotion] = useState('');
   const [showStructureSystem, setShowStructureSystem] = useState(false);
+  
+  // ESTADOS DA ABA ESSENCIAL
+  const [essencialArrangement, setEssencialArrangement] = useState('DUO');
+  const [essencialPrimaryInst, setEssencialPrimaryInst] = useState('Cavaquinho');
+  const [essencialSecondaryInst, setEssencialSecondaryInst] = useState('');
+  const [essencialVocal, setEssencialVocal] = useState(true);
+  const [essencialStyle, setEssencialStyle] = useState('');
+  const [essencialMood, setEssencialMood] = useState('Agradecido');
 
   const [showProggenModal, setShowProggenModal] = useState(false);
   const [proggenKey, setProggenKey] = useState('C');
@@ -504,6 +512,26 @@ function App() {
       const genreContext = baseGenre ? `Gênero Base Selecionado: ${baseGenre}. ` : '';
       finalQuery = `${genreContext}Briefing: ${userQuery}`;
     }
+    else if (activeTab === 'ESSENCIAL') {
+      const insts = [essencialPrimaryInst, essencialSecondaryInst].filter(Boolean).join(' and ');
+      const arrangement = essencialArrangement.charAt(0) + essencialArrangement.slice(1).toLowerCase();
+      finalQuery = `
+        [STYLE FEEL]
+        ${essencialStyle ? `Acoustic music inspired by ${essencialStyle} rhythm` : 'Minimalist acoustic arrangement'}, ${essencialMood.toLowerCase()} atmosphere
+
+        [INSTRUMENTATION - PRIORITY]
+        ONLY ${insts}${essencialVocal ? ' and voice' : ''}
+
+        [RESTRICTIONS]
+        No percussion, no drums, no bass, no piano (unless specified), no orchestration, no additional instruments
+
+        [ARRANGEMENT]
+        ${arrangement}, intimate, stripped-down performance, focal point on ${essencialPrimaryInst}
+
+        [MOOD]
+        ${essencialMood}
+      `;
+    }
     else if (activeTab === 'INFLUÊNCIA') finalQuery = `Artista: ${referenceInput}. Detalhes: ${userQuery}`;
     else if (activeTab === 'DNA ÁUDIO') finalQuery = `Referência: ${selectedFile?.name}. Instruções: ${userQuery}`;
     else if (activeTab === 'INSIGHT VISUAL') finalQuery = `Imagem de Referência: ${imageFile?.name}. Instruções: ${userQuery}`;
@@ -526,13 +554,14 @@ function App() {
     2. IDIOMA VOCAL: Especifique sempre "Vocals in Brazilian Portuguese" no final_prompt para garantir o sotaque correto.
     3. FUSÃO DE GÊNEROS: Se houver um gênero secundário, descreva uma transição ou mistura fluida.
     4. CONTROLE DE PERCUSSÃO: Se a percussão não for solicitada, NÃO use termos de bateria.
-    5. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher "Male Vocal" ou "Female Vocal", especifique claramente o gênero e que é voz cantada. Se escolher vocal de criança, use tags como "children's vocal", "child voice" ou "kids vocal". Se escolher "Spoken Narrator", "Female Narrator" ou "Child Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice", "spoken female voice" ou "spoken child voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
-    6. SOUND DESIGN (SFX): Se SFX forem selecionados, use terminologia técnica no final_prompt como "Field Recording", "Nature soundscape", "Diegetic Sound" e "Atmospheric Texture". NUNCA use tags técnicas curtas como [SFX: Rain].
-    7. STYLE TAGS (CRÍTICO): String de tags curtas em INGLÊS. MÁXIMO DE 120 CARACTERES. PRIORIDADE: Se houver SFX, as tags de SFX DEVEM vir no INÍCIO da string (ex: "Nature soundscape, Field recording, Birds, Wind, Indie Pop...").
-    8. SFX INTRO HACK (ESTRUTURA): Comandos de tempo e transição literal (ex: "começar só com vento por 5 segundos") DEVEM ser colocados dentro do bloco "Intro" (ou o bloco inicial) da "musical_structure", formatados como "[Intro: Ambient sounds only for 5 seconds, no instruments]".
-    9. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
-    10. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing.
-    11. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
+    5. MODO ESSENCIAL (CRÍTICO): Se o input contiver [INSTRUMENTATION - PRIORITY], o prompt final DEVE ser ultra-minimalista. NÃO adicione baixo, bateria ou preenchimentos orquestrais. Foque TOTALMENTE nos instrumentos listados. Se disser "ONLY X", remova QUALQUER outro instrumento.
+    6. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher "Male Vocal" ou "Female Vocal", especifique claramente o gênero e que é voz cantada. Se escolher vocal de criança, use tags como "children's vocal", "child voice" ou "kids vocal". Se escolher "Spoken Narrator", "Female Narrator" ou "Child Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice", "spoken female voice" ou "spoken child voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
+    7. SOUND DESIGN (SFX): Se SFX forem selecionados, use terminologia técnica no final_prompt como "Field Recording", "Nature soundscape", "Diegetic Sound" e "Atmospheric Texture". NUNCA use tags técnicas curtas como [SFX: Rain].
+    8. STYLE TAGS (CRÍTICO): String de tags curtas em INGLÊS. MÁXIMO DE 120 CARACTERES. PRIORIDADE: Se houver SFX, as tags de SFX DEVEM vir no INÍCIO da string (ex: "Nature soundscape, Field recording, Birds, Wind, Indie Pop..."). Para o modo ESSENCIAL, as tags devem incluir "Solo", "Acoustic" ou "Duo" e listar APENAS os instrumentos solicitados.
+    9. SFX INTRO HACK (ESTRUTURA): Comandos de tempo e transição literal (ex: "começar só com vento por 5 segundos") DEVEM ser colocados dentro do bloco "Intro" (ou o bloco inicial) da "musical_structure", formatados como "[Intro: Ambient sounds only for 5 seconds, no instruments]".
+    10. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
+    11. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing. No modo ESSENCIAL, a estrutura deve refletir a simplicidade do arranjo.
+    12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
     
     JSON:
     {
@@ -895,7 +924,7 @@ function App() {
 
         {/* NAVEGAÇÃO SUPERIOR */}
         <div className="bg-[#121212] p-1.5 rounded-full border border-white/5 flex gap-1">
-          {['MANUAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
+          {['MANUAL', 'ESSENCIAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -937,6 +966,88 @@ function App() {
                 value={userQuery}
                 onChange={(e) => setUserQuery(e.target.value)}
               />
+            )}
+
+            {activeTab === 'ESSENCIAL' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
+                {/* TIPO DE ARRANJO */}
+                <div>
+                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-3">Estrutura do Arranjo</label>
+                   <div className="grid grid-cols-2 gap-2">
+                      {['SOLO', 'DUO', 'TRIO', 'MINIMALISTA'].map((type) => (
+                        <button 
+                          key={type}
+                          onClick={() => setEssencialArrangement(type)}
+                          className={`py-3 rounded-xl text-[10px] font-black transition-all border ${essencialArrangement === type ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-white/20'}`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                   </div>
+                </div>
+
+                {/* INSTRUMENTOS */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Instrumento Principal</label>
+                    <input 
+                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
+                      placeholder="Ex: Cavaquinho, Piano, Violão..."
+                      value={essencialPrimaryInst}
+                      onChange={e => setEssencialPrimaryInst(e.target.value)}
+                    />
+                  </div>
+                  
+                  {(essencialArrangement === 'DUO' || essencialArrangement === 'TRIO') && (
+                    <div className="animate-in slide-in-from-top-2 duration-300">
+                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Instrumento Secundário</label>
+                      <input 
+                        className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
+                        placeholder="Ex: Violão 7 Cordas, Flauta..."
+                        value={essencialSecondaryInst}
+                        onChange={e => setEssencialSecondaryInst(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* VOZ E ESTILO */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Vocal</label>
+                    <button 
+                      onClick={() => setEssencialVocal(!essencialVocal)}
+                      className={`w-full py-3 rounded-xl text-[10px] font-black transition-all border flex items-center justify-center gap-2 ${essencialVocal ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-[#0f0f0f] border-white/5 text-slate-500'}`}
+                    >
+                      <Mic2 className="w-3 h-3" />
+                      {essencialVocal ? 'COM VOZ' : 'INSTRUMENTAL'}
+                    </button>
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Clima (Mood)</label>
+                    <select 
+                      value={essencialMood}
+                      onChange={e => setEssencialMood(e.target.value)}
+                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
+                    >
+                      {['Alegre', 'Nostálgico', 'Melancólico', 'Íntimo', 'Energético', 'Relaxante'].map(m => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Referência de Estilo (Opcional)</label>
+                   <input 
+                     className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all text-slate-400"
+                     placeholder="Ex: Chorinho, Samba, Jazz (DNA sutil)"
+                     value={essencialStyle}
+                     onChange={e => setEssencialStyle(e.target.value)}
+                   />
+                   <p className="text-[8px] text-slate-600 mt-1.5 italic">O Maestro usará apenas a essência rítmica do estilo, ignorando o arranjo padrão de banda.</p>
+                </div>
+              </div>
             )}
 
             {activeTab === 'INFLUÊNCIA' && (
