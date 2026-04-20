@@ -365,7 +365,7 @@ function App() {
   
   // ESTADOS DA ABA ESSENCIAL
   const [essencialArrangement, setEssencialArrangement] = useState('DUO');
-  const [essencialPrimaryInst, setEssencialPrimaryInst] = useState('Cavaquinho');
+  const [essencialPrimaryInst, setEssencialPrimaryInst] = useState('');
   const [essencialSecondaryInst, setEssencialSecondaryInst] = useState('');
   const [essencialTertiaryInst, setEssencialTertiaryInst] = useState('');
   const [essencialVocal, setEssencialVocal] = useState(true);
@@ -807,7 +807,7 @@ function App() {
     setChordProgression('');
     setGroove('');
     setEmotion('');
-    setEssencialPrimaryInst('Cavaquinho');
+    setEssencialPrimaryInst('');
     setEssencialSecondaryInst('');
     setEssencialTertiaryInst('');
   };
