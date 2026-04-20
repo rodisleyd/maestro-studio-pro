@@ -367,6 +367,7 @@ function App() {
   const [essencialArrangement, setEssencialArrangement] = useState('DUO');
   const [essencialPrimaryInst, setEssencialPrimaryInst] = useState('Cavaquinho');
   const [essencialSecondaryInst, setEssencialSecondaryInst] = useState('');
+  const [essencialTertiaryInst, setEssencialTertiaryInst] = useState('');
   const [essencialVocal, setEssencialVocal] = useState(true);
   const [essencialStyle, setEssencialStyle] = useState('');
   const [essencialMood, setEssencialMood] = useState('Agradecido');
@@ -513,7 +514,7 @@ function App() {
       finalQuery = `${genreContext}Briefing: ${userQuery}`;
     }
     else if (activeTab === 'ESSENCIAL') {
-      const insts = [essencialPrimaryInst, essencialSecondaryInst].filter(Boolean).join(' and ');
+      const insts = [essencialPrimaryInst, essencialSecondaryInst, essencialTertiaryInst].filter(Boolean).join(' and ');
       const arrangement = essencialArrangement.charAt(0) + essencialArrangement.slice(1).toLowerCase();
       finalQuery = `
         [STYLE FEEL]
@@ -806,6 +807,9 @@ function App() {
     setChordProgression('');
     setGroove('');
     setEmotion('');
+    setEssencialPrimaryInst('Cavaquinho');
+    setEssencialSecondaryInst('');
+    setEssencialTertiaryInst('');
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -1006,6 +1010,18 @@ function App() {
                         placeholder="Ex: Violão 7 Cordas, Flauta..."
                         value={essencialSecondaryInst}
                         onChange={e => setEssencialSecondaryInst(e.target.value)}
+                      />
+                    </div>
+                  )}
+
+                  {essencialArrangement === 'TRIO' && (
+                    <div className="animate-in slide-in-from-top-2 duration-300">
+                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Instrumento Terciário</label>
+                      <input 
+                        className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
+                        placeholder="Ex: Flauta, Piano, Violoncelo..."
+                        value={essencialTertiaryInst}
+                        onChange={e => setEssencialTertiaryInst(e.target.value)}
                       />
                     </div>
                   )}
