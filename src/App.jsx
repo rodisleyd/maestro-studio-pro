@@ -150,6 +150,8 @@ const PROGGEN_STYLES = [
   { id: 'indie', label: 'Indie / Dream Pop (I-iii-IV-V)', keys: ['I', 'iii', 'IV', 'V'] },
   { id: 'kpop', label: 'Pop Moderno / K-Pop (ii-V-I-vi)', keys: ['ii', 'V', 'I', 'vi'] },
   { id: 'dance', label: 'EDM / Dance (vi-V-IV-V)', keys: ['vi', 'V', 'IV', 'V'] },
+  { id: 'drumbass', label: 'Drum & Bass / Dark (i-VI)', keys: ['i', 'VI'] },
+
   { id: 'rock50s', label: 'Doo-Wop / 50s (I-vi-IV-V)', keys: ['I', 'vi', 'IV', 'V'] },
   { id: 'rock', label: 'Rock Clássico (I-IV-V)', keys: ['I', 'IV', 'V'] },
   { id: 'blues', label: 'Blues 12-Bar (I-IV-I-V-IV)', keys: ['I', 'IV', 'I', 'V', 'IV', 'I'] },
@@ -185,6 +187,8 @@ const QUICK_EXAMPLES = [
   { label: 'Dark Techno', query: 'Techno industrial sombrio com batida 4x4 hipnótica', genre: 'Industrial Techno', category: 'Electronic' },
   { label: 'Lo-Fi Chill', query: 'Batidas relaxantes com texturas de vinil', genre: 'Lo-Fi Hip Hop', category: 'Electronic' },
   { label: 'House Music', query: 'Groove clássico de Chicago para as pistas', genre: 'Deep House', category: 'Electronic' },
+  { label: 'Drum & Bass', query: 'Batidas rápidas e intensas com baixos profundos e sintéticos', genre: 'Drum & Bass', category: 'Electronic' },
+
 
   // BRASIL
   { label: 'Bossa Nova', query: 'Samba suave com violão de nylon e voz sussurrada', genre: 'Bossa Nova / Jazz', category: 'Brasil' },
@@ -436,7 +440,15 @@ function App() {
       vocal: 'None',
       instruments: ['Cavaquinho', 'Violão Nylon', 'Violão 7 Cordas', 'Pandeiro', 'Flauta'],
       negative: 'electronic, synth, heavy drums, electric guitar, trap, metal'
+    },
+    'Drum & Bass': {
+      label: 'Estilo Drum & Bass (Eletrônica)',
+      genre: 'Drum & Bass / Jungle',
+      vocal: 'None',
+      instruments: ['Synth Lead', 'Synth Pad', 'Drum Machine', 'Sub Bass', 'Efeitos FX'],
+      negative: 'acoustic, folk, guitar, piano'
     }
+
   };
 
   // Efeito para simular progresso durante a geração
