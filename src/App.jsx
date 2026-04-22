@@ -1208,35 +1208,6 @@ function App() {
             </div>
           )}
 
-          {/* SELEÇÃO DE MODO DE GERAÇÃO (SISTEMA DE TAGS) */}
-          <div className="mb-6 p-4 bg-white/5 border border-white/5 rounded-3xl">
-            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-3">Modo de Composição</label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { id: 'basico', label: 'Básico', icon: <Play className="w-3 h-3" /> },
-                { id: 'inteligente', label: 'Inteligente', icon: <Sparkles className="w-3 h-3" /> },
-                { id: 'minimalista', label: 'Minimalista', icon: <Layers className="w-3 h-3" /> }
-              ].map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setGenerationMode(m.id)}
-                  className={`flex flex-col items-center gap-1.5 py-3 rounded-xl border text-[9px] font-black uppercase transition-all ${
-                    generationMode === m.id 
-                    ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' 
-                    : 'bg-black border-white/5 text-slate-500 hover:border-white/20'
-                  }`}
-                >
-                  {m.icon}
-                  {m.label}
-                </button>
-              ))}
-            </div>
-            <p className="text-[8px] text-slate-600 mt-2.5 px-1 italic">
-              {generationMode === 'basico' && 'Fluxo livre baseado no seu briefing.'}
-              {generationMode === 'inteligente' && 'Otimização de tags e hierarquia profissional.'}
-              {generationMode === 'minimalista' && 'Foco em pureza, acústico e poucos instrumentos.'}
-            </p>
-          </div>
 
           {/* SELEÇÃO DE MODO DE GERAÇÃO (SISTEMA DE TAGS) */}
           <div className="mb-6 p-4 bg-white/5 border border-white/5 rounded-3xl">
