@@ -1,0 +1,68 @@
+{
+  "genres": [
+    "pop", "rock", "hip hop", "rap", "trap", "lo-fi", "jazz", "blues", "classical",
+    "orchestral", "cinematic", "electronic", "edm", "house", "techno", "dubstep",
+    "reggae", "samba", "bossa nova", "mpb", "funk", "gospel", "country", "indie",
+    "alternative", "metal", "punk", "r&b", "soul", "disco", "drill", "afrobeat",
+    "latin pop", "k-pop", "j-pop", "ambient", "experimental", "folk", "grunge",
+    "hard rock", "progressive rock", "synthwave", "chillwave", "dancehall"
+  ],
+  "instruments": [
+    "acoustic guitar", "electric guitar", "bass", "piano", "grand piano", "upright piano",
+    "synth", "synthesizer", "strings", "violin", "cello", "viola", "harp",
+    "brass", "trumpet", "trombone", "saxophone", "flute", "clarinet",
+    "drums", "drum kit", "percussion", "808", "beat", "pad", "organ",
+    "choir", "cavaquinho", "ukulele", "banjo", "mandolin", "accordion",
+    "harmonica", "electric piano", "rhodes", "lead synth", "bass synth",
+    "kick", "snare", "hi-hat", "tambourine", "congas", "bongos"
+  ],
+  "vocals": [
+    "male vocals", "female vocals", "duet", "choir", "gospel choir",
+    "rap vocals", "spoken word", "whisper vocals", "emotional vocals",
+    "soft vocals", "powerful vocals", "raspy voice", "falsetto",
+    "deep voice", "child voice", "robotic voice", "auto-tuned vocals",
+    "layered vocals", "background vocals", "vocal chops"
+  ],
+  "moods": [
+    "happy", "sad", "emotional", "melancholic", "romantic", "uplifting",
+    "energetic", "calm", "relaxing", "dark", "mysterious", "epic",
+    "dramatic", "nostalgic", "dreamy", "hopeful", "tense", "aggressive",
+    "peaceful", "euphoric", "intimate", "lonely", "warm", "cold",
+    "playful", "motivational", "inspiring", "fearful", "anxious"
+  ],
+  "production": [
+    "lo-fi", "clean mix", "warm", "analog", "vintage", "retro", "modern",
+    "polished", "raw", "distorted", "reverb", "echo", "ambient",
+    "dry", "wide stereo", "compressed", "punchy", "soft mix",
+    "bright", "dark mix", "grainy", "textured", "spacious"
+  ],
+  "tempo": [
+    "slow", "mid tempo", "fast", "upbeat", "chill", "groove",
+    "laid back", "driving", "steady", "syncopated"
+  ],
+  "environments": [
+    "cinematic", "soundtrack", "movie score", "background music",
+    "beach", "sunset", "night", "rain", "city", "urban",
+    "nature", "forest", "space", "futuristic", "cyberpunk",
+    "restaurant", "cafe", "bar", "party", "club", "road trip",
+    "mountains", "desert", "ocean", "island", "studio session"
+  ],
+  "styles": [
+    "80s style", "90s style", "2000s style", "vintage style", "retro style",
+    "modern pop", "indie vibe", "cinematic orchestral", "jazz lounge",
+    "acoustic session", "live performance", "studio recording",
+    "minimalist", "maximalist", "experimental", "commercial", "underground"
+  ],
+  "rhythmic_elements": [
+    "groovy", "swing", "shuffle", "straight beat", "offbeat",
+    "syncopation", "polyrhythm", "four on the floor", "boom bap",
+    "trap beat", "latin rhythm", "bossa groove", "samba groove"
+  ],
+  "advanced_descriptors": [
+    "emotional build-up", "slow crescendo", "dramatic drop",
+    "instrumental break", "soft intro", "powerful chorus",
+    "minimal arrangement", "rich harmony", "complex melody",
+    "simple melody", "catchy hook", "ambient textures",
+    "layered instrumentation", "solo performance", "duet interplay"
+  ]
+}

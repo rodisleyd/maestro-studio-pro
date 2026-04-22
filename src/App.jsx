@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import tagsData from './tags.json';
+
 import { 
   Music, Wand2, Settings2, Play, Copy, CheckCheck, AlertCircle, 
   Layers, Mic2, ArrowRight, Search, Upload, 
@@ -376,6 +378,14 @@ function App() {
   const [essencialStyle, setEssencialStyle] = useState('');
   const [essencialMood, setEssencialMood] = useState('Agradecido');
 
+  // NOVOS ESTADOS - SISTEMA DE TAGS INTELIGENTES
+  const [generationMode, setGenerationMode] = useState('inteligente'); // 'basico', 'inteligente', 'minimalista'
+  const [selectedLibraryTags, setSelectedLibraryTags] = useState([]);
+  const [searchTagTerm, setSearchTagTerm] = useState('');
+  const [showTagLibrary, setShowTagLibrary] = useState(false);
+
+
+
   const [showProggenModal, setShowProggenModal] = useState(false);
   const [proggenKey, setProggenKey] = useState('C');
   const [proggenStyle, setProggenStyle] = useState(PROGGEN_STYLES[0]);
@@ -583,11 +593,18 @@ function App() {
       "key": "Tom",
       "style_analysis": "Análise em PT-BR (inclua a interpretação visual se houver imagem)",
       "instruments": ["Lista"],
-      "style_tags": "Tags em EN (MAX 120 chars, SFX First)",
+      "style_tags": "Tags em EN (MAX 120 chars, SFX First). SIGA A HIERARQUIA: [SFX] > Genre > Instruments > Vocals > Mood > Production.",
       "final_prompt": "Master Prompt curto em EN",
       "production_tips": "Dicas em PT-BR",
       "musical_structure": null
     }`;
+
+    const modeInstructions = {
+      basico: "Siga o briefing do usuário de forma livre.",
+      inteligente: "Otimize o prompt evitando conflitos (ex: não misture 'lo-fi' com 'high fidelity' a menos que faça sentido artístico). Priorize clareza e use a hierarquia de tags sugerida.",
+      minimalista: "MODO ULTRA-MINIMALISTA: Limite a no máximo 2 instrumentos. Remova percussão pesada, baterias e preenchimentos orquestrais. Foco em 'clean mix', 'acoustic', 'minimalist' e 'solo'."
+    };
+
 
     try {
       let modContext = "";
@@ -610,8 +627,15 @@ function App() {
         Groove / Feel: ${groove || 'Automático'}
         Emoção Musical: ${emotion || 'Automático'}
         Excluir (Prompt Negativo): ${negativePrompt || 'Nenhum'}
+        
+        --- SISTEMA DE TAGS INTELIGENTES ---
+        Modo de Geração: ${generationMode.toUpperCase()}
+        Instrução do Modo: ${modeInstructions[generationMode]}
+        Tags Selecionadas da Biblioteca: ${selectedLibraryTags.join(', ')}
+        
         ${modContext}
       `;
+
       const parts = [{ text: `${finalQuery}\n\n--- CONFIGURAÇÃO EXPERT ---\n${expertContext}` }];
       
       // Se tiver arquivo e estiver na aba DNA ÁUDIO, envia o áudio para a IA
@@ -822,6 +846,7 @@ function App() {
     setEssencialPrimaryInst('');
     setEssencialSecondaryInst('');
     setEssencialTertiaryInst('');
+    setSelectedLibraryTags([]);
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -1183,7 +1208,70 @@ function App() {
             </div>
           )}
 
+          {/* SELEÇÃO DE MODO DE GERAÇÃO (SISTEMA DE TAGS) */}
+          <div className="mb-6 p-4 bg-white/5 border border-white/5 rounded-3xl">
+            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-3">Modo de Composição</label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: 'basico', label: 'Básico', icon: <Play className="w-3 h-3" /> },
+                { id: 'inteligente', label: 'Inteligente', icon: <Sparkles className="w-3 h-3" /> },
+                { id: 'minimalista', label: 'Minimalista', icon: <Layers className="w-3 h-3" /> }
+              ].map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => setGenerationMode(m.id)}
+                  className={`flex flex-col items-center gap-1.5 py-3 rounded-xl border text-[9px] font-black uppercase transition-all ${
+                    generationMode === m.id 
+                    ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' 
+                    : 'bg-black border-white/5 text-slate-500 hover:border-white/20'
+                  }`}
+                >
+                  {m.icon}
+                  {m.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[8px] text-slate-600 mt-2.5 px-1 italic">
+              {generationMode === 'basico' && 'Fluxo livre baseado no seu briefing.'}
+              {generationMode === 'inteligente' && 'Otimização de tags e hierarquia profissional.'}
+              {generationMode === 'minimalista' && 'Foco em pureza, acústico e poucos instrumentos.'}
+            </p>
+          </div>
+
+          {/* SELEÇÃO DE MODO DE GERAÇÃO (SISTEMA DE TAGS) */}
+          <div className="mb-6 p-4 bg-white/5 border border-white/5 rounded-3xl">
+            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-3">Modo de Composição</label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: 'basico', label: 'Básico', icon: <Play className="w-3 h-3" /> },
+                { id: 'inteligente', label: 'Inteligente', icon: <Sparkles className="w-3 h-3" /> },
+                { id: 'minimalista', label: 'Minimalista', icon: <Layers className="w-3 h-3" /> }
+              ].map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setGenerationMode(m.id)}
+                  className={`flex flex-col items-center gap-1.5 py-3 rounded-xl border text-[9px] font-black uppercase transition-all ${
+                    generationMode === m.id 
+                    ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' 
+                    : 'bg-black border-white/5 text-slate-500 hover:border-white/20'
+                  }`}
+                >
+                  {m.icon}
+                  {m.label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[8px] text-slate-600 mt-2.5 px-1 italic leading-tight">
+              {generationMode === 'basico' && 'Fluxo livre baseado no seu briefing.'}
+              {generationMode === 'inteligente' && 'Otimização de tags e hierarquia profissional.'}
+              {generationMode === 'minimalista' && 'Foco em pureza, acústico e poucos instrumentos.'}
+            </p>
+          </div>
+
           {/* TOGGLE MODO PRO */}
+
+
           <div className="bg-[#121212] p-1.5 rounded-2xl border border-white/5 flex gap-1 mb-6 relative overflow-hidden group">
             <div 
               className={`absolute top-1.5 bottom-1.5 w-[calc(50%-4px)] rounded-xl transition-all duration-500 ease-out ${isProMode ? 'left-[calc(50%+2px)] bg-gradient-to-r from-orange-600 to-amber-500' : 'left-1.5 bg-white/10'}`}
@@ -1543,7 +1631,104 @@ function App() {
                       ))}
                     </div>
                   )}
-               </div>
+                </div>
+
+                {/* BIBLIOTECA DE TAGS SUNO (SISTEMA DO USUÁRIO) */}
+                <div className="pt-4 border-t border-white/5">
+                  <button 
+                    type="button"
+                    onClick={() => setShowTagLibrary(!showTagLibrary)}
+                    className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-orange-600/10 to-amber-500/10 border border-orange-500/20 rounded-2xl hover:bg-orange-500/20 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Search className="w-5 h-5 text-orange-500" />
+                      <div className="text-left">
+                        <span className="block text-[10px] font-black text-white uppercase tracking-widest group-hover:text-orange-400 transition-colors">Biblioteca de Tags Suno (350+)</span>
+                        <span className="block text-[8px] text-orange-500/50 mt-0.5">Explore Gêneros, Vocais, Moods e Produção</span>
+                      </div>
+                    </div>
+                    {showTagLibrary ? <ChevronUp className="w-4 h-4 text-orange-500" /> : <ChevronDown className="w-4 h-4 text-orange-500" />}
+                  </button>
+
+                  {showTagLibrary && (
+                    <div className="animate-in slide-in-from-top-2 duration-300 mt-3">
+                      <div className="bg-black/60 p-5 rounded-2xl border border-orange-500/10 space-y-6">
+                        
+                        {/* Busca Interna de Tags */}
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500" />
+                          <input 
+                            type="text"
+                            placeholder="Buscar tag específica..."
+                            className="w-full bg-black/40 border border-white/5 rounded-xl py-2 pl-8 pr-4 text-[10px] outline-none focus:border-orange-500/50"
+                            value={searchTagTerm}
+                            onChange={(e) => setSearchTagTerm(e.target.value)}
+                          />
+                        </div>
+
+                        <div className="space-y-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                          {Object.entries(tagsData).map(([category, tags]) => {
+                            const filteredTags = tags.filter(t => t.toLowerCase().includes(searchTagTerm.toLowerCase()));
+                            if (filteredTags.length === 0) return null;
+
+                            return (
+                              <div key={category}>
+                                <p className="text-[8px] font-black text-orange-500/70 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                  <span className="w-1 h-1 rounded-full bg-orange-500"></span>
+                                  {category.replace('_', ' ')}
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {filteredTags.map(tag => {
+                                    const isSelected = selectedLibraryTags.includes(tag);
+                                    return (
+                                      <button
+                                        key={tag}
+                                        type="button"
+                                        onClick={() => {
+                                          if (isSelected) setSelectedLibraryTags(selectedLibraryTags.filter(t => t !== tag));
+                                          else setSelectedLibraryTags([...selectedLibraryTags, tag]);
+                                        }}
+                                        className={`px-2 py-1.5 rounded-lg border text-[9px] font-bold transition-all ${
+                                          isSelected 
+                                          ? 'bg-orange-500 border-orange-500 text-black shadow-md' 
+                                          : 'bg-white/5 border-white/5 text-slate-400 hover:border-white/20 hover:text-white'
+                                        }`}
+                                      >
+                                        {tag}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Visualização de Tags Selecionadas da Biblioteca */}
+                  {selectedLibraryTags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-3 p-3 bg-orange-500/5 rounded-xl border border-orange-500/10">
+                      {selectedLibraryTags.map(tag => (
+                        <span key={tag} className="text-[8px] font-black px-2 py-1.5 bg-orange-500 text-black rounded-lg flex items-center gap-1.5 shadow-sm">
+                          {tag.toUpperCase()}
+                          <button onClick={() => setSelectedLibraryTags(selectedLibraryTags.filter(t => t !== tag))} className="hover:scale-110 transition-transform">
+                            <X className="w-3 h-3"/>
+                          </button>
+                        </span>
+                      ))}
+                      <button 
+                        type="button"
+                        onClick={() => setSelectedLibraryTags([])}
+                        className="text-[8px] font-black text-slate-500 hover:text-red-500 uppercase ml-auto"
+                      >
+                        Limpar Tudo
+                      </button>
+                    </div>
+                  )}
+                </div>
+
 
                {/* PROMPT NEGATIVO */}
                <div>
