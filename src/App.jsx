@@ -404,6 +404,11 @@ function App() {
   const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
   const [lyricsResult, setLyricsResult] = useState('');
   const [lyricsLanguage, setLyricsLanguage] = useState('Portuguese');
+  
+  // Opções Avançadas de Composição
+  const [lyricsComplexity, setLyricsComplexity] = useState('Poético');
+  const [lyricsMeter, setLyricsMeter] = useState('Médio');
+  const [lyricsPerspective, setLyricsPerspective] = useState('1ª Pessoa (Eu)');
 
   const [arrangerData, setArrangerData] = useState({
     intention: { message: '', feeling: '', mood: '' },
@@ -847,7 +852,13 @@ function App() {
       PALAVRAS OBRIGATÓRIAS: ${lyricsKeywords}
       ESTRUTURA DESEJADA: ${lyricsStructure.join(' -> ')}
       
-      Crie uma letra que conte uma história ou transmita a emoção solicitada, mantendo uma métrica que encaixe bem em uma canção.
+      --- PARÂMETROS AVANÇADOS (MODO PRODUTOR) ---
+      COMPLEXIDADE DO VOCABULÁRIO: ${lyricsComplexity}
+      MÉTRICA/TAMANHO DOS VERSOS: ${lyricsMeter}
+      PERSPECTIVA NARRATIVA: ${lyricsPerspective}
+      
+      Crie uma letra que respeite a métrica de ${lyricsMeter} (versos mais ${lyricsMeter === 'Longo' ? 'detalhados e explicativos' : lyricsMeter === 'Curto' ? 'diretos e curtos' : 'equilibrados'}).
+      O vocabulário deve ser ${lyricsComplexity}.
     `;
 
     try {
@@ -934,6 +945,9 @@ function App() {
     setLyricsGenre('');
     setLyricsKeywords('');
     setLyricsResult('');
+    setLyricsComplexity('Poético');
+    setLyricsMeter('Médio');
+    setLyricsPerspective('1ª Pessoa (Eu)');
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -1441,7 +1455,71 @@ function App() {
                  <Settings2 className="w-20 h-20 rotate-12" />
                </div>
 
-               {/* FUSÃO DE GÊNERO */}
+               {activeTab === 'COMPOSITOR' ? (
+                 <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                          Métrica (Tamanho dos Versos)
+                        </label>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['Curto', 'Médio', 'Longo'].map(m => (
+                          <button 
+                            key={m}
+                            onClick={() => setLyricsMeter(m)}
+                            className={`py-3 rounded-xl text-[9px] font-bold transition-all border ${lyricsMeter === m ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-black border-white/5 text-slate-500 hover:border-white/20'}`}
+                          >
+                            {m}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                          Nível de Vocabulário
+                        </label>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['Popular', 'Poético', 'Erudito'].map(c => (
+                          <button 
+                            key={c}
+                            onClick={() => setLyricsComplexity(c)}
+                            className={`py-3 rounded-xl text-[9px] font-bold transition-all border ${lyricsComplexity === c ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-black border-white/5 text-slate-500 hover:border-white/20'}`}
+                          >
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                          Perspectiva Narrativa
+                        </label>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['Eu', 'Tu/Você', 'Narrador'].map(p => (
+                          <button 
+                            key={p}
+                            onClick={() => setLyricsPerspective(p)}
+                            className={`py-3 rounded-xl text-[9px] font-bold transition-all border ${lyricsPerspective === p ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-black border-white/5 text-slate-500 hover:border-white/20'}`}
+                          >
+                            {p}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                 </div>
+               ) : (
+                 <>
+                   {/* FUSÃO DE GÊNERO */}
                <div>
                   <div className="flex items-center justify-between mb-3">
                     <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
@@ -1887,8 +1965,8 @@ function App() {
                   />
                   <p className="text-[8px] text-slate-600 mt-1.5 italic">Remove elementos indesejados da composição final.</p>
                </div>
-            </div>
-          )}
+             </>
+           )}
 
           <button 
             onClick={activeTab === 'COMPOSITOR' ? generateLyrics : generateMusicConcept}
