@@ -1611,8 +1611,6 @@ function App() {
                   </div>
                </div>
 
-               </div>
-
                {/* SISTEMA DE ESTRUTURA MUSICAL */}
                <div className="pt-4 border-t border-white/5">
                   <button 
@@ -1967,6 +1965,8 @@ function App() {
                </div>
              </>
            )}
+          </div>
+        )}
 
           <button 
             onClick={activeTab === 'COMPOSITOR' ? generateLyrics : generateMusicConcept}
