@@ -393,6 +393,18 @@ function App() {
 
   const [showArranger, setShowArranger] = useState(false);
   const [arrangerStep, setArrangerStep] = useState(1);
+  
+  // ESTADOS DO NOVO COMPOSITOR DE LETRAS
+  const [lyricsTheme, setLyricsTheme] = useState('');
+  const [lyricsGenre, setLyricsGenre] = useState('');
+  const [lyricsMood, setLyricsMood] = useState('Emocional');
+  const [lyricsStructure, setLyricsStructure] = useState(['Intro', 'Verse 1', 'Chorus', 'Verse 2', 'Chorus', 'Bridge', 'Chorus', 'Outro']);
+  const [lyricsRhymeStyle, setLyricsRhymeStyle] = useState('Rimas Ricas'); // 'Ricas', 'Simples', 'Versos Livres'
+  const [lyricsKeywords, setLyricsKeywords] = useState('');
+  const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
+  const [lyricsResult, setLyricsResult] = useState('');
+  const [lyricsLanguage, setLyricsLanguage] = useState('Portuguese');
+
   const [arrangerData, setArrangerData] = useState({
     intention: { message: '', feeling: '', mood: '' },
     references: { links: '', preferences: '', nature: 'similar' },
@@ -800,6 +812,75 @@ function App() {
     persistData(newList);
   };
 
+  const generateLyrics = async () => {
+    if (!lyricsTheme.trim()) {
+      setError("Por favor, defina um tema para a sua letra.");
+      return;
+    }
+
+    if (!apiKey) {
+      setError("Falta a API Key no ficheiro .env (VITE_GEMINI_API_KEY)");
+      return;
+    }
+
+    setIsGeneratingLyrics(true);
+    setError(null);
+
+    const systemPrompt = `Você é o "Ghostwriter Pro", um compositor premiado e especialista em estruturação de letras para IA (Suno/Udio). 
+    Sua missão é criar letras memoráveis, com métrica perfeita e rimas impactantes.
+    
+    DIRETRIZES:
+    1. ESTRUTURA: Respeite rigorosamente a ordem das partes solicitada.
+    2. MARCAÇÕES: Use colchetes para as partes, ex: [Verse 1], [Chorus], [Bridge].
+    3. RIMA: Se solicitado rimas ricas, evite rimas óbvias (ex: amor/dor).
+    4. IDIOMA: Escreva no idioma ${lyricsLanguage}.
+    5. ESTILO: Adapte o vocabulário ao gênero musical ${lyricsGenre || 'Pop'}.
+    
+    SAÍDA:
+    Retorne a letra completa formatada com as tags estruturais.`;
+
+    const prompt = `
+      TEMA: ${lyricsTheme}
+      GÊNERO/ESTILO: ${lyricsGenre}
+      CLIMA/EMOÇÃO: ${lyricsMood}
+      ESTILO DE RIMA: ${lyricsRhymeStyle}
+      PALAVRAS OBRIGATÓRIAS: ${lyricsKeywords}
+      ESTRUTURA DESEJADA: ${lyricsStructure.join(' -> ')}
+      
+      Crie uma letra que conte uma história ou transmita a emoção solicitada, mantendo uma métrica que encaixe bem em uma canção.
+    `;
+
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { 
+            temperature: 0.8
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error?.message || "Erro na API do Gemini");
+      }
+      
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error("A IA não retornou uma letra válida.");
+      
+      setLyricsResult(text);
+    } catch (err) {
+      console.error(err);
+      setError(`O Compositor falhou: ${err.message}`);
+    } finally {
+      setIsGeneratingLyrics(false);
+    }
+  };
+
   const renameEntry = (id, newName) => {
     const newList = savedPrompts.map(p => p.id === id ? { ...p, customName: newName } : p);
     persistData(newList);
@@ -847,6 +928,12 @@ function App() {
     setEssencialSecondaryInst('');
     setEssencialTertiaryInst('');
     setSelectedLibraryTags([]);
+    
+    // Limpar Compositor
+    setLyricsTheme('');
+    setLyricsGenre('');
+    setLyricsKeywords('');
+    setLyricsResult('');
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -965,7 +1052,7 @@ function App() {
 
         {/* NAVEGAÇÃO SUPERIOR */}
         <div className="bg-[#121212] p-1.5 rounded-full border border-white/5 flex gap-1">
-          {['MANUAL', 'ESSENCIAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
+          {['MANUAL', 'COMPOSITOR', 'ESSENCIAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -973,7 +1060,12 @@ function App() {
                 activeTab === tab ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/20' : 'text-slate-400 hover:text-white'
               }`}
             >
-              {tab}
+              {tab === 'COMPOSITOR' ? (
+                <span className="flex items-center gap-2">
+                  <Mic2 className="w-3 h-3" />
+                  {tab}
+                </span>
+              ) : tab}
             </button>
           ))}
           <button
@@ -1120,6 +1212,86 @@ function App() {
                   value={userQuery}
                   onChange={(e) => setUserQuery(e.target.value)}
                 />
+              </div>
+            )}
+
+            {activeTab === 'COMPOSITOR' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Tema da Música</label>
+                    <input 
+                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
+                      placeholder="Ex: Saudade, Superação, Festa na Praia..."
+                      value={lyricsTheme}
+                      onChange={e => setLyricsTheme(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Gênero Musical</label>
+                      <input 
+                        className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
+                        placeholder="Ex: Pagode, Rock, Trap..."
+                        value={lyricsGenre}
+                        onChange={e => setLyricsGenre(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Clima (Mood)</label>
+                      <select 
+                        value={lyricsMood}
+                        onChange={e => setLyricsMood(e.target.value)}
+                        className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
+                      >
+                        {['Emocional', 'Alegre', 'Melancólico', 'Agressivo', 'Sombrio', 'Poético'].map(m => (
+                          <option key={m} value={m}>{m}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Estilo de Rima</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['Rimas Ricas', 'Rimas Simples', 'Versos Livres'].map((style) => (
+                        <button 
+                          key={style}
+                          onClick={() => setLyricsRhymeStyle(style)}
+                          className={`py-2 rounded-xl text-[9px] font-black transition-all border ${lyricsRhymeStyle === style ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-white/20'}`}
+                        >
+                          {style}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Palavras Obrigatórias</label>
+                    <input 
+                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all text-slate-400"
+                      placeholder="Ex: Sol, mar, destino (separadas por vírgula)"
+                      value={lyricsKeywords}
+                      onChange={e => setLyricsKeywords(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Idioma</label>
+                    <div className="flex gap-2">
+                       {['Portuguese', 'English', 'Spanish'].map(lang => (
+                         <button 
+                           key={lang}
+                           onClick={() => setLyricsLanguage(lang)}
+                           className={`flex-1 py-2 rounded-xl text-[9px] font-black transition-all border ${lyricsLanguage === lang ? 'bg-white text-black border-white' : 'bg-[#0f0f0f] border-white/5 text-slate-500'}`}
+                         >
+                           {lang === 'Portuguese' ? 'Português' : lang}
+                         </button>
+                       ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -1719,17 +1891,17 @@ function App() {
           )}
 
           <button 
-            onClick={generateMusicConcept}
-            disabled={isGenerating}
-            className={`w-full font-black py-5 rounded-full transition-all uppercase text-xs tracking-widest disabled:opacity-50 active:scale-95 shadow-xl ${isProMode ? 'bg-gradient-to-r from-orange-600 to-amber-500 text-black hover:shadow-orange-500/20' : 'bg-white text-black hover:bg-orange-500 shadow-white/5'}`}
+            onClick={activeTab === 'COMPOSITOR' ? generateLyrics : generateMusicConcept}
+            disabled={isGenerating || isGeneratingLyrics}
+            className={`w-full font-black py-5 rounded-full transition-all uppercase text-xs tracking-widest disabled:opacity-50 active:scale-95 shadow-xl ${(isProMode || activeTab === 'COMPOSITOR') ? 'bg-gradient-to-r from-orange-600 to-amber-500 text-black hover:shadow-orange-500/20' : 'bg-white text-black hover:bg-orange-500 shadow-white/5'}`}
           >
-            {isGenerating ? 'A Processar...' : (isProMode ? '⚡ Gerar como Produtor' : 'Convocar o Maestro')}
+            {isGenerating || isGeneratingLyrics ? 'A Processar...' : (activeTab === 'COMPOSITOR' ? '✍️ Escrever Letra' : (isProMode ? '⚡ Gerar como Produtor' : 'Convocar o Maestro'))}
           </button>
         </section>
 
         {/* ESTÚDIO VIRTUAL (DIREITA) */}
         <section className="lg:col-span-8">
-          {isGenerating ? (
+          {isGenerating || isGeneratingLyrics ? (
             <div className="bg-[#161616]/50 rounded-[40px] p-8 border border-white/5 flex flex-col items-center justify-center min-h-[500px] text-center animate-in fade-in duration-500">
                <div className="w-48 h-48 relative flex items-center justify-center mb-10">
                   <div className="absolute inset-0 border-8 border-orange-500/10 rounded-full"></div>
@@ -1749,11 +1921,53 @@ function App() {
                   ></div>
                </div>
                <h3 className="text-white text-sm font-black uppercase tracking-[0.3em] mb-2">
-                 O Maestro está a Elaborar...
+                 {isGeneratingLyrics ? 'O Ghostwriter está a Escrever...' : 'O Maestro está a Elaborar...'}
                </h3>
                <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">
-                 A analisar DNA Sonoro e Estrutura
+                 {isGeneratingLyrics ? 'Criando rimas e métricas perfeitas' : 'A analisar DNA Sonoro e Estrutura'}
                </p>
+            </div>
+          ) : activeTab === 'COMPOSITOR' && lyricsResult ? (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
+              <div className="bg-white rounded-[40px] p-8 text-black shadow-2xl relative overflow-hidden min-h-[600px] flex flex-col">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+                      <Mic2 className="w-5 h-5 text-black" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase opacity-50 tracking-widest block">Obra Original</span>
+                      <h4 className="text-sm font-black uppercase text-black">{lyricsTheme}</h4>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => {
+                        setCustomLyrics(lyricsResult);
+                        setActiveTab('MANUAL');
+                        setTimeout(() => {
+                          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        }, 100);
+                      }} 
+                      className="flex items-center gap-2 bg-orange-500 text-black px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase hover:bg-black hover:text-orange-500 transition-all shadow-md active:scale-95"
+                    >
+                      <Sparkles className="w-4 h-4" /> Injetar no Maestro
+                    </button>
+                    <button onClick={() => copyPrompt(lyricsResult)} className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase hover:bg-slate-800 transition-all shadow-lg active:scale-95">
+                      {copySuccess ? <><CheckCheck className="w-4 h-4 text-green-400" /> Copiado!</> : <><CopyIcon className="w-4 h-4" /> Copiar Letra</>}
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="flex-1 bg-black/5 p-8 rounded-[32px] font-medium text-base whitespace-pre-wrap leading-relaxed shadow-inner border border-black/5 mb-6 overflow-y-auto max-h-[500px] custom-scrollbar text-slate-800 italic">
+                  {lyricsResult}
+                </div>
+
+                <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                  <p className="text-[9px] font-bold text-orange-800 uppercase mb-1">Dica do Ghostwriter:</p>
+                  <p className="text-[11px] text-orange-700">Esta letra foi otimizada para o Suno AI. Use os colchetes [Verse], [Chorus] para guiar a IA.</p>
+                </div>
+              </div>
             </div>
           ) : maestroAnalysis ? (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
