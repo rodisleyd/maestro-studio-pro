@@ -10,11 +10,11 @@ import {
 } from 'lucide-react';
 
 /**
- * MAESTRO STUDIO PRO - VERSÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O DEFINITIVA VERCEL
+ * MAESTRO STUDIO PRO - VERSÃO DEFINITIVA VERCEL
  * Corrigido para ser funcional, com IA e armazenamento local.
  */
 
-// FunÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o para aceder ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  API Key de forma segura
+// Função para aceder à API Key de forma segura
 const getEnvVariable = (key) => {
   try {
     if (typeof import.meta !== 'undefined' && import.meta.env) {
@@ -29,36 +29,36 @@ const apiKey = getEnvVariable('VITE_GEMINI_API_KEY');
 const ALL_GENRES = [
   "Afrobeat", "Alternative", "Ambient", "Balada Pop", "Bluegrass", "Blues", "Bossa Nova", "Brega", 
   "Chillwave", "Chorinho", "Classical", "Cordel", "Country", "Dancehall", "Disco", "Drum & Bass", "Dubstep", 
-  "Electronic", "Flamenco", "Folk", "ForrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³", "Funk", "Garage Rock", "Gospel", "Grunge", "Guarania", "Hardstyle", 
+  "Electronic", "Flamenco", "Folk", "Forró", "Funk", "Garage Rock", "Gospel", "Grunge", "Guarania", "Hardstyle", 
   "Hip-Hop", "House", "Indie", "Indie Pop", "Indie Rock", "Industrial", "Instrumental", "J-Pop", 
   "Jazz", "K-Pop", "Klezmer", "Lambada", "Latin", "Lo-Fi", "Math Rock", "Metal", "MPB", "New Wave", 
-  "ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œpera", "Pagode", "Phonk", "Podcast", "Pop", "Post-Rock", "Psychedelic Rock", "Punk", "R&B", 
-  "Rap", "Reggae", "Reggaeton", "Repente", "Rock", "Samba", "Sertanejo", "Sertanejo Raiz", "Sertanejo UniversitÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio", "Ska", "Soul", "Soundtrack", 
+  "Ópera", "Pagode", "Phonk", "Podcast", "Pop", "Post-Rock", "Psychedelic Rock", "Punk", "R&B", 
+  "Rap", "Reggae", "Reggaeton", "Repente", "Rock", "Samba", "Sertanejo", "Sertanejo Raiz", "Sertanejo Universitário", "Ska", "Soul", "Soundtrack", 
   "Surf Music", "Synthwave", "Tango", "Techno", "Trance", "Trap", "Valsa", "Vaporwave"
 ];
 
-// Constantes de ConfiguraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Profissional (Inspirado no Magic Prompt)
+// Constantes de Configuração Profissional (Inspirado no Magic Prompt)
 const VOCAL_ARCHETYPES = [
   { id: 'Male Vocal', label: 'Male Vocal', desc: 'Vocal Masculino (Cantado)' },
   { id: 'Female Vocal', label: 'Female Vocal', desc: 'Vocal Feminino (Cantado)' },
   { id: 'Child Vocal', label: 'Child Vocal', desc: 'Vocal Juvenil/Infantil (Cantado)' },
   { id: 'Modern Pop', label: 'Modern Pop', desc: 'Limpo e produzido' },
   { id: 'Rock Grit', label: 'Rock Grit', desc: 'Energia e drive' },
-  { id: 'Intimate Folk', label: 'Intimate Folk', desc: 'Suave e acÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico' },
+  { id: 'Intimate Folk', label: 'Intimate Folk', desc: 'Suave e acústico' },
   { id: 'Deep Soul', label: 'Deep Soul', desc: 'Grave e emotivo' },
-  { id: 'Dreamy Pop', label: 'Dreamy Pop', desc: 'EtÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©reo e com ar' },
+  { id: 'Dreamy Pop', label: 'Dreamy Pop', desc: 'Etéreo e com ar' },
   { id: 'Soulful R&B', label: 'Soulful R&B', desc: 'Seda e veludo' },
-  { id: 'Spoken Narrator', label: 'Male Narrator', desc: 'Fala/NarraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o (Homem)' },
-  { id: 'Female Narrator', label: 'Female Narrator', desc: 'Fala/NarraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o (Mulher)' },
-  { id: 'Child Narrator', label: 'Child Narrator', desc: 'Fala/NarraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o (CrianÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§a)' },
+  { id: 'Spoken Narrator', label: 'Male Narrator', desc: 'Fala/Narração (Homem)' },
+  { id: 'Female Narrator', label: 'Female Narrator', desc: 'Fala/Narração (Mulher)' },
+  { id: 'Child Narrator', label: 'Child Narrator', desc: 'Fala/Narração (Criança)' },
 ];
 
 const BPM_RANGES = [
   { id: 'LENTO', label: 'LENTO (60-80)' },
-  { id: 'MÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°DIO', label: 'MÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°DIO (90-110)' },
+  { id: 'MÉDIO', label: 'MÉDIO (90-110)' },
   { id: 'MODERADO', label: 'MODERADO (110-130)' },
-  { id: 'RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂPIDO', label: 'RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂPIDO (130-160)' },
-  { id: 'MUITO RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂPIDO', label: 'MUITO RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂPIDO (160+)' }
+  { id: 'RÁPIDO', label: 'RÁPIDO (130-160)' },
+  { id: 'MUITO RÁPIDO', label: 'MUITO RÁPIDO (160+)' }
 ];
 
 const TIME_SIGNATURES = ['4/4', '3/4', '6/8', '2/4', '5/4', '7/8'];
@@ -71,14 +71,14 @@ const VOCAL_TONES = [
 
 const VOCAL_TEXTURES = [
   { id: 'limpa', label: 'Limpa', value: 'clean crystal clear vocals' },
-  { id: 'rustica', label: 'RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstica', value: 'raw unpolished gravelly texture' },
+  { id: 'rustica', label: 'Rústica', value: 'raw unpolished gravelly texture' },
   { id: 'rouca', label: 'Rouca', value: 'raspy hoarse husky vocals' }
 ];
 
 
 const MUSICAL_KEYS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-const SCALES = ['MAIOR', 'MENOR NATURAL', 'MENOR HARMÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂNICA', 'MENOR MELÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œDICA', 'PENTATÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂNICA', 'BLUES'];
+const SCALES = ['MAIOR', 'MENOR NATURAL', 'MENOR HARMÔNICA', 'MENOR MELÓDICA', 'PENTATÔNICA', 'BLUES'];
 
 const CHORD_PROGRESSIONS = [
   { id: 'POP', label: 'I-V-VI-IV (POP)' },
@@ -89,7 +89,7 @@ const CHORD_PROGRESSIONS = [
 
 const GROOVES = ['STRAIGHT', 'SWING', 'SHUFFLE', 'FUNK GROOVE', 'HALF-TIME', 'DOUBLE-TIME'];
 
-const EMOTIONS = ['ALEGRE', 'MELANCÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œLICO', 'TENSO', 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°PICO', 'NOSTÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂLGICO'];
+const EMOTIONS = ['ALEGRE', 'MELANCÓLICO', 'TENSO', 'ÉPICO', 'NOSTÁLGICO'];
 
 /* Map each root to its major scale notes */
 const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -113,7 +113,7 @@ ALL_24_KEYS.forEach(key => {
   if(isMinor) {
     CHORD_MAP[key] = {
       'i': getNoteStr(root, 0) + 'm',
-      'iiÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°': getNoteStr(root, 2) + 'dim',
+      'ii°': getNoteStr(root, 2) + 'dim',
       'III': getNoteStr(root, 3),
       'iv': getNoteStr(root, 5) + 'm',
       'v': getNoteStr(root, 7) + 'm',
@@ -136,7 +136,7 @@ ALL_24_KEYS.forEach(key => {
       'IV': getNoteStr(root, 5),
       'V': getNoteStr(root, 7),
       'vi': getNoteStr(root, 9) + 'm',
-      'viiÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°': getNoteStr(root, 11) + 'dim',
+      'vii°': getNoteStr(root, 11) + 'dim',
       'Imaj7': getNoteStr(root, 0) + 'maj7',
       'IVmaj7': getNoteStr(root, 5) + 'maj7',
       'i': getNoteStr(root, 0) + 'm',
@@ -155,21 +155,21 @@ const PROGGEN_STYLES = [
   { id: 'drumbass', label: 'Drum & Bass / Dark (i-VI)', keys: ['i', 'VI'] },
 
   { id: 'rock50s', label: 'Doo-Wop / 50s (I-vi-IV-V)', keys: ['I', 'vi', 'IV', 'V'] },
-  { id: 'rock', label: 'Rock ClÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ssico (I-IV-V)', keys: ['I', 'IV', 'V'] },
+  { id: 'rock', label: 'Rock Clássico (I-IV-V)', keys: ['I', 'IV', 'V'] },
   { id: 'blues', label: 'Blues 12-Bar (I-IV-I-V-IV)', keys: ['I', 'IV', 'I', 'V', 'IV', 'I'] },
   { id: 'country', label: 'Country Road (I-V-IV-I)', keys: ['I', 'V', 'IV', 'I'] },
 
   // ================= SOUL / JAZZ / LOFI ================= //
   { id: 'jazz', label: 'Jazz Standard (ii-V-I)', keys: ['ii', 'V', 'I'] },
-  { id: 'rnb', label: 'R&B ClÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ssico (I-vi-ii-V)', keys: ['I', 'vi', 'ii', 'V'] },
+  { id: 'rnb', label: 'R&B Clássico (I-vi-ii-V)', keys: ['I', 'vi', 'ii', 'V'] },
   { id: 'lofi', label: 'Lofi / Chill (Imaj7-vi-IVmaj7-V)', keys: ['Imaj7', 'vi', 'IVmaj7', 'V'] },
   { id: 'bossa', label: 'Bossa Nova Base (Imaj7-ii-V)', keys: ['Imaj7', 'ii', 'V'] },
   { id: 'neo_soul', label: 'Neo-Soul Groove (ii-V-Imaj7-vi)', keys: ['ii', 'V', 'Imaj7', 'vi'] },
   { id: 'funk', label: 'Funk / Soul Vamp (I-IV)', keys: ['I', 'IV'] },
 
-  // ================= MENORES / TRISTES / ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°PICOS ================= //
-  { id: 'melancolico', label: 'Pop MelancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³lico (vi-IV-I-V)', keys: ['vi', 'IV', 'I', 'V'] },
-  { id: 'epic', label: 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°pico / Hans Zimmer (i-VI-III-VII)', keys: ['i', 'VI', 'III', 'VII'] },
+  // ================= MENORES / TRISTES / ÉPICOS ================= //
+  { id: 'melancolico', label: 'Pop Melancólico (vi-IV-I-V)', keys: ['vi', 'IV', 'I', 'V'] },
+  { id: 'epic', label: 'Épico / Hans Zimmer (i-VI-III-VII)', keys: ['i', 'VI', 'III', 'VII'] },
   { id: 'andaluz', label: 'Espanhol / Andaluz (i-VII-VI-v)', keys: ['i', 'VII', 'VI', 'v'] },
   { id: 'grunge', label: 'Grunge / Alt Rock (i-III-IV)', keys: ['i', 'III', 'IVmaj'] },
   { id: 'trap', label: 'Trap / Drill Escuro (i-iv)', keys: ['i', 'iv'] },
@@ -181,134 +181,134 @@ const QUICK_EXAMPLES = [
   // ROCK / METAL
   { label: 'Heavy Metal', query: 'Metal pesado com bumbos duplos e solos virtuosos', genre: 'Heavy Metal', category: 'Rock' },
   { label: 'Grunge 90s', query: 'Rock alternativo sujo com guitarras distorcidas', genre: 'Grunge', category: 'Rock' },
-  { label: 'Indie Folk', query: 'Folk melÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³dico com violÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes e harmonias vocais', genre: 'Indie Folk', category: 'Rock' },
-  { label: 'Punk Rock', query: 'Punk enÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©rgico e rÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡pido com atitude', genre: 'Punk Rock', category: 'Rock' },
+  { label: 'Indie Folk', query: 'Folk melódico com violões e harmonias vocais', genre: 'Indie Folk', category: 'Rock' },
+  { label: 'Punk Rock', query: 'Punk enérgico e rápido com atitude', genre: 'Punk Rock', category: 'Rock' },
   
-  // ELETRÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂNICA
-  { label: 'Synthwave', query: 'Viagem nostÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lgica aos anos 80 com sintetizadores retro', genre: 'Synthwave', category: 'Electronic' },
-  { label: 'Dark Techno', query: 'Techno industrial sombrio com batida 4x4 hipnÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³tica', genre: 'Industrial Techno', category: 'Electronic' },
+  // ELETRÔNICA
+  { label: 'Synthwave', query: 'Viagem nostálgica aos anos 80 com sintetizadores retro', genre: 'Synthwave', category: 'Electronic' },
+  { label: 'Dark Techno', query: 'Techno industrial sombrio com batida 4x4 hipnótica', genre: 'Industrial Techno', category: 'Electronic' },
   { label: 'Lo-Fi Chill', query: 'Batidas relaxantes com texturas de vinil', genre: 'Lo-Fi Hip Hop', category: 'Electronic' },
-  { label: 'House Music', query: 'Groove clÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ssico de Chicago para as pistas', genre: 'Deep House', category: 'Electronic' },
-  { label: 'Drum & Bass', query: 'Batidas rÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡pidas e intensas com baixos profundos e sintÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ticos', genre: 'Drum & Bass', category: 'Electronic' },
+  { label: 'House Music', query: 'Groove clássico de Chicago para as pistas', genre: 'Deep House', category: 'Electronic' },
+  { label: 'Drum & Bass', query: 'Batidas rápidas e intensas com baixos profundos e sintéticos', genre: 'Drum & Bass', category: 'Electronic' },
 
 
   // BRASIL
-  { label: 'Bossa Nova', query: 'Samba suave com violÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de nylon e voz sussurrada', genre: 'Bossa Nova / Jazz', category: 'Brasil' },
-  { label: 'Samba Raiz', query: 'Roda de samba clÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ssica com cavaco e pandeiro', genre: 'Samba', category: 'Brasil' },
-  { label: 'Chorinho', query: 'Choro clÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ssico e virtuoso com ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªnfase no cavaquinho, violÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de 7 cordas e pandeiro', genre: 'Chorinho', category: 'Brasil' },
-  { label: 'ForrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ PÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© de Serra', query: 'Ritmo nordestino animado com sanfona, triÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ngulo e zabumba', genre: 'ForrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³', category: 'Brasil' },
-  { label: 'Repente Nordestino', query: 'Duelo PoÃƒÂ©tico improvisado com violas e MÃƒÂ©trica rigorosa', genre: 'Repente', category: 'Brasil' },
-  { label: 'Funk Brasil', query: 'BatidÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de favela com graves potentes', genre: 'Funk Carioca', category: 'Brasil' },
-  { label: 'MPB Moderna', query: 'MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica Popular Brasileira com toques eletrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´nicos', genre: 'MPB / Nu-Jazz', category: 'Brasil' },
-  { label: 'Sertanejo UniversitÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio', query: 'Sertanejo moderno com arranjos pop, guitarras e sanfona animada', genre: 'Sertanejo UniversitÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio', category: 'Brasil' },
-  { label: 'Sertanejo Raiz', query: 'Sertanejo tradicional com violas caipiras e duo vocal harmÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´nico', genre: 'Sertanejo Raiz', category: 'Brasil' },
-  { label: 'Guarania', query: 'Ritmo fronteiriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o cadenciado e sentimental com violÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes e harpa', genre: 'Guarania', category: 'Brasil' },
+  { label: 'Bossa Nova', query: 'Samba suave com violão de nylon e voz sussurrada', genre: 'Bossa Nova / Jazz', category: 'Brasil' },
+  { label: 'Samba Raiz', query: 'Roda de samba clássica com cavaco e pandeiro', genre: 'Samba', category: 'Brasil' },
+  { label: 'Chorinho', query: 'Choro clássico e virtuoso com ênfase no cavaquinho, violão de 7 cordas e pandeiro', genre: 'Chorinho', category: 'Brasil' },
+  { label: 'Forró Pé de Serra', query: 'Ritmo nordestino animado com sanfona, triângulo e zabumba', genre: 'Forró', category: 'Brasil' },
+  { label: 'Repente Nordestino', query: 'Duelo poético improvisado com violas e métrica rigorosa', genre: 'Repente', category: 'Brasil' },
+  { label: 'Funk Brasil', query: 'Batidão de favela com graves potentes', genre: 'Funk Carioca', category: 'Brasil' },
+  { label: 'MPB Moderna', query: 'Música Popular Brasileira com toques eletrônicos', genre: 'MPB / Nu-Jazz', category: 'Brasil' },
+  { label: 'Sertanejo Universitário', query: 'Sertanejo moderno com arranjos pop, guitarras e sanfona animada', genre: 'Sertanejo Universitário', category: 'Brasil' },
+  { label: 'Sertanejo Raiz', query: 'Sertanejo tradicional com violas caipiras e duo vocal harmônico', genre: 'Sertanejo Raiz', category: 'Brasil' },
+  { label: 'Guarania', query: 'Ritmo fronteiriço cadenciado e sentimental com violões e harpa', genre: 'Guarania', category: 'Brasil' },
 
   // URBANO
-  { label: 'Melodic Trap', query: 'Trap moderno com sintetizadores etÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©reos e 808s', genre: 'Melodic Trap', category: 'Urbano' },
+  { label: 'Melodic Trap', query: 'Trap moderno com sintetizadores etéreos e 808s', genre: 'Melodic Trap', category: 'Urbano' },
   { label: 'Afrobeat', query: 'Ritmos africanos modernos com grooves infecciosos', genre: 'Afrobeat', category: 'Urbano' },
-  { label: 'Boom Bap', query: 'Rap clÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ssico dos anos 90 com samplers sujos', genre: 'Old School Hip Hop', category: 'Urbano' },
+  { label: 'Boom Bap', query: 'Rap clássico dos anos 90 com samplers sujos', genre: 'Old School Hip Hop', category: 'Urbano' },
   { label: 'Reggaeton', query: 'Batida dembow com vocais urbanos', genre: 'Reggaeton', category: 'Urbano' },
 
-  // CINEMATOGRÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂFICO
-  { label: 'Epic Orchestral', query: 'Orquestra completa com coros ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©picos e percussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de guerra', genre: 'Cinematic / Epic', category: 'Cinematic' },
-  { label: 'Cyberpunk', query: 'Darksynth futurista com atmosfera distÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³pica', genre: 'Cyberpunk / EBM', category: 'Cinematic' },
+  // CINEMATOGRÁFICO
+  { label: 'Epic Orchestral', query: 'Orquestra completa com coros épicos e percussão de guerra', genre: 'Cinematic / Epic', category: 'Cinematic' },
+  { label: 'Cyberpunk', query: 'Darksynth futurista com atmosfera distópica', genre: 'Cyberpunk / EBM', category: 'Cinematic' },
   { label: 'Ambient', query: 'Paisagens sonoras calmas para foco e relaxamento', genre: 'Ambient', category: 'Cinematic' }
 ];
 
 const ADVANCED_INSTRUMENTS = [
-  { label: 'ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes & AcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsticos', items: [
-    { name: 'ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Nylon', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o AÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o 12 Cordas', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' },
-    { name: 'Viola Caipira', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Cavaquinho', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂªÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢' }, { name: 'Fingerstyle', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¤Ãƒâ€¦Ã¢â‚¬â„¢' }, 
-    { name: 'ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Percussivo', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Flamenco', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€ Ã¢â‚¬â„¢' }, { name: 'Fingerpicking', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¤Ãƒâ€šÃ‚Â' }, 
-    { name: 'Strumming', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'HarmÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´nicos', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¨' }, { name: 'Rasgueado', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¤Ãƒâ€šÃ‚Â' },
-    { name: 'Harpa', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¨' }, { name: 'Lira', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¼' }, { name: 'Ukulele', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂªÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢' }
+  { label: 'Violões & Acústicos', items: [
+    { name: 'Violão Nylon', icon: '🎸' }, { name: 'Violão Aço', icon: '🎸' }, { name: 'Violão 12 Cordas', icon: '🎸' },
+    { name: 'Viola Caipira', icon: '🎸' }, { name: 'Cavaquinho', icon: '🪕' }, { name: 'Fingerstyle', icon: '🤌' }, 
+    { name: 'Violão Percussivo', icon: '🥁' }, { name: 'Flamenco', icon: '💃' }, { name: 'Fingerpicking', icon: '🤏' }, 
+    { name: 'Strumming', icon: '🎸' }, { name: 'Harmônicos', icon: '✨' }, { name: 'Rasgueado', icon: '🤏' },
+    { name: 'Harpa', icon: '✨' }, { name: 'Lira', icon: '🎼' }, { name: 'Ukulele', icon: '🪕' }
   ]},
   { label: 'Contrabaixos', items: [
-    { name: 'Baixo ElÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©trico (4 cordas)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Baixo 5 Cordas', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Baixo 6 Cordas', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' },
-    { name: 'Baixo Fretless', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Baixo AcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Baixo SemiacÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' },
-    { name: 'Fingerstyle (Bass)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¤Ãƒâ€¦Ã¢â‚¬â„¢' }, { name: 'Slap Bass', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥' }, { name: 'Pop Bass', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥' },
-    { name: 'Palm Mute (Bass)', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚Â­ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢' }, { name: 'Pick Bass', icon: 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Tapping (Bass)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ' },
-    { name: 'Hammer-On (Bass)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¨' }, { name: 'Pull-Off (Bass)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°' }, { name: 'Slide (Bass)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒâ€šÃ‚Â¹' },
-    { name: 'Vibrato (Bass)', icon: 'ÃƒÆ’Ã‚Â£ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Ghost Notes (Bass)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“Ãƒâ€šÃ‚Â»' }
+    { name: 'Baixo Elétrico (4 cordas)', icon: '🎸' }, { name: 'Baixo 5 Cordas', icon: '🎸' }, { name: 'Baixo 6 Cordas', icon: '🎸' },
+    { name: 'Baixo Fretless', icon: '🎸' }, { name: 'Baixo Acústico', icon: '🎸' }, { name: 'Baixo Semiacústico', icon: '🎸' },
+    { name: 'Fingerstyle (Bass)', icon: '🤌' }, { name: 'Slap Bass', icon: '💥' }, { name: 'Pop Bass', icon: '💥' },
+    { name: 'Palm Mute (Bass)', icon: '⭕' }, { name: 'Pick Bass', icon: '⛏️' }, { name: 'Tapping (Bass)', icon: '👆' },
+    { name: 'Hammer-On (Bass)', icon: '🔨' }, { name: 'Pull-Off (Bass)', icon: '📉' }, { name: 'Slide (Bass)', icon: '🛹' },
+    { name: 'Vibrato (Bass)', icon: '〰️' }, { name: 'Ghost Notes (Bass)', icon: '👻' }
   ]},
-  { label: 'Guitarras ElÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©tricas', items: [
-    { name: 'Stratocaster', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Telecaster', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Les Paul', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' },
-    { name: 'SG', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Guitarra SemiacÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstica', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' }, { name: 'Guitarra Grunge', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¸' },
-    { name: 'Alternate Picking', icon: 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Downpicking', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Sweep Picking', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â§Ãƒâ€šÃ‚Â¹' },
-    { name: 'Palm Mute (Gtr)', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚Â­ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢' }, { name: 'Hybrid Picking', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¤Ãƒâ€¦Ã¢â‚¬â„¢' }, { name: 'Hammer-On (Gtr)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¨' },
-    { name: 'Pull-Off (Gtr)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°' }, { name: 'Slide (Gtr)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒâ€šÃ‚Â¹' }, { name: 'Bend', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚Â¤Ãƒâ€šÃ‚Â´ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' },
-    { name: 'Vibrato (Gtr)', icon: 'ÃƒÆ’Ã‚Â£ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Tapping (Gtr)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ' }, { name: 'Legato', icon: 'ÃƒÆ’Ã‚Â£ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }
+  { label: 'Guitarras Elétricas', items: [
+    { name: 'Stratocaster', icon: '🎸' }, { name: 'Telecaster', icon: '🎸' }, { name: 'Les Paul', icon: '🎸' },
+    { name: 'SG', icon: '🎸' }, { name: 'Guitarra Semiacústica', icon: '🎸' }, { name: 'Guitarra Grunge', icon: '🎸' },
+    { name: 'Alternate Picking', icon: '⛏️' }, { name: 'Downpicking', icon: '⬇️' }, { name: 'Sweep Picking', icon: '🧹' },
+    { name: 'Palm Mute (Gtr)', icon: '⭕' }, { name: 'Hybrid Picking', icon: '🤌' }, { name: 'Hammer-On (Gtr)', icon: '🔨' },
+    { name: 'Pull-Off (Gtr)', icon: '📉' }, { name: 'Slide (Gtr)', icon: '🛹' }, { name: 'Bend', icon: '⤴️' },
+    { name: 'Vibrato (Gtr)', icon: '〰️' }, { name: 'Tapping (Gtr)', icon: '👆' }, { name: 'Legato', icon: '〰️' }
   ]},
   { label: 'Efeitos de Pedais', items: [
-    { name: 'Overdrive', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â¥' }, { name: 'Distortion', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â¡' }, { name: 'Fuzz', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€¦Ã‚Â ' },
-    { name: 'Chorus', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€¦Ã‚Â ' }, { name: 'Flanger', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€¹Ã¢â‚¬Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Phaser', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬' },
-    { name: 'Tremolo', icon: 'ÃƒÆ’Ã‚Â£ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â°ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Reverb', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€¦Ã‚Â ' }, { name: 'Delay', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³' },
-    { name: 'Compressor', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬ÂÃƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Noise Gate', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°' }, { name: 'Equalizer', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' },
-    { name: 'Wah-Wah', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¦Ãƒâ€šÃ‚Â¶' }, { name: 'Octaver', icon: '2ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¢Ãƒâ€ Ã¢â‚¬â„¢Ãƒâ€šÃ‚Â£' }, { name: 'Looper', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€šÃ‚Â' }, { name: 'Pitch Shifter', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }
+    { name: 'Overdrive', icon: '🔥' }, { name: 'Distortion', icon: '⚡' }, { name: 'Fuzz', icon: '🔊' },
+    { name: 'Chorus', icon: '🌊' }, { name: 'Flanger', icon: '✈️' }, { name: 'Phaser', icon: '🌀' },
+    { name: 'Tremolo', icon: '〰️' }, { name: 'Reverb', icon: '🌊' }, { name: 'Delay', icon: '⏳' },
+    { name: 'Compressor', icon: '🗜️' }, { name: 'Noise Gate', icon: '🙉' }, { name: 'Equalizer', icon: '🎚️' },
+    { name: 'Wah-Wah', icon: '🦶' }, { name: 'Octaver', icon: '2️⃣' }, { name: 'Looper', icon: '🔁' }, { name: 'Pitch Shifter', icon: '⬆️' }
   ]},
   { label: 'Pianos & Teclados', items: [
-    { name: 'Piano AcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' }, { name: 'Piano de Cauda', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' }, { name: 'Piano ElÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©trico (Rhodes)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' },
-    { name: 'Wurlitzer', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' }, { name: 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œrgÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Hammond', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' }, { name: 'ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œrgÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de Tubos', icon: 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒâ€šÃ‚Âª' },
-    { name: 'Cravo', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' }, { name: 'Mellotron', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¼' }, { name: 'Clavinete', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' },
-    { name: 'Acordeom', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂªÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â' }
+    { name: 'Piano Acústico', icon: '🎹' }, { name: 'Piano de Cauda', icon: '🎹' }, { name: 'Piano Elétrico (Rhodes)', icon: '🎹' },
+    { name: 'Wurlitzer', icon: '🎹' }, { name: 'Órgão Hammond', icon: '🎹' }, { name: 'Órgão de Tubos', icon: '⛪' },
+    { name: 'Cravo', icon: '🎹' }, { name: 'Mellotron', icon: '📼' }, { name: 'Clavinete', icon: '🎹' },
+    { name: 'Acordeom', icon: '🪗' }
   ]},
   { label: 'Sintetizadores & Digital', items: [
-    { name: 'Synth Lead', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬' }, { name: 'Synth Pad', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€¹Ã…â€œÃƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Synth Bass', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°' },
-    { name: 'Arpeggiator', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¾Ãƒâ€šÃ‚Â¿' }, { name: 'Wavetable Synth', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€¦Ã‚Â ' }, { name: 'Modular Synth', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€¦Ã¢â‚¬â„¢' },
-    { name: 'FM Synth', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â»' }, { name: 'Vocoder', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¤ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“' }, { name: 'Chiptune / 8-bit', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“Ãƒâ€šÃ‚Â¾' }
+    { name: 'Synth Lead', icon: '🚀' }, { name: 'Synth Pad', icon: '☁️' }, { name: 'Synth Bass', icon: '🔉' },
+    { name: 'Arpeggiator', icon: '➿' }, { name: 'Wavetable Synth', icon: '🌊' }, { name: 'Modular Synth', icon: '🔌' },
+    { name: 'FM Synth', icon: '📻' }, { name: 'Vocoder', icon: '🤖' }, { name: 'Chiptune / 8-bit', icon: '👾' }
   ]},
   { label: 'Cordas & Orquestra', items: [
-    { name: 'Violino', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â»' }, { name: 'Viola', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â»' }, { name: 'Cello', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â»' },
-    { name: 'Contrabaixo AcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â»' }, { name: 'SeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de Cordas', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â»' }, { name: 'Quarteto de Cordas', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â»' },
-    { name: 'Harpa Orquestral', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€šÃ‚Â¨' }, { name: 'Trompete', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Âº' }, { name: 'Trombone', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Âº' },
-    { name: 'Saxofone', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â·' }, { name: 'Flauta', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Clarinete', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' },
-    { name: 'Gaita (Harmonica)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾' }, { name: 'Tuba', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Âº' }, { name: 'Assobio (Whistle)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¹Ã…â€œÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â' }
+    { name: 'Violino', icon: '🎻' }, { name: 'Viola', icon: '🎻' }, { name: 'Cello', icon: '🎻' },
+    { name: 'Contrabaixo Acústico', icon: '🎻' }, { name: 'Seção de Cordas', icon: '🎻' }, { name: 'Quarteto de Cordas', icon: '🎻' },
+    { name: 'Harpa Orquestral', icon: '✨' }, { name: 'Trompete', icon: '🎺' }, { name: 'Trombone', icon: '🎺' },
+    { name: 'Saxofone', icon: '🎷' }, { name: 'Flauta', icon: '🌬️' }, { name: 'Clarinete', icon: '🌬️' },
+    { name: 'Gaita (Harmonica)', icon: '👄' }, { name: 'Tuba', icon: '🎺' }, { name: 'Assobio (Whistle)', icon: '😗' }
   ]},
   { label: 'Bateria Completa', items: [
-    { name: 'Caixa', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Bumbo', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Chimbal', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¡' }, { name: 'Tons', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' },
-    { name: 'Surdo', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Crash', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥' }, { name: 'Ride', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¡' }, { name: 'Ghost Notes', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“Ãƒâ€šÃ‚Â»' },
-    { name: 'Rimshot', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â¢' }, { name: 'Groove Shuffle', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢Ãƒâ€šÃ‚Âº' }, { name: 'Half-Time', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â³' }, { name: 'Double-Time', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â¡' }
+    { name: 'Caixa', icon: '🥁' }, { name: 'Bumbo', icon: '🥁' }, { name: 'Chimbal', icon: '🟡' }, { name: 'Tons', icon: '🥁' },
+    { name: 'Surdo', icon: '🥁' }, { name: 'Crash', icon: '💥' }, { name: 'Ride', icon: '🟡' }, { name: 'Ghost Notes', icon: '👻' },
+    { name: 'Rimshot', icon: '🥢' }, { name: 'Groove Shuffle', icon: '🕺' }, { name: 'Half-Time', icon: '⏳' }, { name: 'Double-Time', icon: '⚡' }
   ]},
-  { label: 'PercussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Brasileira', items: [
-    { name: 'Pandeiro', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Surdo de Samba', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Tamborim', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' },
-    { name: 'CuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ca', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â»' }, { name: 'AgogÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã‚Â' }, { name: 'Reco-Reco', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â¢' },
-    { name: 'GanzÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Caixa de Samba', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Repique de MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“Ãƒâ€šÃ‚Â' },
-    { name: 'Atabaque', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Berimbau', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â¹' }
+  { label: 'Percussão Brasileira', items: [
+    { name: 'Pandeiro', icon: '🥁' }, { name: 'Surdo de Samba', icon: '🥁' }, { name: 'Tamborim', icon: '🥁' },
+    { name: 'Cuíca', icon: '🐻' }, { name: 'Agogô', icon: '🔔' }, { name: 'Reco-Reco', icon: '🥢' },
+    { name: 'Ganzá', icon: '🥁' }, { name: 'Caixa de Samba', icon: '🥁' }, { name: 'Repique de Mão', icon: '👏' },
+    { name: 'Atabaque', icon: '🥁' }, { name: 'Berimbau', icon: '🏹' }
   ]},
-  { label: 'PercussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Latina', items: [
-    { name: 'Congas', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'BongÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´s', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Timbales', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' },
-    { name: 'Claves', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â¢' }, { name: 'Maracas', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Guiro', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â¢' }
+  { label: 'Percussão Latina', items: [
+    { name: 'Congas', icon: '🥁' }, { name: 'Bongôs', icon: '🥁' }, { name: 'Timbales', icon: '🥁' },
+    { name: 'Claves', icon: '🥢' }, { name: 'Maracas', icon: '🥁' }, { name: 'Guiro', icon: '🥢' }
   ]},
-  { label: 'PercussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Africana', items: [
-    { name: 'DjembÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Talking Drum', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Udu', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Âº' }, { name: 'Balafon', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' }
+  { label: 'Percussão Africana', items: [
+    { name: 'Djembê', icon: '🥁' }, { name: 'Talking Drum', icon: '🥁' }, { name: 'Udu', icon: '🏺' }, { name: 'Balafon', icon: '🎹' }
   ]},
-  { label: 'PercussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Mundial', items: [
-    { name: 'CajÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â¦' }, { name: 'Darbuka', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Tabla', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' },
-    { name: 'Taiko', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'BodhrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡n', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }
+  { label: 'Percussão Mundial', items: [
+    { name: 'Cajón', icon: '📦' }, { name: 'Darbuka', icon: '🥁' }, { name: 'Tabla', icon: '🥁' },
+    { name: 'Taiko', icon: '🥁' }, { name: 'Bodhrán', icon: '🥁' }
   ]},
-  { label: 'PercussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Orquestral', items: [
-    { name: 'TÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­mpanos', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¥Ãƒâ€šÃ‚Â' }, { name: 'Xilofone', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' }, { name: 'Vibrafone', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' },
-    { name: 'Marimba', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â½Ãƒâ€šÃ‚Â¹' }, { name: 'TriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ngulo', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â' }, { name: 'Pratos Orquestrais', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚Â¡' },
-    { name: 'Glockenspiel', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã‚Â' }, { name: 'Sinos (Bells)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã‚Â' }
+  { label: 'Percussão Orquestral', items: [
+    { name: 'Tímpanos', icon: '🥁' }, { name: 'Xilofone', icon: '🎹' }, { name: 'Vibrafone', icon: '🎹' },
+    { name: 'Marimba', icon: '🎹' }, { name: 'Triângulo', icon: '📐' }, { name: 'Pratos Orquestrais', icon: '🟡' },
+    { name: 'Glockenspiel', icon: '🔔' }, { name: 'Sinos (Bells)', icon: '🔔' }
   ]},
-  { label: 'PercussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Moderna', items: [
-    { name: 'Pads EletrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´nicos', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â¹ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Drum Machine', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â»' }, { name: 'Samples', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬ÂÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â' }, { name: 'Sound FX', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒâ€¦Ã‚Â ' }
+  { label: 'Percussão Moderna', items: [
+    { name: 'Pads Eletrônicos', icon: '⏹️' }, { name: 'Drum Machine', icon: '💻' }, { name: 'Samples', icon: '🗂️' }, { name: 'Sound FX', icon: '🔊' }
   ]},
-  { label: 'Efeitos & AmbiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia (SFX)', items: [
-    { name: 'Chuva (Rain)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€šÃ‚Â§ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â', prompt: 'heavy rain pouring with clear water drops hitting surfaces, cinematic ambience, clearly audible' },
-    { name: 'Vento (Wind)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â', prompt: 'strong wind blowing, howling sound, atmospheric and immersive, clearly audible' },
-    { name: 'TrovÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o (Thunder)', icon: 'ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒâ€¹Ã¢â‚¬Â ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â', prompt: 'distant thunder rumbling occasionally, adding tension to the scene, clearly audible' },
-    { name: 'Ondas do Mar (Waves)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã¢â‚¬â„¢Ãƒâ€¦Ã‚Â ', prompt: 'ocean waves gently crashing on the shore, relaxing beach ambience, clearly audible' },
-    { name: 'Natureza (Birds/Forest)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€šÃ‚ÂÃƒâ€ Ã¢â‚¬â„¢', prompt: 'forest ambience with birds chirping, leaves rustling, peaceful natural environment, clearly audible' },
-    { name: 'Palmas (Claps)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“Ãƒâ€šÃ‚Â', prompt: 'crowd clapping in sync, energetic and lively, clearly audible' },
-    { name: 'Sirene (Siren)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â¨', prompt: 'distant police siren echoing in the background, urban atmosphere, clearly audible' },
-    { name: 'Apito (Referee)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â£', prompt: 'sharp referee whistle sound, short and piercing, clearly audible' },
-    { name: 'Tic-Tac (RelÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³gio)', icon: 'ÃƒÆ’Ã‚Â¢Ãƒâ€šÃ‚ÂÃƒâ€šÃ‚Â±ÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â', prompt: 'clear ticking clock sound, repetitive and noticeable, clearly audible' },
-    { name: 'RuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­do de Vinil (Vinyl)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒâ€šÃ‚Â»', prompt: 'vinyl crackle noise, lo-fi texture, nostalgic sound, clearly audible' },
-    { name: 'MultidÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o (Crowd)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“Ãƒâ€šÃ‚Â¥', prompt: 'crowd murmuring and reacting, stadium-like atmosphere, clearly audible' },
-    { name: 'Passos (Footsteps)', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“Ãƒâ€šÃ‚Â£', prompt: 'clear footsteps sound on hard floor, rhythmic and noticeable, clearly audible' },
-    { name: 'Impacto CinematogrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡fico', icon: 'ÃƒÆ’Ã‚Â°Ãƒâ€¦Ã‚Â¸ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢Ãƒâ€šÃ‚Â¥', prompt: 'cinematic impact braam, heavy and powerful hit, prominent in the mix' }
+  { label: 'Efeitos & Ambiência (SFX)', items: [
+    { name: 'Chuva (Rain)', icon: '🌧️', prompt: 'heavy rain pouring with clear water drops hitting surfaces, cinematic ambience, clearly audible' },
+    { name: 'Vento (Wind)', icon: '🌬️', prompt: 'strong wind blowing, howling sound, atmospheric and immersive, clearly audible' },
+    { name: 'Trovão (Thunder)', icon: '⛈️', prompt: 'distant thunder rumbling occasionally, adding tension to the scene, clearly audible' },
+    { name: 'Ondas do Mar (Waves)', icon: '🌊', prompt: 'ocean waves gently crashing on the shore, relaxing beach ambience, clearly audible' },
+    { name: 'Natureza (Birds/Forest)', icon: '🍃', prompt: 'forest ambience with birds chirping, leaves rustling, peaceful natural environment, clearly audible' },
+    { name: 'Palmas (Claps)', icon: '👏', prompt: 'crowd clapping in sync, energetic and lively, clearly audible' },
+    { name: 'Sirene (Siren)', icon: '🚨', prompt: 'distant police siren echoing in the background, urban atmosphere, clearly audible' },
+    { name: 'Apito (Referee)', icon: '📣', prompt: 'sharp referee whistle sound, short and piercing, clearly audible' },
+    { name: 'Tic-Tac (Relógio)', icon: '⏱️', prompt: 'clear ticking clock sound, repetitive and noticeable, clearly audible' },
+    { name: 'Ruído de Vinil (Vinyl)', icon: '📻', prompt: 'vinyl crackle noise, lo-fi texture, nostalgic sound, clearly audible' },
+    { name: 'Multidão (Crowd)', icon: '👥', prompt: 'crowd murmuring and reacting, stadium-like atmosphere, clearly audible' },
+    { name: 'Passos (Footsteps)', icon: '👣', prompt: 'clear footsteps sound on hard floor, rhythmic and noticeable, clearly audible' },
+    { name: 'Impacto Cinematográfico', icon: '💥', prompt: 'cinematic impact braam, heavy and powerful hit, prominent in the mix' }
   ]}
 ];
 
@@ -393,31 +393,14 @@ function App() {
 
   const [showArranger, setShowArranger] = useState(false);
   const [arrangerStep, setArrangerStep] = useState(1);
-  
-  // ESTADOS DO NOVO COMPOSITOR DE LETRAS
-  const [lyricsTheme, setLyricsTheme] = useState('');
-  const [lyricsGenre, setLyricsGenre] = useState('');
-  const [lyricsMood, setLyricsMood] = useState('Emocional');
-  const [lyricsStructure, setLyricsStructure] = useState(['Intro', 'Verse 1', 'Chorus', 'Verse 2', 'Chorus', 'Bridge', 'Chorus', 'Outro']);
-  const [lyricsRhymeStyle, setLyricsRhymeStyle] = useState('Rimas Ricas'); // 'Ricas', 'Simples', 'Versos Livres'
-  const [lyricsKeywords, setLyricsKeywords] = useState('');
-  const [isGeneratingLyrics, setIsGeneratingLyrics] = useState(false);
-  const [lyricsResult, setLyricsResult] = useState('');
-  const [lyricsLanguage, setLyricsLanguage] = useState('Portuguese');
-  
-  // OpÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes AvanÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§adas de composiÃƒÂ§ÃƒÂ£o
-  const [lyricsComplexity, setLyricsComplexity] = useState('PoÃƒÂ©tico');
-  const [lyricsMeter, setLyricsMeter] = useState('MÃƒÂ©dio');
-  const [lyricsPerspective, setLyricsPerspective] = useState('1ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âª Pessoa (Eu)');
-
   const [arrangerData, setArrangerData] = useState({
     intention: { message: '', feeling: '', mood: '' },
     references: { links: '', preferences: '', nature: 'similar' },
     vocal: { singer: '', range: '', gender: '', strength: '', focus: '' },
-    structure: { defined: 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', helpNeeded: false, chorusGrowth: '' },
+    structure: { defined: 'Não', helpNeeded: false, chorusGrowth: '' },
     style: { main: '', mix: '', defineForMe: false },
     rhythm: { tempo: '', nature: '', groove: '' },
-    harmony: { hasChords: 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', complexity: '', flavor: '' },
+    harmony: { hasChords: 'Não', complexity: '', flavor: '' },
     instrumentation: { instruments: [], defineForMe: false, nature: '' },
     dynamics: { start: '', chorus: '', transitions: '' },
     production: { era: '', texture: '' },
@@ -431,20 +414,20 @@ function App() {
     setShowProggenModal(true);
   };
 
-  // DicionÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio de SugestÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes Inteligentes (Mapeamento de Artistas/GÃƒÂªneros)
+  // Dicionário de Sugestões Inteligentes (Mapeamento de Artistas/Gêneros)
   const SMART_SUGGESTIONS = {
     'R.E.M.': {
       label: 'Estilo R.E.M. (Folk Rock)',
       genre: 'Folk Rock / Alternative',
       vocal: 'Dreamy Pop',
-      instruments: ['ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o AÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o', 'Guitarra ElÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©trica', 'Baixo ElÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©trico', 'Bateria Completa', 'Piano AcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico'],
+      instruments: ['Violão Aço', 'Guitarra Elétrica', 'Baixo Elétrico', 'Bateria Completa', 'Piano Acústico'],
       negative: 'heavy metal, electronic, high gain'
     },
     'Queen': {
       label: 'Estilo Queen (Stadium Rock)',
       genre: 'Glam Rock / Opera Rock',
       vocal: 'Rock Grit',
-      instruments: ['Piano AcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico', 'Guitarra ElÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©trica', 'Baixo ElÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©trico', 'Bateria Completa', 'Violino/Strings'],
+      instruments: ['Piano Acústico', 'Guitarra Elétrica', 'Baixo Elétrico', 'Bateria Completa', 'Violino/Strings'],
       negative: 'lo-fi, mumble, dark'
     },
     'Techno': {
@@ -458,18 +441,18 @@ function App() {
       label: 'Estilo Bossa Nova (Brasil)',
       genre: 'Bossa Nova / Jazz',
       vocal: 'Dreamy Pop',
-      instruments: ['ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Nylon', 'Piano AcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico', 'Baixo ElÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©trico', 'Pandeiro', 'Flauta'],
+      instruments: ['Violão Nylon', 'Piano Acústico', 'Baixo Elétrico', 'Pandeiro', 'Flauta'],
       negative: 'distorted, metal, trap'
     },
     'Chorinho': {
       label: 'Estilo Chorinho (Brasil)',
       genre: 'Chorinho / Samba-Choro',
       vocal: 'None',
-      instruments: ['Cavaquinho', 'ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Nylon', 'ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o 7 Cordas', 'Pandeiro', 'Flauta'],
+      instruments: ['Cavaquinho', 'Violão Nylon', 'Violão 7 Cordas', 'Pandeiro', 'Flauta'],
       negative: 'electronic, synth, heavy drums, electric guitar, trap, metal'
     },
     'Drum & Bass': {
-      label: 'Estilo Drum & Bass (EletrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´nica)',
+      label: 'Estilo Drum & Bass (Eletrônica)',
       genre: 'Drum & Bass / Jungle',
       vocal: 'None',
       instruments: ['Synth Lead', 'Synth Pad', 'Drum Machine', 'Sub Bass', 'Efeitos FX'],
@@ -478,7 +461,7 @@ function App() {
 
   };
 
-  // Efeito para simular progresso durante a geraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
+  // Efeito para simular progresso durante a geração
   useEffect(() => {
     let interval;
     if (isGenerating) {
@@ -523,7 +506,7 @@ function App() {
   };
 
   useEffect(() => {
-    const input = (activeTab === 'INFLUÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â NCIA' ? referenceInput : userQuery).toLowerCase();
+    const input = (activeTab === 'INFLUÊNCIA' ? referenceInput : userQuery).toLowerCase();
     
     const matchedKey = Object.keys(SMART_SUGGESTIONS).find(key => 
       input.includes(key.toLowerCase())
@@ -549,7 +532,7 @@ function App() {
   const generateMusicConcept = async (modifier = null) => {
     let finalQuery = "";
     if (activeTab === 'MANUAL') {
-      const genreContext = baseGenre ? `GÃƒÂªnero Base Selecionado: ${baseGenre}. ` : '';
+      const genreContext = baseGenre ? `Gênero Base Selecionado: ${baseGenre}. ` : '';
       finalQuery = `${genreContext}Briefing: ${userQuery}`;
     }
     else if (activeTab === 'ESSENCIAL') {
@@ -572,9 +555,9 @@ function App() {
         ${essencialMood}
       `;
     }
-    else if (activeTab === 'INFLUÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â NCIA') finalQuery = `Artista: ${referenceInput}. Detalhes: ${userQuery}`;
-    else if (activeTab === 'DNA ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂUDIO') finalQuery = `ReferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia: ${selectedFile?.name}. InstruÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes: ${userQuery}`;
-    else if (activeTab === 'INSIGHT VISUAL') finalQuery = `Imagem de ReferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia: ${imageFile?.name}. InstruÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes: ${userQuery}`;
+    else if (activeTab === 'INFLUÊNCIA') finalQuery = `Artista: ${referenceInput}. Detalhes: ${userQuery}`;
+    else if (activeTab === 'DNA ÁUDIO') finalQuery = `Referência: ${selectedFile?.name}. Instruções: ${userQuery}`;
+    else if (activeTab === 'INSIGHT VISUAL') finalQuery = `Imagem de Referência: ${imageFile?.name}. Instruções: ${userQuery}`;
 
     if (!finalQuery.trim() && !selectedFile && !imageFile) return;
 
@@ -586,29 +569,29 @@ function App() {
     setIsGenerating(true);
     setError(null);
 
-    const systemPrompt = `ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°s o "Maestro Studio Pro", um Produtor Musical lendÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio e Engenheiro de Prompts para Suno/Udio. 
+    const systemPrompt = `És o "Maestro Studio Pro", um Produtor Musical lendário e Engenheiro de Prompts para Suno/Udio. 
     Analisa os inputs e responde APENAS em JSON. 
     
-    DIRETRIZES CRÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂTICAS:
-    1. IDIOMA DA ANÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂLISE: O campo "style_analysis" DEVE ser escrito em PORTUGUÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â S DO BRASIL.
+    DIRETRIZES CRÍTICAS:
+    1. IDIOMA DA ANÁLISE: O campo "style_analysis" DEVE ser escrito em PORTUGUÊS DO BRASIL.
     2. IDIOMA VOCAL: Especifique sempre "Vocals in Brazilian Portuguese" no final_prompt para garantir o sotaque correto.
-    3. FUSÃƒÆ’O DE GÃƒÅ NEROS: Se houver um GÃƒÂªnero SecundÃƒÂ¡rio, descreva uma transiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ou mistura fluida.
-    4. CONTROLE DE PERCUSSÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Se a percussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o for solicitada, NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O use termos de bateria.
-    5. MODO ESSENCIAL (CRÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂTICO): Se o input contiver [INSTRUMENTATION - PRIORITY], o prompt final DEVE ser ultra-minimalista. NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O adicione baixo, bateria ou preenchimentos orquestrais. Foque TOTALMENTE nos instrumentos listados. Se disser "ONLY X", remova QUALQUER outro instrumento.
-    6. DNA VOCAL & SPOKEN INTRO: Integre o "ArquÃƒÂ©tipo Vocal" na descriÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o. Se o usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio escolher "Male Vocal" ou "Female Vocal", especifique claramente o GÃƒÂªnero e que ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© voz cantada. Se escolher vocal de crianÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§a, use tags como "children's vocal", "child voice" ou "kids vocal". Se escolher "Spoken Narrator", "Female Narrator" ou "Child Narrator", VocÃƒÂª DEVE incluir tags como "spoken intro", "spoken male voice", "spoken female voice" ou "spoken child voice" no Master Prompt e descrever uma introduÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o narrativa. Use "..." (reticÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncias) na estruturaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de letras caso sugerido para criar pausas naturais.
-    7. SOUND DESIGN (SFX): Se SFX forem selecionados, use terminologia tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cnica no final_prompt como "Field Recording", "Nature soundscape", "Diegetic Sound" e "Atmospheric Texture". NUNCA use tags tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cnicas curtas como [SFX: Rain].
-    8. STYLE TAGS (CRÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂTICO): String de tags curtas em INGLÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â S. MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂXIMO DE 120 CARACTERES. PRIORIDADE: Se houver SFX, as tags de SFX DEVEM vir no INÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂCIO da string (ex: "Nature soundscape, Field recording, Birds, Wind, Indie Pop..."). Para o modo ESSENCIAL, as tags devem incluir "Solo", "Acoustic" ou "Duo" e listar APENAS os instrumentos solicitados.
-    9. SFX INTRO HACK (ESTRUTURA): Comandos de tempo e transiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o literal (ex: "comeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ar sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³ com vento por 5 segundos") DEVEM ser colocados dentro do bloco "Intro" (ou o bloco inicial) da "musical_structure", formatados como "[Intro: Ambient sounds only for 5 seconds, no instruments]".
-    10. DICAS DE PRODUÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: O campo "production_tips" deve conter conselhos tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cnicos em PORTUGUÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â S (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
-    11. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â¡DO de cada bloco DEVE SER EM INGLÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â S TÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°CNICO. Integre as ambiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncias aqui para melhor timing. No modo ESSENCIAL, a estrutura deve refletir a simplicidade do arranjo.
-    12. ANÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o, ambiente e emoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
+    3. FUSÃO DE GÊNEROS: Se houver um gênero secundário, descreva uma transição ou mistura fluida.
+    4. CONTROLE DE PERCUSSÃO: Se a percussão não for solicitada, NÃO use termos de bateria.
+    5. MODO ESSENCIAL (CRÍTICO): Se o input contiver [INSTRUMENTATION - PRIORITY], o prompt final DEVE ser ultra-minimalista. NÃO adicione baixo, bateria ou preenchimentos orquestrais. Foque TOTALMENTE nos instrumentos listados. Se disser "ONLY X", remova QUALQUER outro instrumento.
+    6. DNA VOCAL & SPOKEN INTRO: Integre o "Arquétipo Vocal" na descrição. Se o usuário escolher "Male Vocal" ou "Female Vocal", especifique claramente o gênero e que é voz cantada. Se escolher vocal de criança, use tags como "children's vocal", "child voice" ou "kids vocal". Se escolher "Spoken Narrator", "Female Narrator" ou "Child Narrator", você DEVE incluir tags como "spoken intro", "spoken male voice", "spoken female voice" ou "spoken child voice" no Master Prompt e descrever uma introdução narrativa. Use "..." (reticências) na estruturação de letras caso sugerido para criar pausas naturais.
+    7. SOUND DESIGN (SFX): Se SFX forem selecionados, use terminologia técnica no final_prompt como "Field Recording", "Nature soundscape", "Diegetic Sound" e "Atmospheric Texture". NUNCA use tags técnicas curtas como [SFX: Rain].
+    8. STYLE TAGS (CRÍTICO): String de tags curtas em INGLÊS. MÁXIMO DE 120 CARACTERES. PRIORIDADE: Se houver SFX, as tags de SFX DEVEM vir no INÍCIO da string (ex: "Nature soundscape, Field recording, Birds, Wind, Indie Pop..."). Para o modo ESSENCIAL, as tags devem incluir "Solo", "Acoustic" ou "Duo" e listar APENAS os instrumentos solicitados.
+    9. SFX INTRO HACK (ESTRUTURA): Comandos de tempo e transição literal (ex: "começar só com vento por 5 segundos") DEVEM ser colocados dentro do bloco "Intro" (ou o bloco inicial) da "musical_structure", formatados como "[Intro: Ambient sounds only for 5 seconds, no instruments]".
+    10. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
+    11. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing. No modo ESSENCIAL, a estrutura deve refletir a simplicidade do arranjo.
+    12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
     
     JSON:
     {
-      "genre": "GÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©nero",
+      "genre": "Género",
       "bpm": "BPM",
       "key": "Tom",
-      "style_analysis": "AnÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lise em PT-BR (inclua a interpretaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o visual se houver imagem)",
+      "style_analysis": "Análise em PT-BR (inclua a interpretação visual se houver imagem)",
       "instruments": ["Lista"],
       "style_tags": "Tags em EN (MAX 120 chars, SFX First). SIGA A HIERARQUIA: [SFX] > Genre > Instruments > Vocals > Mood > Production.",
       "final_prompt": "Master Prompt curto em EN",
@@ -617,46 +600,46 @@ function App() {
     }`;
 
     const modeInstructions = {
-      basico: "Siga o briefing do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio de forma livre.",
-      inteligente: "Otimize o prompt evitando conflitos (ex: nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o misture 'lo-fi' com 'high fidelity' a menos que faÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§a sentido artÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­stico). Priorize clareza e use a hierarquia de tags sugerida.",
-      minimalista: "MODO ULTRA-MINIMALISTA: Limite a no mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ximo 2 instrumentos. Remova percussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o pesada, baterias e preenchimentos orquestrais. Foco em 'clean mix', 'acoustic', 'minimalist' e 'solo'."
+      basico: "Siga o briefing do usuário de forma livre.",
+      inteligente: "Otimize o prompt evitando conflitos (ex: não misture 'lo-fi' com 'high fidelity' a menos que faça sentido artístico). Priorize clareza e use a hierarquia de tags sugerida.",
+      minimalista: "MODO ULTRA-MINIMALISTA: Limite a no máximo 2 instrumentos. Remova percussão pesada, baterias e preenchimentos orquestrais. Foco em 'clean mix', 'acoustic', 'minimalist' e 'solo'."
     };
 
 
     try {
       let modContext = "";
-      if (modifier === 'energetic') modContext = "\nVARIAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Torne o prompt muito mais enÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©rgico, agressivo e dinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mico.";
-      if (modifier === 'slow') modContext = "\nVARIAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Torne o prompt muito mais lento, calmo e atmosfÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©rico.";
-      if (modifier === 'emotional') modContext = "\nVARIAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: Torne o prompt profundamente emocional, melancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³lico e expressivo.";
+      if (modifier === 'energetic') modContext = "\nVARIAÇÃO: Torne o prompt muito mais enérgico, agressivo e dinâmico.";
+      if (modifier === 'slow') modContext = "\nVARIAÇÃO: Torne o prompt muito mais lento, calmo e atmosférico.";
+      if (modifier === 'emotional') modContext = "\nVARIAÇÃO: Torne o prompt profundamente emocional, melancólico e expressivo.";
 
       const expertContext = `
-        GÃƒÂªnero SecundÃƒÂ¡rio: ${secondaryGenre || 'Nenhum'}
-        ArquÃƒÂ©tipo Vocal: ${vocalArchetype || 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
+        Gênero Secundário: ${secondaryGenre || 'Nenhum'}
+        Arquétipo Vocal: ${vocalArchetype || 'Automático'}
         Timbre Vocal: ${VOCAL_TONES.find(t => t.id === vocalTone)?.label || 'Normal'}
         Texturas Vocais: ${vocalTextures.length > 0 ? vocalTextures.map(id => VOCAL_TEXTURES.find(t => t.id === id)?.label).join(', ') : 'Nenhuma'}
-        Instrumentos Selecionados: ${selectedInstruments.join(', ') || 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
-        BPM / Andamento: ${selectedBpm || 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
-        Compasso: ${timeSignature || 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
-        Tom & Modo: ${musicalKey ? `${musicalKey} ${keyMode}` : 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
+        Instrumentos Selecionados: ${selectedInstruments.join(', ') || 'Automático'}
+        BPM / Andamento: ${selectedBpm || 'Automático'}
+        Compasso: ${timeSignature || 'Automático'}
+        Tom & Modo: ${musicalKey ? `${musicalKey} ${keyMode}` : 'Automático'}
 
-        Escala: ${scale || 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
-        ProgressÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de Acordes: ${chordProgression || 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
-        Groove / Feel: ${groove || 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
-        EmoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Musical: ${emotion || 'AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico'}
+        Escala: ${scale || 'Automático'}
+        Progressão de Acordes: ${chordProgression || 'Automático'}
+        Groove / Feel: ${groove || 'Automático'}
+        Emoção Musical: ${emotion || 'Automático'}
         Excluir (Prompt Negativo): ${negativePrompt || 'Nenhum'}
         
         --- SISTEMA DE TAGS INTELIGENTES ---
-        Modo de GeraÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o: ${generationMode.toUpperCase()}
-        InstruÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do Modo: ${modeInstructions[generationMode]}
+        Modo de Geração: ${generationMode.toUpperCase()}
+        Instrução do Modo: ${modeInstructions[generationMode]}
         Tags Selecionadas da Biblioteca: ${selectedLibraryTags.join(', ')}
         
         ${modContext}
       `;
 
-      const parts = [{ text: `${finalQuery}\n\n--- CONFIGURAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O EXPERT ---\n${expertContext}` }];
+      const parts = [{ text: `${finalQuery}\n\n--- CONFIGURAÇÃO EXPERT ---\n${expertContext}` }];
       
-      // Se tiver arquivo e estiver na aba DNA ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂUDIO, envia o ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡udio para a IA
-      if (selectedFile && activeTab === 'DNA ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂUDIO') {
+      // Se tiver arquivo e estiver na aba DNA ÁUDIO, envia o áudio para a IA
+      if (selectedFile && activeTab === 'DNA ÁUDIO') {
         try {
           const base64Data = await fileToBase64(selectedFile);
           parts.push({
@@ -666,7 +649,7 @@ function App() {
             }
           });
         } catch (e) {
-          console.error("Erro ao processar ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡udio:", e);
+          console.error("Erro ao processar áudio:", e);
         }
       }
 
@@ -705,7 +688,7 @@ function App() {
       
       const data = await response.json();
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!text) throw new Error("A IA nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o retornou uma resposta vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida.");
+      if (!text) throw new Error("A IA não retornou uma resposta válida.");
       const result = JSON.parse(text);
       
       if (isComparisonMode && maestroAnalysis) {
@@ -714,7 +697,7 @@ function App() {
       setMaestroAnalysis(result);
     } catch (err) {
       console.error(err);
-      setError(`O Maestro estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ offline: ${err.message}`);
+      setError(`O Maestro está offline: ${err.message}`);
     } finally {
       setIsGenerating(false);
     }
@@ -729,23 +712,23 @@ function App() {
     setIsGenerating(true);
     setError(null);
 
-    const systemPrompt = `ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°s o "Arranjador Mestre do Maestro Studio Pro", um produtor musical lendÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio que sabe absolutamente TUDO sobre o Suno AI e engenharia de prompts. 
-    A tua missÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© analisar os resultados de uma entrevista profunda com o usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio e gerar o melhor prompt possÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel para o Suno.
+    const systemPrompt = `És o "Arranjador Mestre do Maestro Studio Pro", um produtor musical lendário que sabe absolutamente TUDO sobre o Suno AI e engenharia de prompts. 
+    A tua missão é analisar os resultados de uma entrevista profunda com o usuário e gerar o melhor prompt possível para o Suno.
 
-    SAÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂDA ESPERADA (JSON):
+    SAÍDA ESPERADA (JSON):
     {
-      "analysis": "Breve visÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o geral do arranjador em PT-BR sobre o que estamos criando.",
-      "style_prompt": "String curta de tags em INGLÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â S para a caixa de 'Style' do Suno (max 120-150 chars).",
-      "structured_lyrics": "A letra formatada com metatags do Suno [Intro], [Verse], [Chorus], etc. Se houver letra fornecida, analise a MÃƒÂ©trica. Se nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o, sugira a estrutura.",
-      "production_tips": "Dicas tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cnicas master (ex: usar extend no Suno, colocar tags de reverb nas letras, etc) em PT-BR."
+      "analysis": "Breve visão geral do arranjador em PT-BR sobre o que estamos criando.",
+      "style_prompt": "String curta de tags em INGLÊS para a caixa de 'Style' do Suno (max 120-150 chars).",
+      "structured_lyrics": "A letra formatada com metatags do Suno [Intro], [Verse], [Chorus], etc. Se houver letra fornecida, analise a métrica. Se não, sugira a estrutura.",
+      "production_tips": "Dicas técnicas master (ex: usar extend no Suno, colocar tags de reverb nas letras, etc) em PT-BR."
     }
 
     CONHECIMENTO SUNO:
     - Tags estruturais: [Intro], [Verse], [Pre-Chorus], [Chorus], [Bridge], [Solo], [Break], [Outro].
     - Tags de estilo: [Genre: ...], [Mood: ...], [Vocal: ...], [Tempo: ...].
-    - Macetes: Usar vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­rgulas, nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o exagerar em tags contrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rias, usar [Style: ...] dentro da letra no Custom Mode para mudanÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§as de clima.
-    - SFX PRO CALIBRADO: No Suno, evite [SFX: Rain] no Style. Use "Field recording of rain" no inÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio das tags. No Lyrics (structured_lyrics), use comandos de tempo no Intro, ex: [Intro: Rain sounds only, then piano fades in]. Limite Style a 120 caracteres.
-    - Se houver letra, analise a MÃƒÂ©trica e sugira quebras de linha que faÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§am sentido musical.
+    - Macetes: Usar vírgulas, não exagerar em tags contrárias, usar [Style: ...] dentro da letra no Custom Mode para mudanças de clima.
+    - SFX PRO CALIBRADO: No Suno, evite [SFX: Rain] no Style. Use "Field recording of rain" no início das tags. No Lyrics (structured_lyrics), use comandos de tempo no Intro, ex: [Intro: Rain sounds only, then piano fades in]. Limite Style a 120 caracteres.
+    - Se houver letra, analise a métrica e sugira quebras de linha que façam sentido musical.
     `;
 
     try {
@@ -769,10 +752,10 @@ function App() {
       
       const data = await response.json();
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!text) throw new Error("A IA nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o retornou uma resposta vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida.");
+      if (!text) throw new Error("A IA não retornou uma resposta válida.");
       const result = JSON.parse(text);
       
-      // Adaptar o resultado do arranjador para o formato da anÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lise do maestro para exibiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
+      // Adaptar o resultado do arranjador para o formato da análise do maestro para exibição
       setMaestroAnalysis({
         genre: result.style_prompt,
         style_analysis: result.analysis,
@@ -804,7 +787,7 @@ function App() {
       id: crypto.randomUUID(), 
       timestamp: new Date().toISOString(),
       isFavorite: false,
-      customName: tempName || maestroAnalysis.genre || "Nova SessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o"
+      customName: tempName || maestroAnalysis.genre || "Nova Sessão"
     };
     persistData([newEntry, ...savedPrompts]);
     setSaveSuccess(true);
@@ -815,81 +798,6 @@ function App() {
   const toggleFavorite = (id) => {
     const newList = savedPrompts.map(p => p.id === id ? { ...p, isFavorite: !p.isFavorite } : p);
     persistData(newList);
-  };
-
-  const generateLyrics = async () => {
-    if (!lyricsTheme.trim()) {
-      setError("Por favor, defina um tema para a sua letra.");
-      return;
-    }
-
-    if (!apiKey) {
-      setError("Falta a API Key no ficheiro .env (VITE_GEMINI_API_KEY)");
-      return;
-    }
-
-    setIsGeneratingLyrics(true);
-    setError(null);
-
-    const systemPrompt = `VocÃƒÂª ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© o "Ghostwriter Pro", um compositor premiado e especialista em estruturaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de letras para IA (Suno/Udio). 
-    Sua missÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© criar letras memorÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡veis, com MÃƒÂ©trica perfeita e rimas impactantes.
-    
-    DIRETRIZES:
-    1. ESTRUTURA: Respeite rigorosamente a ordem das partes solicitada.
-    2. MARCAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ES: Use colchetes para as partes, ex: [Verse 1], [Chorus], [Bridge].
-    3. RIMA: Se solicitado rimas ricas, evite rimas ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³bvias (ex: amor/dor).
-    4. IDIOMA: Escreva no idioma ${lyricsLanguage}.
-    5. ESTILO: Adapte o VocabulÃƒÂ¡rio ao GÃƒÂªnero musical ${lyricsGenre || 'Pop'}.
-    
-    SAÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂDA:
-    Retorne a letra completa formatada com as tags estruturais.`;
-
-    const prompt = `
-      TEMA: ${lyricsTheme}
-      GÃƒÅ NERO/ESTILO: ${lyricsGenre}
-      CLIMA/EMOÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O: ${lyricsMood}
-      ESTILO DE RIMA: ${lyricsRhymeStyle}
-      PALAVRAS OBRIGATÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œRIAS: ${lyricsKeywords}
-      ESTRUTURA DESEJADA: ${lyricsStructure.join(' -> ')}
-      
-      --- PARÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡METROS AVANÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ADOS (MODO PRODUTOR) ---
-      COMPLEXIDADE DO VOCABULÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂRIO: ${lyricsComplexity}
-      MÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°TRICA/TAMANHO DOS VERSOS: ${lyricsMeter}
-      PERSPECTIVA NARRATIVA: ${lyricsPerspective}
-      
-      Crie uma letra que respeite a MÃƒÂ©trica de ${lyricsMeter} (versos mais ${lyricsMeter === 'Longo' ? 'detalhados e explicativos' : lyricsMeter === 'Curto' ? 'diretos e curtos' : 'equilibrados'}).
-      O VocabulÃƒÂ¡rio deve ser ${lyricsComplexity}.
-    `;
-
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: { 
-            temperature: 0.8
-          }
-        })
-      });
-
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error?.message || "Erro na API do Gemini");
-      }
-      
-      const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!text) throw new Error("A IA nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o retornou uma letra vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lida.");
-      
-      setLyricsResult(text);
-    } catch (err) {
-      console.error(err);
-      setError(`O Compositor falhou: ${err.message}`);
-    } finally {
-      setIsGeneratingLyrics(false);
-    }
   };
 
   const renameEntry = (id, newName) => {
@@ -939,15 +847,6 @@ function App() {
     setEssencialSecondaryInst('');
     setEssencialTertiaryInst('');
     setSelectedLibraryTags([]);
-    
-    // Limpar Compositor
-    setLyricsTheme('');
-    setLyricsGenre('');
-    setLyricsKeywords('');
-    setLyricsResult('');
-    setLyricsComplexity('PoÃƒÂ©tico');
-    setLyricsMeter('MÃƒÂ©dio');
-    setLyricsPerspective('1ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âª Pessoa (Eu)');
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -1000,13 +899,13 @@ function App() {
   };
 
   const playGenrePreview = (genre) => {
-    // 1. Limpar qualquer ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡udio tocando
+    // 1. Limpar qualquer áudio tocando
     if (audioPreviewRef.current) {
       audioPreviewRef.current.pause();
       audioPreviewRef.current = null;
     }
 
-    // 2. Definir animaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o instantaneamente
+    // 2. Definir animação instantaneamente
     setActivePreviewGenre(genre);
 
     const fileName = genre.toLowerCase()
@@ -1025,11 +924,11 @@ function App() {
       if (playPromise !== undefined) {
         playPromise.catch(error => {
           // Erro de Autoplay ou arquivo ausente
-          console.log("Aguardando interaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ou ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡udio nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o encontrado:", fileName);
+          console.log("Aguardando interação ou áudio não encontrado:", fileName);
         });
       }
 
-      // Parar automaticamente apÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³s 10 segundos
+      // Parar automaticamente após 10 segundos
       setTimeout(() => {
         if (audioPreviewRef.current === audio) {
           stopGenrePreview();
@@ -1064,9 +963,9 @@ function App() {
           </p>
         </div>
 
-        {/* NAVEGAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O SUPERIOR */}
+        {/* NAVEGAÇÃO SUPERIOR */}
         <div className="bg-[#121212] p-1.5 rounded-full border border-white/5 flex gap-1">
-          {['MANUAL', 'COMPOSITOR', 'ESSENCIAL', 'INFLUÃŠNCIA', 'DNA ÃUDIO', 'INSIGHT VISUAL'].map((tab) => (
+          {['MANUAL', 'ESSENCIAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -1074,12 +973,7 @@ function App() {
                 activeTab === tab ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/20' : 'text-slate-400 hover:text-white'
               }`}
             >
-              {tab === 'COMPOSITOR' ? (
-                <span className="flex items-center gap-2">
-                  <Mic2 className="w-3 h-3" />
-                  {tab}
-                </span>
-              ) : tab}
+              {tab}
             </button>
           ))}
           <button
@@ -1098,7 +992,7 @@ function App() {
       {/* GRID PRINCIPAL */}
       <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* CONFIGURAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O DE ORIGEM (ESQUERDA) */}
+        {/* CONFIGURAÇÃO DE ORIGEM (ESQUERDA) */}
         <section className="lg:col-span-4 bg-[#161616] rounded-[40px] p-8 border border-white/5 shadow-2xl">
           <div className="flex items-center gap-2 text-orange-500 mb-6">
             <Activity className="w-4 h-4" />
@@ -1139,7 +1033,7 @@ function App() {
                     <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Instrumento Principal</label>
                     <input 
                       className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
-                      placeholder="Ex: Cavaquinho, Piano, ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o..."
+                      placeholder="Ex: Cavaquinho, Piano, Violão..."
                       value={essencialPrimaryInst}
                       onChange={e => setEssencialPrimaryInst(e.target.value)}
                     />
@@ -1147,10 +1041,10 @@ function App() {
                   
                   {(essencialArrangement === 'DUO' || essencialArrangement === 'TRIO') && (
                     <div className="animate-in slide-in-from-top-2 duration-300">
-                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Instrumento SecundÃƒÂ¡rio</label>
+                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Instrumento Secundário</label>
                       <input 
                         className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
-                        placeholder="Ex: ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o 7 Cordas, Flauta..."
+                        placeholder="Ex: Violão 7 Cordas, Flauta..."
                         value={essencialSecondaryInst}
                         onChange={e => setEssencialSecondaryInst(e.target.value)}
                       />
@@ -1159,7 +1053,7 @@ function App() {
 
                   {essencialArrangement === 'TRIO' && (
                     <div className="animate-in slide-in-from-top-2 duration-300">
-                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Instrumento TerciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio</label>
+                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Instrumento Terciário</label>
                       <input 
                         className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
                         placeholder="Ex: Flauta, Piano, Violoncelo..."
@@ -1189,7 +1083,7 @@ function App() {
                       onChange={e => setEssencialMood(e.target.value)}
                       className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
                     >
-                      {['Alegre', 'NostÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lgico', 'MelancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³lico', 'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Ântimo', 'EnergÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©tico', 'Relaxante'].map(m => (
+                      {['Alegre', 'Nostálgico', 'Melancólico', 'Íntimo', 'Energético', 'Relaxante'].map(m => (
                         <option key={m} value={m}>{m}</option>
                       ))}
                     </select>
@@ -1197,19 +1091,19 @@ function App() {
                 </div>
 
                 <div>
-                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">ReferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia de Estilo (Opcional)</label>
+                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Referência de Estilo (Opcional)</label>
                    <input 
                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all text-slate-400"
                      placeholder="Ex: Chorinho, Samba, Jazz (DNA sutil)"
                      value={essencialStyle}
                      onChange={e => setEssencialStyle(e.target.value)}
                    />
-                   <p className="text-[8px] text-slate-600 mt-1.5 italic">O Maestro usarÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ apenas a essÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia rÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tmica do estilo, ignorando o arranjo padrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de banda.</p>
+                   <p className="text-[8px] text-slate-600 mt-1.5 italic">O Maestro usará apenas a essência rítmica do estilo, ignorando o arranjo padrão de banda.</p>
                 </div>
               </div>
             )}
 
-            {activeTab === 'INFLUÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â NCIA' && (
+            {activeTab === 'INFLUÊNCIA' && (
               <div className="space-y-4">
                 <div className="relative">
                   <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -1222,94 +1116,14 @@ function App() {
                 </div>
                 <textarea
                   className="w-full h-32 bg-[#0f0f0f] rounded-2xl p-4 border border-white/5 text-slate-300 text-sm outline-none resize-none"
-                  placeholder="InstruÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes adicionais..."
+                  placeholder="Instruções adicionais..."
                   value={userQuery}
                   onChange={(e) => setUserQuery(e.target.value)}
                 />
               </div>
             )}
 
-            {activeTab === 'COMPOSITOR' && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Tema da MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica</label>
-                    <input 
-                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
-                      placeholder="Ex: Saudade, SuperaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o, Festa na Praia..."
-                      value={lyricsTheme}
-                      onChange={e => setLyricsTheme(e.target.value)}
-                    />
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">GÃƒÂªnero Musical</label>
-                      <input 
-                        className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
-                        placeholder="Ex: Pagode, Rock, Trap..."
-                        value={lyricsGenre}
-                        onChange={e => setLyricsGenre(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Clima (Mood)</label>
-                      <select 
-                        value={lyricsMood}
-                        onChange={e => setLyricsMood(e.target.value)}
-                        className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
-                      >
-                        {['Emocional', 'Alegre', 'MelancÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³lico', 'Agressivo', 'Sombrio', 'PoÃƒÂ©tico'].map(m => (
-                          <option key={m} value={m}>{m}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Estilo de Rima</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {['Rimas Ricas', 'Rimas Simples', 'Versos Livres'].map((style) => (
-                        <button 
-                          key={style}
-                          onClick={() => setLyricsRhymeStyle(style)}
-                          className={`py-2 rounded-xl text-[9px] font-black transition-all border ${lyricsRhymeStyle === style ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-white/20'}`}
-                        >
-                          {style}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Palavras ObrigatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rias</label>
-                    <input 
-                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all text-slate-400"
-                      placeholder="Ex: Sol, mar, destino (separadas por vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­rgula)"
-                      value={lyricsKeywords}
-                      onChange={e => setLyricsKeywords(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Idioma</label>
-                    <div className="flex gap-2">
-                       {['Portuguese', 'English', 'Spanish'].map(lang => (
-                         <button 
-                           key={lang}
-                           onClick={() => setLyricsLanguage(lang)}
-                           className={`flex-1 py-2 rounded-xl text-[9px] font-black transition-all border ${lyricsLanguage === lang ? 'bg-white text-black border-white' : 'bg-[#0f0f0f] border-white/5 text-slate-500'}`}
-                         >
-                           {lang === 'Portuguese' ? 'PortuguÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªs' : lang}
-                         </button>
-                       ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'DNA ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂUDIO' && (
+            {activeTab === 'DNA ÁUDIO' && (
               <div className="space-y-4">
                 <div 
                   onClick={() => fileInputRef.current.click()}
@@ -1317,13 +1131,13 @@ function App() {
                 >
                   <Upload className="w-6 h-6 text-slate-500 group-hover:text-orange-500" />
                   <span className="text-[10px] font-black text-slate-500 uppercase px-4 text-center truncate w-full">
-                    {selectedFile ? selectedFile.name : 'Carregar ReferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia MP3'}
+                    {selectedFile ? selectedFile.name : 'Carregar Referência MP3'}
                   </span>
                   <input type="file" ref={fileInputRef} className="hidden" accept="audio/*" onChange={e => setSelectedFile(e.target.files[0])} />
                 </div>
                 <textarea
                   className="w-full h-24 bg-[#0f0f0f] rounded-2xl p-4 border border-white/5 text-slate-300 text-sm outline-none"
-                  placeholder="InstruÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes para anÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lise..."
+                  placeholder="Instruções para análise..."
                   value={userQuery}
                   onChange={(e) => setUserQuery(e.target.value)}
                 />
@@ -1346,7 +1160,7 @@ function App() {
                   <div className="relative z-10 flex flex-col items-center p-4">
                     <Upload className="w-6 h-6 text-slate-500 group-hover:text-orange-500 mb-1" />
                     <span className="text-[10px] font-black text-slate-500 uppercase px-4 text-center truncate w-full">
-                      {imageFile ? imageFile.name : 'Carregar Imagem de ReferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia'}
+                      {imageFile ? imageFile.name : 'Carregar Imagem de Referência'}
                     </span>
                     <p className="text-[8px] text-slate-600 mt-1 uppercase font-bold tracking-tighter">JPG, PNG, WEBP</p>
                   </div>
@@ -1382,7 +1196,7 @@ function App() {
           {smartSuggestion && (
             <div className="mb-6 p-4 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center justify-between animate-in zoom-in-95 duration-300">
               <div className="flex flex-col">
-                <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest">SugestÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Maestro</span>
+                <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest">Sugestão Maestro</span>
                 <span className="text-[10px] font-bold text-white uppercase">{smartSuggestion.label}</span>
               </div>
               <button 
@@ -1395,13 +1209,12 @@ function App() {
           )}
 
 
-          {/* SELEÃ‡ÃƒO DE MODO DE GERAÃ‡ÃƒO (SISTEMA DE TAGS) */}
-          {activeTab !== 'COMPOSITOR' && (
-            <div className="mb-6 p-4 bg-white/5 border border-white/5 rounded-3xl">
-            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-3">Modo de composiÃ§Ã£o</label>
+          {/* SELEÇÃO DE MODO DE GERAÇÃO (SISTEMA DE TAGS) */}
+          <div className="mb-6 p-4 bg-white/5 border border-white/5 rounded-3xl">
+            <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-3">Modo de Composição</label>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: 'basico', label: 'BÃ¡sico', icon: <Play className="w-3 h-3" /> },
+                { id: 'basico', label: 'Básico', icon: <Play className="w-3 h-3" /> },
                 { id: 'inteligente', label: 'Inteligente', icon: <Sparkles className="w-3 h-3" /> },
                 { id: 'minimalista', label: 'Minimalista', icon: <Layers className="w-3 h-3" /> }
               ].map((m) => (
@@ -1422,11 +1235,10 @@ function App() {
             </div>
             <p className="text-[8px] text-slate-600 mt-2.5 px-1 italic leading-tight">
               {generationMode === 'basico' && 'Fluxo livre baseado no seu briefing.'}
-              {generationMode === 'inteligente' && 'OtimizaÃ§Ã£o de tags e hierarquia profissional.'}
-              {generationMode === 'minimalista' && 'Foco em pureza, acÃºstico e poucos instrumentos.'}
+              {generationMode === 'inteligente' && 'Otimização de tags e hierarquia profissional.'}
+              {generationMode === 'minimalista' && 'Foco em pureza, acústico e poucos instrumentos.'}
             </p>
           </div>
-          )}
 
           {/* TOGGLE MODO PRO */}
 
@@ -1457,81 +1269,14 @@ function App() {
                  <Settings2 className="w-20 h-20 rotate-12" />
                </div>
 
-                {activeTab === 'COMPOSITOR' && (
-                  <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500">
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
-                          MÃƒÂ©trica (Tamanho dos Versos)
-                        </label>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        {['Curto', 'MÃƒÂ©dio', 'Longo'].map(m => (
-                          <button 
-                            key={m}
-                            onClick={() => setLyricsMeter(m)}
-                            className={`py-3 rounded-xl text-[9px] font-bold transition-all border ${lyricsMeter === m ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-black border-white/5 text-slate-500 hover:border-white/20'}`}
-                          >
-                            {m}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
-                          NÃƒÂ­vel de VocabulÃƒÂ¡rio
-                        </label>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        {['Popular', 'PoÃƒÂ©tico', 'Erudito'].map(c => (
-                          <button 
-                            key={c}
-                            onClick={() => setLyricsComplexity(c)}
-                            className={`py-3 rounded-xl text-[9px] font-bold transition-all border ${lyricsComplexity === c ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-black border-white/5 text-slate-500 hover:border-white/20'}`}
-                          >
-                            {c}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
-                          Perspectiva Narrativa
-                        </label>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        {['Eu', 'Tu/VocÃƒÂª', 'Narrador'].map(p => (
-                          <button 
-                            key={p}
-                            onClick={() => setLyricsPerspective(p)}
-                            className={`py-3 rounded-xl text-[9px] font-bold transition-all border ${lyricsPerspective === p ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-black border-white/5 text-slate-500 hover:border-white/20'}`}
-                          >
-                            {p}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                 </div>
-               )}
-
-               {/* MODO MUSICAL (ESCONDIDO NO COMPOSITOR) */}
-               {activeTab !== 'COMPOSITOR' && (
-                 <>
-                   {/* FUSÃƒÆ’O DE GÃƒÅ NERO */}
+               {/* FUSÃO DE GÊNERO */}
                <div>
                   <div className="flex items-center justify-between mb-3">
                     <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
-                      GÃƒÂªnero SecundÃƒÂ¡rio
+                      Gênero Secundário
                     </label>
-                    <span className="text-[8px] font-bold text-orange-500/50 uppercase">FusÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­brida</span>
+                    <span className="text-[8px] font-bold text-orange-500/50 uppercase">Fusão Híbrida</span>
                   </div>
                   <input 
                     className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-orange-500/50 transition-all"
@@ -1539,7 +1284,7 @@ function App() {
                     value={secondaryGenre}
                     onChange={e => setSecondaryGenre(e.target.value)}
                   />
-                  <p className="text-[8px] text-slate-600 mt-1.5 italic">Cria uma transiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o fluida entre estilos musicais distintos.</p>
+                  <p className="text-[8px] text-slate-600 mt-1.5 italic">Cria uma transição fluida entre estilos musicais distintos.</p>
                </div>
 
                {/* DNA VOCAL */}
@@ -1547,7 +1292,7 @@ function App() {
                   <div className="flex items-center justify-between mb-3">
                     <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
-                      DNA Vocal (ArquÃƒÂ©tipo)
+                      DNA Vocal (Arquétipo)
                     </label>
                     <span className="text-[8px] font-bold text-orange-500/50 uppercase">Textura Visual</span>
                   </div>
@@ -1594,7 +1339,7 @@ function App() {
 
                   {/* TEXTURAS (TEXTURES) - MULTI SELECTION */}
                   <div className="bg-black/20 p-3 rounded-2xl border border-white/5">
-                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-2">Texturas (MÃƒÂºltipla Escolha)</p>
+                    <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-2">Texturas (Múltipla Escolha)</p>
                     <div className="grid grid-cols-3 gap-1.5">
                       {VOCAL_TEXTURES.map(t => {
                         const isSelected = vocalTextures.includes(t.id);
@@ -1614,6 +1359,8 @@ function App() {
                       })}
                     </div>
                   </div>
+               </div>
+
                </div>
 
                {/* SISTEMA DE ESTRUTURA MUSICAL */}
@@ -1702,14 +1449,14 @@ function App() {
                           </div>
                         </div>
 
-                        {/* PROGRESSÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ES */}
+                        {/* PROGRESSÕES */}
                         <div>
                           <div className="flex flex-wrap items-center justify-between mb-3 gap-3">
                             <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 uppercase flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50 flex-shrink-0"></span> ProgressÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes de Acordes
+                              <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50 flex-shrink-0"></span> Progressões de Acordes
                             </p>
                             <button type="button" onClick={handleMagicGenerator} className="flex-1 min-w-fit flex items-center justify-center gap-1.5 px-3 py-2 bg-[#121212] border border-orange-500/20 text-orange-500 rounded-lg text-[8px] font-black hover:bg-orange-500 hover:text-black transition-all shadow-md active:scale-95">
-                              <Sparkles className="w-2.5 h-2.5 flex-shrink-0" /> GERADOR MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂGICO
+                              <Sparkles className="w-2.5 h-2.5 flex-shrink-0" /> GERADOR MÁGICO
                             </button>
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -1735,10 +1482,10 @@ function App() {
                           </div>
                         </div>
 
-                        {/* EMOÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O MUSICAL */}
+                        {/* EMOÇÃO MUSICAL */}
                         <div>
                           <p className="text-[9px] font-black tracking-[0.2em] text-yellow-400 mb-3 uppercase flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span> EmoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Musical
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span> Emoção Musical
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {EMOTIONS.map(e => (
@@ -1783,7 +1530,7 @@ function App() {
                   )}
                </div>
 
-               {/* ORQUESTRADOR AVANÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ADO */}
+               {/* ORQUESTRADOR AVANÇADO */}
                <div className="pt-4 border-t border-white/5">
                   <button 
                     type="button"
@@ -1793,8 +1540,8 @@ function App() {
                     <div className="flex items-center gap-3">
                       <Wand2 className="w-5 h-5 text-orange-500" />
                       <div className="text-left">
-                        <span className="block text-[10px] font-black text-slate-300 uppercase tracking-widest group-hover:text-orange-500 transition-colors">Orquestrador de Instrumentos & TÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cnicas</span>
-                        <span className="block text-[8px] text-slate-500 mt-0.5">Explore violÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes, guitarras, efeitos e dezenas de percussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes</span>
+                        <span className="block text-[10px] font-black text-slate-300 uppercase tracking-widest group-hover:text-orange-500 transition-colors">Orquestrador de Instrumentos & Técnicas</span>
+                        <span className="block text-[8px] text-slate-500 mt-0.5">Explore violões, guitarras, efeitos e dezenas de percussões</span>
                       </div>
                     </div>
                     {showOrchestrator ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
@@ -1857,7 +1604,7 @@ function App() {
                   )}
                 </div>
 
-                {/* BIBLIOTECA DE TAGS SUNO (SISTEMA DO USUÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂRIO) */}
+                {/* BIBLIOTECA DE TAGS SUNO (SISTEMA DO USUÁRIO) */}
                 <div className="pt-4 border-t border-white/5">
                   <button 
                     type="button"
@@ -1868,7 +1615,7 @@ function App() {
                       <Search className="w-5 h-5 text-orange-500" />
                       <div className="text-left">
                         <span className="block text-[10px] font-black text-white uppercase tracking-widest group-hover:text-orange-400 transition-colors">Biblioteca de Tags Suno (350+)</span>
-                        <span className="block text-[8px] text-orange-500/50 mt-0.5">Explore GÃƒÂªneros, Vocais, Moods e ProduÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o</span>
+                        <span className="block text-[8px] text-orange-500/50 mt-0.5">Explore Gêneros, Vocais, Moods e Produção</span>
                       </div>
                     </div>
                     {showTagLibrary ? <ChevronUp className="w-4 h-4 text-orange-500" /> : <ChevronDown className="w-4 h-4 text-orange-500" />}
@@ -1883,7 +1630,7 @@ function App() {
                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500" />
                           <input 
                             type="text"
-                            placeholder="Buscar tag especÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­fica..."
+                            placeholder="Buscar tag específica..."
                             className="w-full bg-black/40 border border-white/5 rounded-xl py-2 pl-8 pr-4 text-[10px] outline-none focus:border-orange-500/50"
                             value={searchTagTerm}
                             onChange={(e) => setSearchTagTerm(e.target.value)}
@@ -1931,7 +1678,7 @@ function App() {
                     </div>
                   )}
                   
-                  {/* VisualizaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de Tags Selecionadas da Biblioteca */}
+                  {/* Visualização de Tags Selecionadas da Biblioteca */}
                   {selectedLibraryTags.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-3 p-3 bg-orange-500/5 rounded-xl border border-orange-500/10">
                       {selectedLibraryTags.map(tag => (
@@ -1958,7 +1705,7 @@ function App() {
                <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Filtro de Pureza (Negativo)</label>
-                    <span className="text-[8px] font-bold text-red-500/50 uppercase">ExclusÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o</span>
+                    <span className="text-[8px] font-bold text-red-500/50 uppercase">Exclusão</span>
                   </div>
                   <input 
                     className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-red-500/50 transition-all"
@@ -1966,25 +1713,23 @@ function App() {
                     value={negativePrompt}
                     onChange={e => setNegativePrompt(e.target.value)}
                   />
-                  <p className="text-[8px] text-slate-600 mt-1.5 italic">Remove elementos indesejados da composiÃƒÂ§ÃƒÂ£o final.</p>
+                  <p className="text-[8px] text-slate-600 mt-1.5 italic">Remove elementos indesejados da composição final.</p>
                </div>
-             </>
-           )}
-          </div>
-        )}
+            </div>
+          )}
 
           <button 
-            onClick={activeTab === 'COMPOSITOR' ? generateLyrics : generateMusicConcept}
-            disabled={isGenerating || isGeneratingLyrics}
-            className={`w-full font-black py-5 rounded-full transition-all uppercase text-xs tracking-widest disabled:opacity-50 active:scale-95 shadow-xl ${(isProMode || activeTab === 'COMPOSITOR') ? 'bg-gradient-to-r from-orange-600 to-amber-500 text-black hover:shadow-orange-500/20' : 'bg-white text-black hover:bg-orange-500 shadow-white/5'}`}
+            onClick={generateMusicConcept}
+            disabled={isGenerating}
+            className={`w-full font-black py-5 rounded-full transition-all uppercase text-xs tracking-widest disabled:opacity-50 active:scale-95 shadow-xl ${isProMode ? 'bg-gradient-to-r from-orange-600 to-amber-500 text-black hover:shadow-orange-500/20' : 'bg-white text-black hover:bg-orange-500 shadow-white/5'}`}
           >
-            {isGenerating || isGeneratingLyrics ? 'A Processar...' : (activeTab === 'COMPOSITOR' ? 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“Ãƒâ€šÃ‚ÂÃƒÆ’Ã‚Â¯Ãƒâ€šÃ‚Â¸Ãƒâ€šÃ‚Â Escrever Letra' : (isProMode ? 'ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã‚Â¡Ãƒâ€šÃ‚Â¡ Gerar como Produtor' : 'Convocar o Maestro'))}
+            {isGenerating ? 'A Processar...' : (isProMode ? '⚡ Gerar como Produtor' : 'Convocar o Maestro')}
           </button>
         </section>
 
-        {/* ESTÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â¡DIO VIRTUAL (DIREITA) */}
+        {/* ESTÚDIO VIRTUAL (DIREITA) */}
         <section className="lg:col-span-8">
-          {isGenerating || isGeneratingLyrics ? (
+          {isGenerating ? (
             <div className="bg-[#161616]/50 rounded-[40px] p-8 border border-white/5 flex flex-col items-center justify-center min-h-[500px] text-center animate-in fade-in duration-500">
                <div className="w-48 h-48 relative flex items-center justify-center mb-10">
                   <div className="absolute inset-0 border-8 border-orange-500/10 rounded-full"></div>
@@ -2004,64 +1749,22 @@ function App() {
                   ></div>
                </div>
                <h3 className="text-white text-sm font-black uppercase tracking-[0.3em] mb-2">
-                 {isGeneratingLyrics ? 'O Ghostwriter estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ a Escrever...' : 'O Maestro estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ a Elaborar...'}
+                 O Maestro está a Elaborar...
                </h3>
                <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">
-                 {isGeneratingLyrics ? 'Criando rimas e MÃƒÂ©tricas perfeitas' : 'A analisar DNA Sonoro e Estrutura'}
+                 A analisar DNA Sonoro e Estrutura
                </p>
-            </div>
-          ) : activeTab === 'COMPOSITOR' && lyricsResult ? (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
-              <div className="bg-white rounded-[40px] p-8 text-black shadow-2xl relative overflow-hidden min-h-[600px] flex flex-col">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
-                      <Mic2 className="w-5 h-5 text-black" />
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase opacity-50 tracking-widest block">Obra Original</span>
-                      <h4 className="text-sm font-black uppercase text-black">{lyricsTheme}</h4>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => {
-                        setCustomLyrics(lyricsResult);
-                        setActiveTab('MANUAL');
-                        setTimeout(() => {
-                          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                        }, 100);
-                      }} 
-                      className="flex items-center gap-2 bg-orange-500 text-black px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase hover:bg-black hover:text-orange-500 transition-all shadow-md active:scale-95"
-                    >
-                      <Sparkles className="w-4 h-4" /> Injetar no Maestro
-                    </button>
-                    <button onClick={() => copyPrompt(lyricsResult)} className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase hover:bg-slate-800 transition-all shadow-lg active:scale-95">
-                      {copySuccess ? <><CheckCheck className="w-4 h-4 text-green-400" /> Copiado!</> : <><CopyIcon className="w-4 h-4" /> Copiar Letra</>}
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="flex-1 bg-black/5 p-8 rounded-[32px] font-medium text-base whitespace-pre-wrap leading-relaxed shadow-inner border border-black/5 mb-6 overflow-y-auto max-h-[500px] custom-scrollbar text-slate-800 italic">
-                  {lyricsResult}
-                </div>
-
-                <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
-                  <p className="text-[9px] font-bold text-orange-800 uppercase mb-1">Dica do Ghostwriter:</p>
-                  <p className="text-[11px] text-orange-700">Esta letra foi otimizada para o Suno AI. Use os colchetes [Verse], [Chorus] para guiar a IA.</p>
-                </div>
-              </div>
             </div>
           ) : maestroAnalysis ? (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-700">
-              {/* BARRA DE AÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ES RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂPIDAS */}
+              {/* BARRA DE AÇÕES RÁPIDAS */}
               <div className="flex flex-wrap gap-3 mb-4">
                 <button 
                   onClick={() => setIsComparisonMode(!isComparisonMode)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-[10px] font-black uppercase transition-all ${isComparisonMode ? 'bg-orange-500 text-black' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
                 >
                   <Split className="w-3 h-3" />
-                  {isComparisonMode ? 'Modo ComparaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o On' : 'Comparar rascunhos'}
+                  {isComparisonMode ? 'Modo Comparação On' : 'Comparar rascunhos'}
                 </button>
                 <div className="h-8 w-[1px] bg-white/10 mx-2 hidden md:block"></div>
                 <button 
@@ -2099,7 +1802,7 @@ function App() {
                   {/* METADADOS */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
-                      ['GÃƒÂªnero', maestroAnalysis.genre],
+                      ['Gênero', maestroAnalysis.genre],
                       ['BPM', maestroAnalysis.bpm],
                       ['Escala', maestroAnalysis.key],
                       ['Status', 'Pronto']
@@ -2111,15 +1814,15 @@ function App() {
                     ))}
                   </div>
 
-                  {/* ANÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂLISE E VEREDITO */}
+                  {/* ANÁLISE E VEREDITO */}
                   <div className="bg-orange-500/5 border border-orange-500/10 p-8 rounded-[40px] relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-orange-500 opacity-50" />
                     <div className="flex justify-between items-start mb-3">
                       <h4 className="text-[10px] font-black text-orange-500 uppercase flex items-center gap-2 tracking-widest">
-                        <History className="w-3 h-3" /> {isComparisonMode ? 'Veredito do Maestro' : 'AnÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lise de Estilo'}
+                        <History className="w-3 h-3" /> {isComparisonMode ? 'Veredito do Maestro' : 'Análise de Estilo'}
                       </h4>
                       {isComparisonMode && (
-                        <span className="bg-orange-500 text-black text-[8px] font-black px-2 py-1 rounded-md animate-bounce">MELHOR OPÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O</span>
+                        <span className="bg-orange-500 text-black text-[8px] font-black px-2 py-1 rounded-md animate-bounce">MELHOR OPÇÃO</span>
                       )}
                     </div>
                     <p className="text-sm text-slate-300 italic leading-relaxed group-hover:text-white transition-colors duration-500">
@@ -2127,7 +1830,7 @@ function App() {
                     </p>
                     {maestroAnalysis.production_tips && (
                       <div className="mt-4 pt-4 border-t border-white/5">
-                        <p className="text-[9px] font-bold text-orange-500/40 uppercase mb-2">Dica de ProduÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</p>
+                        <p className="text-[9px] font-bold text-orange-500/40 uppercase mb-2">Dica de Produção:</p>
                         <p className="text-[11px] text-slate-400">{maestroAnalysis.production_tips}</p>
                       </div>
                     )}
@@ -2153,7 +1856,7 @@ function App() {
                     {/* ESTRUTURA MUSICAL (SE HOUVER) */}
                     {maestroAnalysis.musical_structure && (
                       <div className="space-y-4 pt-6 border-t border-black/5">
-                         <h5 className="text-[10px] font-black uppercase opacity-40">Estrutura da composiÃƒÂ§ÃƒÂ£o</h5>
+                         <h5 className="text-[10px] font-black uppercase opacity-40">Estrutura da Composição</h5>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {Object.entries(maestroAnalysis.musical_structure).map(([section, text]) => (
                                <div key={section} className="bg-black/5 p-4 rounded-2xl relative group">
@@ -2163,7 +1866,7 @@ function App() {
                                     <button onClick={() => insertIntoLyrics(section, text)} className="p-1.5 bg-orange-500 rounded-lg text-black hover:bg-black hover:text-orange-500 transition-all shadow-md" title="Inserir na Letra">
                                       <ArrowRight className="w-3 h-3" />
                                     </button>
-                                    <button onClick={() => copyPrompt(`[${section}]\n[${text}]`)} className="p-1.5 bg-white/80 rounded-lg hover:bg-orange-500 hover:text-white transition-all shadow-md" title="Copiar SeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o">
+                                    <button onClick={() => copyPrompt(`[${section}]\n[${text}]`)} className="p-1.5 bg-white/80 rounded-lg hover:bg-orange-500 hover:text-white transition-all shadow-md" title="Copiar Seção">
                                       <CopyIcon className="w-3 h-3 text-slate-700 hover:text-white" />
                                     </button>
                                   </div>
@@ -2193,10 +1896,10 @@ function App() {
                         <div>
                           <h4 className="text-xs font-black uppercase flex items-center gap-2 text-black">
                             <FileAudio className="w-4 h-4 text-orange-500" />
-                            Montador de Letras AutomÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡tico
+                            Montador de Letras Automático
                           </h4>
                           <p className="text-[10px] text-slate-500 mt-1">
-                            Cole sua letra aqui. Clique nos botÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes <span className="inline-flex bg-orange-500 text-black px-1 py-0.5 rounded text-[8px] mx-1"><ArrowRight className="w-2 h-2" /></span> na estrutura acima para injetar as tags direto na letra.
+                            Cole sua letra aqui. Clique nos botões <span className="inline-flex bg-orange-500 text-black px-1 py-0.5 rounded text-[8px] mx-1"><ArrowRight className="w-2 h-2" /></span> na estrutura acima para injetar as tags direto na letra.
                           </p>
                         </div>
                         <button onClick={() => copyPrompt(customLyrics)} className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase hover:bg-orange-500 hover:text-black transition-all whitespace-nowrap active:scale-95 shadow-lg">
@@ -2207,12 +1910,12 @@ function App() {
                       {/* QUICK TAGS (Apenas no Modo Produtor) */}
                       {isProMode && (
                         <div className="flex flex-wrap gap-2 mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                          <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest self-center mr-2">Tags RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡pidas:</span>
+                          <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest self-center mr-2">Tags Rápidas:</span>
                           {[
                             { label: 'Intro Falada', tag: 'Intro - spoken' },
                             { label: 'Intro', tag: 'Intro' },
                             { label: 'Verso', tag: 'Verse' },
-                            { label: 'RefrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', tag: 'Chorus' },
+                            { label: 'Refrão', tag: 'Chorus' },
                             { label: 'Ponte', tag: 'Bridge' },
                             { label: 'Solo', tag: 'Guitar Solo' },
                             { label: 'Final', tag: 'Outro' }
@@ -2233,7 +1936,7 @@ function App() {
                           ref={lyricsTextareaRef}
                           value={customLyrics}
                           onChange={(e) => setCustomLyrics(e.target.value)}
-                          placeholder="[Intro]&#10;Cole o comeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o da sua letra aqui...&#10;&#10;(Em seguida, clique em algum card da [Estrutura da composiÃƒÂ§ÃƒÂ£o] logo acima para injetar as instruÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes musicais automaticamente na posiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o do cursor.)"
+                          placeholder="[Intro]&#10;Cole o começo da sua letra aqui...&#10;&#10;(Em seguida, clique em algum card da [Estrutura da Composição] logo acima para injetar as instruções musicais automaticamente na posição do cursor.)"
                           className="w-full h-80 bg-[#f5f5f5] text-slate-800 border border-slate-200 rounded-3xl p-6 text-sm outline-none resize-y focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all shadow-inner leading-relaxed font-medium"
                         />
                       </div>
@@ -2251,12 +1954,12 @@ function App() {
                 </div>
               </div>
               <h3 className="text-orange-500/50 text-xs font-black uppercase tracking-[0.3em] mb-4">
-                EstÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdio Virtual Ativo
+                Estúdio Virtual Ativo
               </h3>
               {activeTab === 'MANUAL' ? (
                 <>
                   <p className="text-[10px] text-slate-600 uppercase font-bold tracking-widest mb-6 max-w-xs">
-                    Selecione rapidamente um dos GÃƒÂªneros disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis:
+                    Selecione rapidamente um dos gêneros disponíveis:
                   </p>
 
                   <div className="flex flex-wrap justify-center gap-2 w-full max-w-2xl px-2">
@@ -2266,7 +1969,7 @@ function App() {
                         onMouseEnter={() => playGenrePreview(genre)}
                         onMouseLeave={() => stopGenrePreview()}
                         onClick={() => {
-                           setUserQuery(`MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica estilo ${genre}`);
+                           setUserQuery(`Música estilo ${genre}`);
                            setBaseGenre(genre);
                            setSecondaryGenre('');
                            setActiveTab('MANUAL');
@@ -2288,7 +1991,7 @@ function App() {
                 </>
               ) : (
                 <p className="text-[10px] text-slate-600 uppercase font-bold tracking-widest mb-6 max-w-xs">
-                  Preencha os dados no painel de controle para iniciar a produÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o.
+                  Preencha os dados no painel de controle para iniciar a produção.
                 </p>
               )}
             </div>
@@ -2301,7 +2004,7 @@ function App() {
         <section className="max-w-6xl mx-auto mt-20 border-t border-white/10 pt-16">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
             <h2 className="text-xl font-black text-white uppercase tracking-tighter flex items-center gap-3">
-              <History className="w-6 h-6 text-orange-500" /> HistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rico de SessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
+              <History className="w-6 h-6 text-orange-500" /> Histórico de Sessões
             </h2>
 
             <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
@@ -2309,7 +2012,7 @@ function App() {
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-orange-500 transition-colors" />
                   <input 
                     type="text"
-                    placeholder="Buscar prompt ou GÃƒÂªnero..."
+                    placeholder="Buscar prompt ou gênero..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full bg-white/5 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-orange-500/30 transition-all"
@@ -2355,11 +2058,11 @@ function App() {
                   
                   <div className="flex items-center justify-between group/name">
                     <p className="text-sm text-white font-bold truncate">
-                      {p.customName || `${p.bpm} BPM ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ${renderSafe(p.key)}`}
+                      {p.customName || `${p.bpm} BPM • ${renderSafe(p.key)}`}
                     </p>
                     <button 
                       onClick={() => {
-                        const name = prompt("Novo nome para esta sessÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:", p.customName || "");
+                        const name = prompt("Novo nome para esta sessão:", p.customName || "");
                         if (name !== null) renameEntry(p.id, name);
                       }}
                       className="opacity-0 group-hover/name:opacity-100 p-1 hover:text-orange-500 transition-all"
@@ -2373,7 +2076,7 @@ function App() {
                   onClick={() => { setMaestroAnalysis(p); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className="w-full py-3 bg-white/5 rounded-2xl text-[10px] font-black uppercase hover:bg-white hover:text-black transition-all"
                 >
-                  Abrir no EstÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdio
+                  Abrir no Estúdio
                 </button>
               </div>
             ))}
@@ -2403,7 +2106,7 @@ function App() {
                 </div>
                 <div>
                   <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter leading-none mb-2">
-                    EstÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºdio do <span className="text-violet-500">Arranjador</span>
+                    Estúdio do <span className="text-violet-500">Arranjador</span>
                   </h2>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest bg-white/5 px-2 py-1 rounded-md">
@@ -2432,14 +2135,14 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">01</span>
-                        Qual ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© a intenÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e a alma da mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica?
+                        Qual é a intenção e a alma da música?
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-3">
                           <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Mensagem Principal</label>
                           <textarea 
                             className="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-sm outline-none focus:border-violet-500/50 transition-all min-h-[120px] resize-none"
-                            placeholder="Sobre o que fala a mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica? Ex: SuperaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o, um amor de verÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o..."
+                            placeholder="Sobre o que fala a música? Ex: Superação, um amor de verão..."
                             value={arrangerData.intention.message}
                             onChange={(e) => setArrangerData({...arrangerData, intention: {...arrangerData.intention, message: e.target.value}})}
                           />
@@ -2457,7 +2160,7 @@ function App() {
                       <div className="mt-8">
                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block mb-3">Vibe Predominante</label>
                          <div className="flex flex-wrap gap-2">
-                           {['Introspectiva', 'EnergÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©tica', 'Emocional', 'Comercial'].map(vibe => (
+                           {['Introspectiva', 'Energética', 'Emocional', 'Comercial'].map(vibe => (
                              <button
                                key={vibe}
                                onClick={() => setArrangerData({...arrangerData, intention: {...arrangerData.intention, mood: vibe}})}
@@ -2473,20 +2176,20 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                          <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">02</span>
-                         DNA & ReferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncias
+                         DNA & Referências
                       </h3>
                       <div className="space-y-6">
                         <div className="space-y-3">
-                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Links de ReferÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia (YouTube/Spotify)</label>
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Links de Referência (YouTube/Spotify)</label>
                           <input 
                             className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50 transition-all"
-                            placeholder="Cole links aqui separados por vÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­rgula..."
+                            placeholder="Cole links aqui separados por vírgula..."
                             value={arrangerData.references.links}
                             onChange={(e) => setArrangerData({...arrangerData, references: {...arrangerData.references, links: e.target.value}})}
                           />
                         </div>
                         <div className="space-y-3">
-                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">O que VocÃƒÂª gosta nelas?</label>
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">O que você gosta nelas?</label>
                           <textarea 
                             className="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-sm outline-none focus:border-violet-500/50 transition-all min-h-[100px] resize-none"
                             placeholder="Gosto do timbre da bateria, do clima sombrio, etc..."
@@ -2495,7 +2198,7 @@ function App() {
                           />
                         </div>
                          <div className="flex items-center gap-4">
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mr-2">Estilo de CriaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o:</span>
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mr-2">Estilo de Criação:</span>
                             {['Parecido', 'Inspirado'].map(nat => (
                               <button
                                 key={nat}
@@ -2516,7 +2219,7 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">03</span>
-                        Sobre a Voz & IntÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©rprete
+                        Sobre a Voz & Intérprete
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-4">
@@ -2533,7 +2236,7 @@ function App() {
                              ))}
                           </div>
                           <div className="grid grid-cols-3 gap-2">
-                             {['Grave', 'MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©dia', 'Aguda'].map(r => (
+                             {['Grave', 'Média', 'Aguda'].map(r => (
                                <button
                                  key={r}
                                  onClick={() => setArrangerData({...arrangerData, vocal: {...arrangerData.vocal, range: r}})}
@@ -2551,13 +2254,13 @@ function App() {
                             value={arrangerData.vocal.strength}
                             onChange={(e) => setArrangerData({...arrangerData, vocal: {...arrangerData.vocal, strength: e.target.value}})}
                           >
-                            <option value="" className="bg-black">Selecione uma forÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§a...</option>
-                            <option value="InterpretaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Emocional" className="bg-black">InterpretaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Emocional</option>
-                            <option value="PotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia Vocal" className="bg-black">PotÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªncia Vocal</option>
-                            <option value="TÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cnica / Virtuosismo" className="bg-black">TÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cnica / Virtuosismo</option>
+                            <option value="" className="bg-black">Selecione uma força...</option>
+                            <option value="Interpretação Emocional" className="bg-black">Interpretação Emocional</option>
+                            <option value="Potência Vocal" className="bg-black">Potência Vocal</option>
+                            <option value="Técnica / Virtuosismo" className="bg-black">Técnica / Virtuosismo</option>
                           </select>
                           <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Valorizar na MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica:</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Valorizar na Música:</label>
                             <div className="flex flex-wrap gap-2">
                                {['Letra', 'Melodia', 'Performance'].map(f => (
                                  <button
@@ -2577,14 +2280,14 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">04</span>
-                        Estrutura da MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica
+                        Estrutura da Música
                       </h3>
                       <div className="bg-white/5 border border-white/10 rounded-[30px] p-8 space-y-8">
                          <div className="flex flex-col md:flex-row gap-6 justify-between">
                             <div className="space-y-3">
-                              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">JÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ tem estrutura definida?</span>
+                              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Já tem estrutura definida?</span>
                               <div className="flex gap-2">
-                                {['Sim', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o'].map(v => (
+                                {['Sim', 'Não'].map(v => (
                                   <button
                                     key={v}
                                     onClick={() => setArrangerData({...arrangerData, structure: {...arrangerData.structure, defined: v}})}
@@ -2606,10 +2309,10 @@ function App() {
                             </div>
                          </div>
                          <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">O refrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o deve crescer ou jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ forte?</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">O refrão deve crescer ou já está forte?</label>
                             <input 
                               className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-sm text-slate-300 outline-none focus:border-violet-500/50 transition-all"
-                              placeholder="Ex: Precisa de uma explosÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©pica, ou ser sutil..."
+                              placeholder="Ex: Precisa de uma explosão épica, ou ser sutil..."
                               value={arrangerData.structure.chorusGrowth}
                               onChange={(e) => setArrangerData({...arrangerData, structure: {...arrangerData.structure, chorusGrowth: e.target.value}})}
                             />
@@ -2624,12 +2327,12 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">05</span>
-                        GÃƒÂªnero Musical & Estilo
+                        Gênero Musical & Estilo
                       </h3>
                       <div className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                            <div className="space-y-3">
-                              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">GÃƒÂªnero Principal</label>
+                              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Gênero Principal</label>
                               <input 
                                 className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
                                 placeholder="MPB, Trap, Gospel, Jazz..."
@@ -2656,7 +2359,7 @@ function App() {
                            />
                            <div>
                               <p className="text-xs font-black text-white uppercase tracking-tighter">Deixar o Arranjador definir o melhor estilo</p>
-                              <p className="text-[9px] text-slate-500 uppercase font-black">Com base em todas as outras informaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes passadas</p>
+                              <p className="text-[9px] text-slate-500 uppercase font-black">Com base em todas as outras informações passadas</p>
                            </div>
                         </div>
                       </div>
@@ -2671,7 +2374,7 @@ function App() {
                          <div className="space-y-4">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Velocidade</label>
                             <div className="flex flex-col gap-2">
-                               {['Lenta (Balada)', 'MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©dia', 'RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡pida'].map(t => (
+                               {['Lenta (Balada)', 'Média', 'Rápida'].map(t => (
                                  <button
                                    key={t}
                                    onClick={() => setArrangerData({...arrangerData, rhythm: {...arrangerData.rhythm, tempo: t}})}
@@ -2683,7 +2386,7 @@ function App() {
                             </div>
                          </div>
                          <div className="space-y-4">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">IntenÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tmica</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Intenção Rítmica</label>
                             <div className="flex flex-col gap-2">
                                {['Mais Levada', 'Mais Marcada'].map(n => (
                                  <button
@@ -2699,7 +2402,7 @@ function App() {
                          <div className="space-y-4">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Groove</label>
                             <div className="flex flex-col gap-2">
-                               {['OrgÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢nico (Bateria Real)', 'EletrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´nico (Beat)'].map(g => (
+                               {['Orgânico (Bateria Real)', 'Eletrônico (Beat)'].map(g => (
                                  <button
                                    key={g}
                                    onClick={() => setArrangerData({...arrangerData, rhythm: {...arrangerData.rhythm, groove: g}})}
@@ -2724,9 +2427,9 @@ function App() {
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                          <div className="space-y-4">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">JÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ tem cifra ou melodia?</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Já tem cifra ou melodia?</label>
                             <div className="flex gap-2">
-                                {['Sim', 'NÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o'].map(v => (
+                                {['Sim', 'Não'].map(v => (
                                   <button
                                     key={v}
                                     onClick={() => setArrangerData({...arrangerData, harmony: {...arrangerData.harmony, hasChords: v}})}
@@ -2738,7 +2441,7 @@ function App() {
                             </div>
                          </div>
                          <div className="space-y-4">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Complexidade HarmÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´nica</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Complexidade Harmônica</label>
                             <div className="flex flex-col gap-2">
                                {['Simples e Direta', 'Mais Sofisticada (Acordes Ricos)'].map(c => (
                                  <button
@@ -2755,7 +2458,7 @@ function App() {
                       <div className="mt-8 space-y-3">
                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Sabor da Harmonia</label>
                          <div className="flex flex-wrap gap-2">
-                            {['Popular/Pop', 'ArtÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­stico', 'JazzÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­stico', 'EclesiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡stico/Gospel'].map(f => (
+                            {['Popular/Pop', 'Artístico', 'Jazzístico', 'Eclesiástico/Gospel'].map(f => (
                               <button
                                 key={f}
                                 onClick={() => setArrangerData({...arrangerData, harmony: {...arrangerData.harmony, flavor: f}})}
@@ -2771,13 +2474,13 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">08</span>
-                        InstrumentaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
+                        Instrumentação
                       </h3>
                       <div className="space-y-6">
                          <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block mb-4">Escolha os instrumentos base:</label>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                               {['ViolÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o', 'Piano', 'Guitarra', 'Orquestra', 'Sintetizadores', 'Metais', 'PercussÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o Latina', 'Bateria Pesada'].map(i => (
+                               {['Violão', 'Piano', 'Guitarra', 'Orquestra', 'Sintetizadores', 'Metais', 'Percussão Latina', 'Bateria Pesada'].map(i => (
                                  <button
                                    key={i}
                                    onClick={() => {
@@ -2827,14 +2530,14 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">09</span>
-                        DinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mica & Crescimento
+                        Dinâmica & Crescimento
                       </h3>
                       <div className="space-y-6">
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-3">
-                               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">InÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­cio da MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica</label>
+                               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Início da Música</label>
                                <div className="flex gap-2">
-                                  {['ComeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ar Simples', 'ComeÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ar Intensa'].map(s => (
+                                  {['Começar Simples', 'Começar Intensa'].map(s => (
                                     <button
                                       key={s}
                                       onClick={() => setArrangerData({...arrangerData, dynamics: {...arrangerData.dynamics, start: s}})}
@@ -2846,7 +2549,7 @@ function App() {
                                </div>
                             </div>
                             <div className="space-y-3">
-                               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">O RefrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o deve...</label>
+                               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">O Refrão deve...</label>
                                <div className="flex gap-2">
                                   {['Explodir', 'Manter Vibe'].map(c => (
                                     <button
@@ -2861,10 +2564,10 @@ function App() {
                             </div>
                          </div>
                          <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Viradas & TransiÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Viradas & Transições</label>
                             <textarea 
                               className="w-full bg-white/5 border border-white/10 rounded-3xl p-5 text-sm outline-none focus:border-violet-500/50"
-                              placeholder="Ex: Quero um drop pesado antes do refrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o, ou pausas dramÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ticas..."
+                              placeholder="Ex: Quero um drop pesado antes do refrão, ou pausas dramáticas..."
                               value={arrangerData.dynamics.transitions}
                               onChange={(e) => setArrangerData({...arrangerData, dynamics: {...arrangerData.dynamics, transitions: e.target.value}})}
                             />
@@ -2875,13 +2578,13 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">10</span>
-                        ProduÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o & Sonoridade
+                        Produção & Sonoridade
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                          <div className="space-y-4">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Estilo de ProduÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Estilo de Produção</label>
                             <div className="grid grid-cols-2 gap-2">
-                               {['Moderno (Streaming)', 'Vintage / RetrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´', 'AcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico Cru', 'CinematogrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡fico'].map(e => (
+                               {['Moderno (Streaming)', 'Vintage / Retrô', 'Acústico Cru', 'Cinematográfico'].map(e => (
                                  <button
                                    key={e}
                                    onClick={() => setArrangerData({...arrangerData, production: {...arrangerData.production, era: e}})}
@@ -2895,7 +2598,7 @@ function App() {
                          <div className="space-y-4">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Textura do Som</label>
                             <div className="flex gap-2">
-                               {['Mais Limpo', 'Mais Sujo/RÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºstico'].map(t => (
+                               {['Mais Limpo', 'Mais Sujo/Rústico'].map(t => (
                                  <button
                                    key={t}
                                    onClick={() => setArrangerData({...arrangerData, production: {...arrangerData.production, texture: t}})}
@@ -2920,7 +2623,7 @@ function App() {
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                          <div className="space-y-4">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Onde serÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ usada?</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Onde será usada?</label>
                             <div className="grid grid-cols-2 gap-2">
                                {['Spotify/Streaming', 'Redes Sociais', 'Show ao Vivo', 'Trilha Sonora'].map(o => (
                                  <button
@@ -2936,7 +2639,7 @@ function App() {
                          <div className="space-y-4">
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block">Tipo de Projeto</label>
                             <div className="flex gap-2">
-                               {['Autoral ArtÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­stico', 'Comercial/Jingle'].map(p => (
+                               {['Autoral Artístico', 'Comercial/Jingle'].map(p => (
                                  <button
                                    key={p}
                                    onClick={() => setArrangerData({...arrangerData, objective: {...arrangerData.objective, projectType: p}})}
@@ -2957,7 +2660,7 @@ function App() {
                       </h3>
                       <div className="bg-white/5 border border-white/10 rounded-[30px] p-8 space-y-6">
                          <div className="space-y-4">
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block text-center">NÃƒÂ­vel de Liberdade</span>
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block text-center">Nível de Liberdade</span>
                             <div className="flex justify-between gap-2">
                                {['Siga a Risca', 'Moderada', 'Liberdade Total'].map(l => (
                                  <button
@@ -2973,7 +2676,7 @@ function App() {
                          <div className="space-y-4 pt-4 border-t border-white/5">
                             <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">O Arranjador pode alterar:</span>
                             <div className="flex flex-wrap gap-3">
-                               {['Melodia', 'Estrutura', 'Harmonia', 'InstrumentaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o'].map(c => (
+                               {['Melodia', 'Estrutura', 'Harmonia', 'Instrumentação'].map(c => (
                                  <label key={c} className="flex items-center gap-3 bg-black/40 px-5 py-3 rounded-xl border border-white/5 cursor-pointer hover:bg-white/5">
                                     <input 
                                       type="checkbox" 
@@ -3000,14 +2703,14 @@ function App() {
                     <div>
                       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
                         <span className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-full flex items-center justify-center text-violet-500 text-xs">13</span>
-                        Letra & MÃƒÂ©trica (Opcional)
+                        Letra & Métrica (Opcional)
                       </h3>
                       <div className="space-y-6">
                          <div className="relative group">
                             <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-[30px] blur opacity-20 group-focus-within:opacity-40 transition duration-1000"></div>
                             <textarea 
                               className="relative w-full h-80 bg-[#0c0c0c] border border-white/10 rounded-[30px] p-8 text-sm leading-relaxed outline-none focus:border-violet-500/50 resize-none custom-scrollbar"
-                              placeholder="Cole sua letra aqui se jÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ houver uma... O Arranjador irÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ sugerir tags e MÃƒÂ©trica musical."
+                              placeholder="Cole sua letra aqui se já houver uma... O Arranjador irá sugerir tags e métrica musical."
                               value={arrangerData.lyrics.text}
                               onChange={(e) => setArrangerData({...arrangerData, lyrics: {...arrangerData.lyrics, text: e.target.value}})}
                             />
@@ -3020,8 +2723,8 @@ function App() {
                               onChange={(e) => setArrangerData({...arrangerData, lyrics: {...arrangerData.lyrics, analyzeMetric: e.target.checked}})}
                             />
                             <div>
-                               <p className="text-xs font-black text-white uppercase tracking-tighter">Ativar AnÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡lise de MÃƒÂ©trica Profissional</p>
-                               <p className="text-[9px] text-slate-500 uppercase font-black">O Arranjador vai sugerir divisÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes rÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tmicas para cada linha da sua letra baseado no Suno.</p>
+                               <p className="text-xs font-black text-white uppercase tracking-tighter">Ativar Análise de Métrica Profissional</p>
+                               <p className="text-[9px] text-slate-500 uppercase font-black">O Arranjador vai sugerir divisões rítmicas para cada linha da sua letra baseado no Suno.</p>
                             </div>
                          </div>
                       </div>
@@ -3037,13 +2740,13 @@ function App() {
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Palavras ou Frases a Destacar</label>
                             <input 
                               className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
-                              placeholder="Ex: No refrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o, destaque 'Liberdade'..."
+                              placeholder="Ex: No refrão, destaque 'Liberdade'..."
                               value={arrangerData.extra.highlightedWords}
                               onChange={(e) => setArrangerData({...arrangerData, extra: {...arrangerData.extra, highlightedWords: e.target.value}})}
                             />
                          </div>
                          <div className="space-y-3">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Parte que NÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O pode mudar</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Parte que NÃO pode mudar</label>
                             <input 
                               className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
                               placeholder="Ex: A melodia do verso 1 deve ser mantida..."
@@ -3052,10 +2755,10 @@ function App() {
                             />
                          </div>
                          <div className="md:col-span-2 space-y-3 mt-4">
-                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Momento Mais Importante da MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºsica</label>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Momento Mais Importante da Música</label>
                             <input 
                               className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm outline-none focus:border-violet-500/50"
-                              placeholder="Qual o clÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­max? Ex: A virada instrumental final..."
+                              placeholder="Qual o clímax? Ex: A virada instrumental final..."
                               value={arrangerData.extra.keyMoment}
                               onChange={(e) => setArrangerData({...arrangerData, extra: {...arrangerData.extra, keyMoment: e.target.value}})}
                             />
@@ -3092,7 +2795,7 @@ function App() {
                   </>
                 ) : (
                   <>
-                    {arrangerStep === 7 ? 'Finalizar & Gerar Prompt' : 'PrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³xima Fase'}
+                    {arrangerStep === 7 ? 'Finalizar & Gerar Prompt' : 'Próxima Fase'}
                     <ArrowRight className="w-3 h-3" />
                   </>
                 )}
@@ -3112,7 +2815,7 @@ function App() {
                   <Sparkles className="w-5 h-5 text-indigo-500" />
                   PROGGEN
                 </h2>
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mt-1 block">Gerador de ProgressÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes</span>
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mt-1 block">Gerador de Progressões</span>
               </div>
               <button onClick={() => setShowProggenModal(false)} className="bg-white/5 hover:bg-white/10 p-2 rounded-full text-slate-400 hover:text-white transition-all">
                 <X className="w-4 h-4" />
@@ -3215,7 +2918,7 @@ function App() {
           <button onClick={() => setError(null)} className="ml-4 hover:bg-white/20 p-2 rounded-xl transition-colors"><X className="w-4 h-4" /></button>
         </div>
       )}
-      {/* MODAL DE NOMEAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O PREMIUM */}
+      {/* MODAL DE NOMEAÇÃO PREMIUM */}
       {showNamingModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
           <div className="bg-[#121212] w-full max-w-md rounded-[40px] border border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] p-8 animate-in zoom-in-95 duration-200 relative overflow-hidden">
@@ -3227,7 +2930,7 @@ function App() {
               </div>
               <div>
                 <h2 className="text-xl font-black text-white uppercase tracking-tighter">Nomear Prompt</h2>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">DÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª um tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­tulo para sua obra-mestra</p>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dê um título para sua obra-mestra</p>
               </div>
             </div>
 
@@ -3239,7 +2942,7 @@ function App() {
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && confirmSave()}
-                  placeholder="Ex: Pop Rock ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â°pico - Base 01"
+                  placeholder="Ex: Pop Rock Épico - Base 01"
                   className="w-full bg-white/5 border border-white/5 rounded-2xl px-6 py-5 text-sm font-bold text-white outline-none focus:border-orange-500/30 focus:ring-4 focus:ring-orange-500/5 transition-all text-center"
                 />
               </div>
@@ -3267,6 +2970,3 @@ function App() {
 };
 
 export default App;
-
-
-
