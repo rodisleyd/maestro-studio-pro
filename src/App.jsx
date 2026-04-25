@@ -611,7 +611,15 @@ function App() {
     10. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
     11. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing. No modo ESSENCIAL, a estrutura deve refletir a simplicidade do arranjo.
     12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
-    13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você DEVE focar em criar um prompt para uma peça comercial curta. É MANDATÓRIO incluir a duração exata selecionada (ex: "30s duration", "exactly 15 seconds") tanto no campo "style_tags" quanto no "final_prompt". Use tags de interrupção agressivas como "Short", "Stinger", "Button finish", "Extremely short", "Instant end". No campo "musical_structure", crie obrigatoriamente um bloco chamado "Suno Structure (Lyrics Box)" que contenha APENAS tags como [Intro], [Main Hook] e obrigatoriamente a tag [End] no final para forçar o encerramento. NÃO gere letras com palavras, apenas a estrutura de tags técnica.
+    13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você DEVE focar em criar um prompt para uma peça comercial curta. O Suno ignora números no "Style", então você deve ser estratégico:
+    a) No campo "style_tags", NÃO use frases longas. Use apenas termos técnicos de curta duração: "Short, Stinger, Button finish, Advertising, 30s duration, No fade out, Instant stop".
+    b) No campo "musical_structure", crie um bloco com o nome "🔥 COPIE ISSO PARA A CAIXA DE LETRAS (LYRICS)" e formate o conteúdo assim (exemplo para 30s): 
+    [Intro]
+    [Main Catchy Hook]
+    [End at 0:${jingleDuration.replace('s', '')}]
+    [Stop]
+    c) Nas "production_tips", enfatize: "O Suno só respeita a duração se você colar a estrutura acima no campo de Letras (Lyrics), mesmo que a música seja instrumental."
+    d) No "final_prompt", mantenha-o focado no estilo, mas comece com "Short [Duration] Jingle".
     
     JSON:
     {
