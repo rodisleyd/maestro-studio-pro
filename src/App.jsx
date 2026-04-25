@@ -575,12 +575,13 @@ function App() {
         Estilo Musical: ${jingleStyle}
         Emoção: ${jingleEmotion}
         Tom da Mensagem: ${jingleTone}
-        Duração Sugerida: ${jingleDuration}
+        DURAÇÃO REQUERIDA (Obrigatoriamente Curta): ${jingleDuration}
         
-        [INSTRUÇÃO CRÍTICA]
+        [INSTRUÇÃO CRÍTICA PARA DURAÇÃO]
+        O Suno tem dificuldade em parar. Você DEVE usar tags agressivas como "Short", "Stinger", "Button end" e "No fade out" no style_tags.
+        No campo musical_structure, inclua obrigatoriamente a tag [End] ao final do tempo sugerido para forçar o encerramento.
         Foque em um gancho musical (hook) chiclete e memorável. 
-        Estrutura voltada para comercial/propaganda.
-        NÃO GERE LETRAS. O usuário irá implementar as letras em outro aplicativo.
+        NÃO GERE LETRAS COM PALAVRAS.
       `;
     }
 
@@ -610,7 +611,7 @@ function App() {
     10. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
     11. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing. No modo ESSENCIAL, a estrutura deve refletir a simplicidade do arranjo.
     12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
-    13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você deve focar em criar um prompt para uma peça comercial curta. NÃO gere letras no campo musical_structure ou em qualquer outro lugar. No campo musical_structure, descreva apenas a dinâmica musical e timing (ex: [0s-5s] Instrumental Intro, [5s-12s] Main Catchy Hook, [12s-15s] Slogan/CTA dynamics). Use tags como "catchy hook", "commercial jingle", "advertising", "branded content" e especifique a duração aproximada nas style_tags.
+    13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você DEVE focar em criar um prompt para uma peça comercial curta. É MANDATÓRIO que o Suno pare de tocar no tempo solicitado. No campo "style_tags", use tags de interrupção agressivas como "Short", "Stinger", "Button finish", "Extremely short duration", "Instant end". No campo "musical_structure", crie obrigatoriamente um bloco chamado "Suno Structure (Lyrics Box)" que contenha APENAS tags como [Intro], [Main Hook] e obrigatoriamente a tag [End] no final para forçar o encerramento. NÃO gere letras com palavras, apenas a estrutura de tags técnica.
     
     JSON:
     {
@@ -1091,7 +1092,7 @@ function App() {
                       onChange={e => setJingleDuration(e.target.value)}
                       className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
                     >
-                      {['5s', '10s', '15s', '30s'].map(d => (
+                      {['5s', '15s', '30s', '1min'].map(d => (
                         <option key={d} value={d}>{d}</option>
                       ))}
                     </select>
