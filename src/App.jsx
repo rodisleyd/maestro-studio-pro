@@ -611,15 +611,17 @@ function App() {
     10. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
     11. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing. No modo ESSENCIAL, a estrutura deve refletir a simplicidade do arranjo.
     12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
-    13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você DEVE focar em criar um prompt para uma peça comercial curta. O Suno ignora números no "Style", então você deve ser estratégico:
-    a) No campo "style_tags", NÃO use frases longas. Use apenas termos técnicos de curta duração: "Short, Stinger, Button finish, Advertising, 30s duration, No fade out, Instant stop".
-    b) No campo "musical_structure", crie um bloco com o nome "🔥 COPIE ISSO PARA A CAIXA DE LETRAS (LYRICS)" e formate o conteúdo assim (exemplo para 30s): 
+    13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você DEVE focar em criar um prompt para uma peça comercial curta. 
+    REGRAS DE OURO PARA O SUNO:
+    a) NUNCA use colchetes duplos [[ ]] em volta do bloco. Use apenas colchetes simples [ ] para cada tag individual.
+    b) No campo "style_tags", use apenas o essencial: "Short Jingle, Stinger, Button finish, Instant stop, [Gênero], [Voz]". Evite frases longas.
+    c) No campo "musical_structure", crie o bloco "🔥 COPIE PARA A CAIXA DE LETRAS (LYRICS)" exatamente assim:
     [Intro]
-    [Main Catchy Hook]
-    [End at 0:${jingleDuration.replace('s', '')}]
+    [Main Instrumental Hook]
+    [End]
     [Stop]
-    c) Nas "production_tips", enfatize: "O Suno só respeita a duração se você colar a estrutura acima no campo de Letras (Lyrics), mesmo que a música seja instrumental."
-    d) No "final_prompt", mantenha-o focado no estilo, mas comece com "Short [Duration] Jingle".
+    [Silence]
+    d) Nas "production_tips", avise: "Verifique se você copiou APENAS as tags com colchetes simples. Se houver colchetes duplos, o Suno ignorará o comando de parar."
     
     JSON:
     {
