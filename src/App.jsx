@@ -384,6 +384,16 @@ function App() {
   const [searchTagTerm, setSearchTagTerm] = useState('');
   const [showTagLibrary, setShowTagLibrary] = useState(false);
 
+  // ESTADOS DO MODO JINGLE
+  const [jingleGoal, setJingleGoal] = useState('Vender Produto');
+  const [jingleBusiness, setJingleBusiness] = useState('');
+  const [jingleAudience, setJingleAudience] = useState('Popular');
+  const [jingleStyle, setJingleStyle] = useState('');
+  const [jingleEmotion, setJingleEmotion] = useState('Alegre');
+  const [jingleTone, setJingleTone] = useState('Promocional');
+  const [jingleDuration, setJingleDuration] = useState('30s');
+  const [jingleBrand, setJingleBrand] = useState('');
+
 
 
   const [showProggenModal, setShowProggenModal] = useState(false);
@@ -558,6 +568,23 @@ function App() {
     else if (activeTab === 'INFLUÊNCIA') finalQuery = `Artista: ${referenceInput}. Detalhes: ${userQuery}`;
     else if (activeTab === 'DNA ÁUDIO') finalQuery = `Referência: ${selectedFile?.name}. Instruções: ${userQuery}`;
     else if (activeTab === 'INSIGHT VISUAL') finalQuery = `Imagem de Referência: ${imageFile?.name}. Instruções: ${userQuery}`;
+    else if (activeTab === 'JINGLES') {
+      finalQuery = `
+        [JINGLE MODE]
+        Objetivo: ${jingleGoal}
+        Marca/Slogan: ${jingleBrand}
+        Público-Alvo: ${jingleAudience}
+        Estilo Musical: ${jingleStyle}
+        Emoção: ${jingleEmotion}
+        Tom da Mensagem: ${jingleTone}
+        Duração Sugerida: ${jingleDuration}
+        
+        [INSTRUÇÃO CRÍTICA]
+        Foque em um gancho musical (hook) chiclete e memorável. 
+        Estrutura voltada para comercial/propaganda.
+        NÃO GERE LETRAS. O usuário irá implementar as letras em outro aplicativo.
+      `;
+    }
 
     if (!finalQuery.trim() && !selectedFile && !imageFile) return;
 
@@ -585,6 +612,7 @@ function App() {
     10. DICAS DE PRODUÇÃO: O campo "production_tips" deve conter conselhos técnicos em PORTUGUÊS (ex: "Use o Custom Mode no Suno", "Sugerido 120 BPM").
     11. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing. No modo ESSENCIAL, a estrutura deve refletir a simplicidade do arranjo.
     12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
+    13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você deve focar em criar um prompt para uma peça comercial curta. NÃO gere letras no campo musical_structure ou em qualquer outro lugar. No campo musical_structure, descreva apenas a dinâmica musical e timing (ex: [0s-5s] Instrumental Intro, [5s-12s] Main Catchy Hook, [12s-15s] Slogan/CTA dynamics). Use tags como "catchy hook", "commercial jingle", "advertising", "branded content" e especifique a duração aproximada nas style_tags.
     
     JSON:
     {
@@ -847,6 +875,14 @@ function App() {
     setEssencialSecondaryInst('');
     setEssencialTertiaryInst('');
     setSelectedLibraryTags([]);
+    setJingleGoal('Vender Produto');
+    setJingleBusiness('');
+    setJingleAudience('Popular');
+    setJingleStyle('');
+    setJingleEmotion('Alegre');
+    setJingleTone('Promocional');
+    setJingleDuration('30s');
+    setJingleBrand('');
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -965,7 +1001,7 @@ function App() {
 
         {/* NAVEGAÇÃO SUPERIOR */}
         <div className="bg-[#121212] p-1.5 rounded-full border border-white/5 flex gap-1">
-          {['MANUAL', 'ESSENCIAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
+          {['MANUAL', 'JINGLES', 'ESSENCIAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -1007,6 +1043,111 @@ function App() {
                 value={userQuery}
                 onChange={(e) => setUserQuery(e.target.value)}
               />
+            )}
+
+            {activeTab === 'JINGLES' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
+                {/* PRESETS DE JINGLE */}
+                <div>
+                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-3">Presets Rápidos</label>
+                   <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { label: 'Campanha Política', goal: 'Campanha Política', emotion: 'Confiável', tone: 'Institucional', style: 'Sertanejo / Pop' },
+                        { label: 'Promoção Relâmpago', goal: 'Vender Produto', emotion: 'Urgente', tone: 'Chamativo', style: 'Dance / Eletrônico' },
+                        { label: 'Vinheta de Rádio', goal: 'Rádio', emotion: 'Alegre', tone: 'Institucional', style: 'Pop / Synth' },
+                        { label: 'Jingle de Delivery', goal: 'Vender Produto', emotion: 'Divertido', tone: 'Promocional', style: 'Funk / Pop' }
+                      ].map((preset) => (
+                        <button 
+                          key={preset.label}
+                          onClick={() => {
+                            setJingleGoal(preset.goal);
+                            setJingleEmotion(preset.emotion);
+                            setJingleTone(preset.tone);
+                            setJingleStyle(preset.style);
+                          }}
+                          className="py-2.5 px-3 rounded-xl text-[9px] font-black bg-[#0f0f0f] border border-white/5 text-slate-400 hover:border-orange-500/50 hover:text-white transition-all text-left flex items-center justify-between group"
+                        >
+                          {preset.label}
+                          <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </button>
+                      ))}
+                   </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Objetivo</label>
+                    <select 
+                      value={jingleGoal}
+                      onChange={e => setJingleGoal(e.target.value)}
+                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
+                    >
+                      {['Vender Produto', 'Campanha Política', 'Vinheta de Marca', 'Rádio', 'Redes Sociais'].map(g => (
+                        <option key={g} value={g}>{g}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Duração</label>
+                    <select 
+                      value={jingleDuration}
+                      onChange={e => setJingleDuration(e.target.value)}
+                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
+                    >
+                      {['5s', '10s', '15s', '30s'].map(d => (
+                        <option key={d} value={d}>{d}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Nome da Marca / Slogan</label>
+                   <input 
+                     className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
+                     placeholder="Ex: Padaria do João - O melhor pão!"
+                     value={jingleBrand}
+                     onChange={e => setJingleBrand(e.target.value)}
+                   />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Emoção</label>
+                    <select 
+                      value={jingleEmotion}
+                      onChange={e => setJingleEmotion(e.target.value)}
+                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
+                    >
+                      {['Alegre', 'Confiável', 'Urgente', 'Divertido', 'Emocional'].map(e => (
+                        <option key={e} value={e}>{e}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Tom</label>
+                    <select 
+                      value={jingleTone}
+                      onChange={e => setJingleTone(e.target.value)}
+                      className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white appearance-none"
+                    >
+                      {['Promocional', 'Institucional', 'Chamativo', 'Emocional'].map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Estilo Musical</label>
+                   <input 
+                     className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all text-slate-400 font-bold"
+                     placeholder="Ex: Sertanejo, Funk, Pop..."
+                     value={jingleStyle}
+                     onChange={e => setJingleStyle(e.target.value)}
+                   />
+                </div>
+              </div>
             )}
 
             {activeTab === 'ESSENCIAL' && (
