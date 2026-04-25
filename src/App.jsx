@@ -392,7 +392,6 @@ function App() {
   const [jingleEmotion, setJingleEmotion] = useState('Alegre');
   const [jingleTone, setJingleTone] = useState('Promocional');
   const [jingleDuration, setJingleDuration] = useState('30s');
-  const [jingleBrand, setJingleBrand] = useState('');
 
 
 
@@ -572,7 +571,6 @@ function App() {
       finalQuery = `
         [JINGLE MODE]
         Objetivo: ${jingleGoal}
-        Marca/Slogan: ${jingleBrand}
         Público-Alvo: ${jingleAudience}
         Estilo Musical: ${jingleStyle}
         Emoção: ${jingleEmotion}
@@ -882,7 +880,6 @@ function App() {
     setJingleEmotion('Alegre');
     setJingleTone('Promocional');
     setJingleDuration('30s');
-    setJingleBrand('');
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -1099,16 +1096,6 @@ function App() {
                       ))}
                     </select>
                   </div>
-                </div>
-
-                <div>
-                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Nome da Marca / Slogan</label>
-                   <input 
-                     className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-3 text-xs outline-none focus:border-orange-500/50 transition-all font-bold text-white"
-                     placeholder="Ex: Padaria do João - O melhor pão!"
-                     value={jingleBrand}
-                     onChange={e => setJingleBrand(e.target.value)}
-                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
