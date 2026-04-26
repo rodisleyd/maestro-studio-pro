@@ -33,7 +33,7 @@ const ALL_GENRES = [
   "Hip-Hop", "House", "Indie", "Indie Pop", "Indie Rock", "Industrial", "Instrumental", "J-Pop", 
   "Jazz", "K-Pop", "Klezmer", "Lambada", "Latin", "Lo-Fi", "Math Rock", "Metal", "MPB", "New Wave", 
   "Ópera", "Pagode", "Phonk", "Podcast", "Pop", "Post-Rock", "Psychedelic Rock", "Punk", "R&B", 
-  "Rap", "Reggae", "Reggaeton", "Repente", "Rock", "Samba", "Sertanejo", "Sertanejo Raiz", "Sertanejo Universitário", "Ska", "Soul", "Soundtrack", 
+  "Rap", "Reggae", "Reggaeton", "Repente", "Rock", "Rockabilly", "Samba", "Sertanejo", "Sertanejo Raiz", "Sertanejo Universitário", "Ska", "Soul", "Soundtrack", 
   "Surf Music", "Synthwave", "Tango", "Techno", "Trance", "Trap", "Valsa", "Vaporwave"
 ];
 
@@ -183,6 +183,7 @@ const QUICK_EXAMPLES = [
   { label: 'Grunge 90s', query: 'Rock alternativo sujo com guitarras distorcidas', genre: 'Grunge', category: 'Rock' },
   { label: 'Indie Folk', query: 'Folk melódico com violões e harmonias vocais', genre: 'Indie Folk', category: 'Rock' },
   { label: 'Punk Rock', query: 'Punk enérgico e rápido com atitude', genre: 'Punk Rock', category: 'Rock' },
+  { label: 'Rockabilly', query: 'Rock n roll clássico dos anos 50 com guitarra twang e slap bass', genre: 'Rockabilly', category: 'Rock' },
   
   // ELETRÔNICA
   { label: 'Synthwave', query: 'Viagem nostálgica aos anos 80 com sintetizadores retro', genre: 'Synthwave', category: 'Electronic' },
@@ -459,6 +460,13 @@ function App() {
       vocal: 'None',
       instruments: ['Cavaquinho', 'Violão Nylon', 'Violão 7 Cordas', 'Pandeiro', 'Flauta'],
       negative: 'electronic, synth, heavy drums, electric guitar, trap, metal'
+    },
+    'Rockabilly': {
+      label: 'Estilo Rockabilly (50s Rock)',
+      genre: 'Rockabilly / 50s Rock n Roll',
+      vocal: 'Rock Grit',
+      instruments: ['Guitarra Elétrica', 'Baixo Acústico', 'Bateria Completa', 'Piano Acústico'],
+      negative: 'synth, electronic, heavy metal, trap'
     },
     'Drum & Bass': {
       label: 'Estilo Drum & Bass (Eletrônica)',
