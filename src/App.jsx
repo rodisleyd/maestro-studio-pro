@@ -349,6 +349,18 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showNamingModal, setShowNamingModal] = useState(false);
   const [tempName, setTempName] = useState('');
+  
+  // ESTADOS PARA INGESTÃO DE ÁUDIO E TRILHA SONORA
+  const [analysisFile, setAnalysisFile] = useState(null);
+  const [isAnalyzingAudio, setIsAnalyzingAudio] = useState(false);
+  const [sceneVideoFile, setSceneVideoFile] = useState(null);
+  const [sceneVideoPreview, setSceneVideoPreview] = useState(null);
+  const [sceneContext, setSceneContext] = useState('');
+  const [sceneFrames, setSceneFrames] = useState([]);
+  const [sceneFramePreviews, setSceneFramePreviews] = useState([]);
+  const analysisFileInputRef = useRef(null);
+  const videoFileInputRef = useRef(null);
+  const framesInputRef = useRef(null);
 
   const [isComparisonMode, setIsComparisonMode] = useState(false);
   const [promptA, setPromptA] = useState(null);
@@ -575,6 +587,16 @@ function App() {
     else if (activeTab === 'INFLUÊNCIA') finalQuery = `Artista: ${referenceInput}. Detalhes: ${userQuery}`;
     else if (activeTab === 'DNA ÁUDIO') finalQuery = `Referência: ${selectedFile?.name}. Instruções: ${userQuery}`;
     else if (activeTab === 'INSIGHT VISUAL') finalQuery = `Imagem de Referência: ${imageFile?.name}. Instruções: ${userQuery}`;
+    else if (activeTab === 'TRILHA SONORA') {
+      finalQuery = `
+        [SOUNDTRACK MODE]
+        Contexto da Cena: ${sceneContext}
+        Instruções Adicionais: ${userQuery}
+        
+        Sua tarefa é criar uma trilha sonora cinematográfica que se adapte perfeitamente ao ritmo e à emoção da cena descrita ou mostrada no vídeo.
+        Use terminologia de cinema (Leitmotif, Orchestral Swell, Stinger, Soundscape).
+      `;
+    }
     else if (activeTab === 'JINGLES') {
       finalQuery = `
         [JINGLE MODE]
@@ -713,6 +735,38 @@ function App() {
         }
       }
 
+      // Se tiver vídeo e estiver na aba TRILHA SONORA
+      if (sceneVideoFile && activeTab === 'TRILHA SONORA') {
+        try {
+          const base64Data = await fileToBase64(sceneVideoFile);
+          parts.push({
+            inline_data: {
+              mime_type: sceneVideoFile.type,
+              data: base64Data
+            }
+          });
+        } catch (e) {
+          console.error("Erro ao processar vídeo:", e);
+        }
+      }
+
+      // Se tiver frames e estiver na aba TRILHA SONORA
+      if (sceneFrames.length > 0 && activeTab === 'TRILHA SONORA') {
+        for (const frame of sceneFrames) {
+          try {
+            const base64Data = await fileToBase64(frame);
+            parts.push({
+              inline_data: {
+                mime_type: frame.type,
+                data: base64Data
+              }
+            });
+          } catch (e) {
+            console.error("Erro ao processar frame:", e);
+          }
+        }
+      }
+
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -819,6 +873,83 @@ function App() {
     }
   };
 
+  const analyzeAudioReference = async () => {
+    if (!analysisFile || !apiKey) return;
+    
+    setIsAnalyzingAudio(true);
+    setError(null);
+
+    const systemPrompt = `És o "Engenheiro de Som do Maestro Studio Pro". 
+    A tua missão é analisar tecnicamente o ficheiro de áudio e extrair os metadados exatos para configurar o painel de produção (Modo Produtor).
+    
+    Responde APENAS em JSON com o seguinte formato:
+    {
+      "genre": "Gênero principal",
+      "secondaryGenre": "Gênero secundário ou influência",
+      "vocalArchetype": "ID do arquétipo vocal (DEVE ser um destes: 'Male Vocal', 'Female Vocal', 'Child Vocal', 'Modern Pop', 'Rock Grit', 'Intimate Folk', 'Deep Soul', 'Dreamy Pop', 'Soulful R&B')",
+      "bpm": "Label do BPM (DEVE ser um destes: 'LENTO (60-80)', 'MÉDIO (90-110)', 'MODERADO (110-130)', 'RÁPIDO (130-160)', 'MUITO RÁPIDO (160+)')",
+      "key": "Nota (ex: 'C', 'G#', 'A')",
+      "mode": "MAIOR ou MENOR",
+      "mood": "Sentimento principal (DEVE ser um destes: 'ALEGRE', 'MELANCÓLICO', 'TENSO', 'ÉPICO', 'NOSTÁLGICO')",
+      "instruments": ["Lista de instrumentos detectados"],
+      "negativePrompt": "O que evitar no prompt final (ex: 'no electronic', 'no drums')"
+    }
+    
+    Tenta ser o mais fiel possível ao que ouves.`;
+
+    try {
+      const base64Data = await fileToBase64(analysisFile);
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: "Analisa tecnicamente este áudio para preencher o Modo Produtor do Maestro." },
+              { inline_data: { mime_type: analysisFile.type, data: base64Data } }
+            ]
+          }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { 
+            responseMimeType: "application/json", 
+            temperature: 0.1 
+          }
+        })
+      });
+
+      if (!response.ok) throw new Error("A API de análise de áudio falhou.");
+      
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error("A IA não retornou uma análise de áudio.");
+      
+      const result = JSON.parse(text);
+
+      // Preencher os campos do Modo Produtor
+      if (result.secondaryGenre) setSecondaryGenre(result.secondaryGenre);
+      if (result.vocalArchetype) setVocalArchetype(result.vocalArchetype);
+      if (result.bpm) setSelectedBpm(result.bpm);
+      if (result.key) {
+        const k = result.key.replace('m', '');
+        if (MUSICAL_KEYS.includes(k)) setMusicalKey(k);
+      }
+      if (result.mode) setKeyMode(result.mode === 'MENOR' ? 'MENOR' : 'MAIOR');
+      if (result.mood) setEmotion(result.mood);
+      if (result.instruments && Array.isArray(result.instruments)) {
+        setSelectedInstruments(result.instruments);
+      }
+      if (result.negativePrompt) setNegativePrompt(result.negativePrompt);
+      
+      setIsProMode(true);
+      setMaestroAnalysis(null);
+    } catch (err) {
+      console.error(err);
+      setError(`Erro na análise: ${err.message}`);
+    } finally {
+      setIsAnalyzingAudio(false);
+    }
+  };
+
   const saveToLibrary = () => {
     if (!maestroAnalysis) return;
     setTempName(maestroAnalysis.genre || "");
@@ -899,6 +1030,14 @@ function App() {
     setJingleEmotion('Alegre');
     setJingleTone('Promocional');
     setJingleDuration('30s');
+
+    setAnalysisFile(null);
+    setIsAnalyzingAudio(false);
+    setSceneVideoFile(null);
+    setSceneVideoPreview(null);
+    setSceneContext('');
+    setSceneFrames([]);
+    setSceneFramePreviews([]);
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -1017,7 +1156,7 @@ function App() {
 
         {/* NAVEGAÇÃO SUPERIOR */}
         <div className="bg-[#121212] p-1.5 rounded-full border border-white/5 flex gap-1">
-          {['MANUAL', 'JINGLES', 'ESSENCIAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL'].map((tab) => (
+          {['MANUAL', 'JINGLES', 'ESSENCIAL', 'INFLUÊNCIA', 'DNA ÁUDIO', 'INSIGHT VISUAL', 'TRILHA SONORA'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -1336,6 +1475,122 @@ function App() {
                   onChange={(e) => setUserQuery(e.target.value)}
                 />
               </div>
+            )}
+
+            {activeTab === 'TRILHA SONORA' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
+                <div className="grid grid-cols-2 gap-4">
+                   {/* UPLOAD VÍDEO */}
+                   <div 
+                    onClick={() => videoFileInputRef.current.click()}
+                    className="h-32 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white/5 transition-all group relative overflow-hidden"
+                  >
+                    {sceneVideoPreview ? (
+                      <video src={sceneVideoPreview} className="absolute inset-0 w-full h-full object-cover opacity-40" />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-5">
+                         <Play className="w-12 h-12 rotate-12" />
+                      </div>
+                    )}
+                    <div className="relative z-10 flex flex-col items-center p-2 text-center">
+                      <Upload className="w-5 h-5 text-slate-500 group-hover:text-orange-500 mb-1" />
+                      <span className="text-[8px] font-black text-slate-500 uppercase px-2 truncate w-full">
+                        {sceneVideoFile ? sceneVideoFile.name : 'Subir Vídeo'}
+                      </span>
+                    </div>
+                    <input type="file" ref={videoFileInputRef} className="hidden" accept="video/*" onChange={e => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setSceneVideoFile(file);
+                        setSceneVideoPreview(URL.createObjectURL(file));
+                        setSceneFrames([]); // Limpar frames se subir vídeo
+                        setSceneFramePreviews([]);
+                      }
+                    }} />
+                   </div>
+
+                   {/* UPLOAD FRAMES */}
+                   <div 
+                    onClick={() => framesInputRef.current.click()}
+                    className="h-32 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white/5 transition-all group relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center opacity-5">
+                       <Layers className="w-12 h-12 -rotate-12" />
+                    </div>
+                    <div className="relative z-10 flex flex-col items-center p-2 text-center">
+                      <Upload className="w-5 h-5 text-slate-500 group-hover:text-orange-500 mb-1" />
+                      <span className="text-[8px] font-black text-slate-500 uppercase px-2 truncate w-full">
+                        {sceneFrames.length > 0 ? `${sceneFrames.length} Frames` : 'Subir Frames'}
+                      </span>
+                    </div>
+                    <input type="file" ref={framesInputRef} className="hidden" accept="image/*" multiple onChange={e => {
+                      const files = Array.from(e.target.files);
+                      if (files.length > 0) {
+                        setSceneFrames(files);
+                        const previews = files.map(f => URL.createObjectURL(f));
+                        setSceneFramePreviews(previews);
+                        setSceneVideoFile(null); // Limpar vídeo se subir frames
+                        setSceneVideoPreview(null);
+                      }
+                    }} />
+                   </div>
+                </div>
+
+                {/* PREVIEW DE FRAMES */}
+                {sceneFramePreviews.length > 0 && (
+                  <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+                    {sceneFramePreviews.map((src, i) => (
+                      <div key={i} className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border border-white/10 shadow-lg">
+                        <img src={src} className="w-full h-full object-cover" alt={`Frame ${i}`} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div>
+                   <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-2">Contexto da Cena</label>
+                   <textarea
+                     className="w-full h-32 bg-[#0f0f0f] rounded-2xl p-4 border border-white/5 text-slate-300 text-sm outline-none resize-none"
+                     placeholder="Descreva o que acontece na cena, as emoções e o clima desejado..."
+                     value={sceneContext}
+                     onChange={(e) => setSceneContext(e.target.value)}
+                   />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ANALISADOR DE REFERÊNCIA (INGESTÃO) */}
+          <div className="mb-6 p-4 bg-orange-500/5 border border-orange-500/20 rounded-3xl group transition-all hover:bg-orange-500/10">
+            <div className="flex items-center justify-between mb-3">
+               <label className="text-[9px] font-black text-orange-500 uppercase tracking-widest block">Analisador de Referência</label>
+               {isAnalyzingAudio && <div className="w-3 h-3 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>}
+            </div>
+            
+            <div 
+              onClick={() => analysisFileInputRef.current.click()}
+              className={`w-full py-4 px-4 border-2 border-dashed rounded-2xl flex items-center gap-3 cursor-pointer transition-all ${analysisFile ? 'border-orange-500/50 bg-orange-500/10' : 'border-white/5 hover:bg-white/5'}`}
+            >
+               <div className={`p-2 rounded-lg ${analysisFile ? 'bg-orange-500 text-black' : 'bg-white/5 text-slate-500'}`}>
+                  <FileAudio className="w-4 h-4" />
+               </div>
+               <div className="flex-1 min-w-0">
+                  <p className={`text-[10px] font-black uppercase truncate ${analysisFile ? 'text-white' : 'text-slate-500'}`}>
+                     {analysisFile ? analysisFile.name : 'Subir Áudio (MP3/WAV)'}
+                  </p>
+                  <p className="text-[8px] text-slate-600 font-bold uppercase">Maestro irá ler as tags</p>
+               </div>
+               <input type="file" ref={analysisFileInputRef} className="hidden" accept="audio/*" onChange={e => setAnalysisFile(e.target.files[0])} />
+            </div>
+
+            {analysisFile && (
+              <button 
+                onClick={analyzeAudioReference}
+                disabled={isAnalyzingAudio}
+                className="w-full mt-3 py-2.5 bg-orange-500 hover:bg-orange-400 disabled:opacity-50 text-black text-[10px] font-black uppercase rounded-xl transition-all shadow-lg active:scale-95"
+              >
+                {isAnalyzingAudio ? 'O Maestro está ouvindo...' : 'Configurar Modo Produtor'}
+              </button>
             )}
           </div>
 
