@@ -1564,8 +1564,8 @@ function App() {
             )}
           </div>
 
-          {/* ANALISADOR DE REFERÊNCIA (INGESTÃO) - OCULTAR NA TRILHA SONORA */}
-          {activeTab !== 'TRILHA SONORA' && (
+          {/* ANALISADOR DE REFERÊNCIA (INGESTÃO) - APENAS NO MODO MANUAL */}
+          {activeTab === 'MANUAL' && (
             <div className="mb-6 p-4 bg-orange-500/5 border border-orange-500/20 rounded-3xl group transition-all hover:bg-orange-500/10">
               <div className="flex items-center justify-between mb-3">
                 <label className="text-[9px] font-black text-orange-500 uppercase tracking-widest block">Analisador de Referência</label>
