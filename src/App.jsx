@@ -1564,39 +1564,41 @@ function App() {
             )}
           </div>
 
-          {/* ANALISADOR DE REFERÊNCIA (INGESTÃO) */}
-          <div className="mb-6 p-4 bg-orange-500/5 border border-orange-500/20 rounded-3xl group transition-all hover:bg-orange-500/10">
-            <div className="flex items-center justify-between mb-3">
-               <label className="text-[9px] font-black text-orange-500 uppercase tracking-widest block">Analisador de Referência</label>
-               {isAnalyzingAudio && <div className="w-3 h-3 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>}
-            </div>
-            
-            <div 
-              onClick={() => analysisFileInputRef.current.click()}
-              className={`w-full py-4 px-4 border-2 border-dashed rounded-2xl flex items-center gap-3 cursor-pointer transition-all ${analysisFile ? 'border-orange-500/50 bg-orange-500/10' : 'border-white/5 hover:bg-white/5'}`}
-            >
-               <div className={`p-2 rounded-lg ${analysisFile ? 'bg-orange-500 text-black' : 'bg-white/5 text-slate-500'}`}>
-                  <FileAudio className="w-4 h-4" />
-               </div>
-               <div className="flex-1 min-w-0">
-                  <p className={`text-[10px] font-black uppercase truncate ${analysisFile ? 'text-white' : 'text-slate-500'}`}>
-                     {analysisFile ? analysisFile.name : 'Subir Áudio (MP3/WAV)'}
-                  </p>
-                  <p className="text-[8px] text-slate-600 font-bold uppercase">Maestro irá ler as tags</p>
-               </div>
-               <input type="file" ref={analysisFileInputRef} className="hidden" accept="audio/*" onChange={e => setAnalysisFile(e.target.files[0])} />
-            </div>
-
-            {analysisFile && (
-              <button 
-                onClick={analyzeAudioReference}
-                disabled={isAnalyzingAudio}
-                className="w-full mt-3 py-2.5 bg-orange-500 hover:bg-orange-400 disabled:opacity-50 text-black text-[10px] font-black uppercase rounded-xl transition-all shadow-lg active:scale-95"
+          {/* ANALISADOR DE REFERÊNCIA (INGESTÃO) - OCULTAR NA TRILHA SONORA */}
+          {activeTab !== 'TRILHA SONORA' && (
+            <div className="mb-6 p-4 bg-orange-500/5 border border-orange-500/20 rounded-3xl group transition-all hover:bg-orange-500/10">
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-[9px] font-black text-orange-500 uppercase tracking-widest block">Analisador de Referência</label>
+                {isAnalyzingAudio && <div className="w-3 h-3 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>}
+              </div>
+              
+              <div 
+                onClick={() => analysisFileInputRef.current.click()}
+                className={`w-full py-4 px-4 border-2 border-dashed rounded-2xl flex items-center gap-3 cursor-pointer transition-all ${analysisFile ? 'border-orange-500/50 bg-orange-500/10' : 'border-white/5 hover:bg-white/5'}`}
               >
-                {isAnalyzingAudio ? 'O Maestro está ouvindo...' : 'Configurar Modo Produtor'}
-              </button>
-            )}
-          </div>
+                <div className={`p-2 rounded-lg ${analysisFile ? 'bg-orange-500 text-black' : 'bg-white/5 text-slate-500'}`}>
+                    <FileAudio className="w-4 h-4" />
+                </div>
+                <div className="flex-1 min-w-0">
+                    <p className={`text-[10px] font-black uppercase truncate ${analysisFile ? 'text-white' : 'text-slate-500'}`}>
+                      {analysisFile ? analysisFile.name : 'Subir Áudio (MP3/WAV)'}
+                    </p>
+                    <p className="text-[8px] text-slate-600 font-bold uppercase">Maestro irá ler as tags</p>
+                </div>
+                <input type="file" ref={analysisFileInputRef} className="hidden" accept="audio/*" onChange={e => setAnalysisFile(e.target.files[0])} />
+              </div>
+
+              {analysisFile && (
+                <button 
+                  onClick={analyzeAudioReference}
+                  disabled={isAnalyzingAudio}
+                  className="w-full mt-3 py-2.5 bg-orange-500 hover:bg-orange-400 disabled:opacity-50 text-black text-[10px] font-black uppercase rounded-xl transition-all shadow-lg active:scale-95"
+                >
+                  {isAnalyzingAudio ? 'O Maestro está ouvindo...' : 'Configurar Modo Produtor'}
+                </button>
+              )}
+            </div>
+          )}
 
           {/* SMART SUGGESTION BADGE */}
           {smartSuggestion && (
