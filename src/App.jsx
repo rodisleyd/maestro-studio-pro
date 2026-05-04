@@ -313,6 +313,16 @@ const ADVANCED_INSTRUMENTS = [
   ]}
 ];
 
+const LIVE_ENVIRONMENTS = [
+  { id: 'stadium', label: 'Estádio / Arena', icon: '🏟️', desc: 'Multidão massiva, eco de estádio, energia de show arena.', value: 'large stadium live performance, huge crowd cheering, massive natural reverb, stadium echo, arena rock vibe' },
+  { id: 'theater', label: 'Teatro / Auditório', icon: '🎭', desc: 'Acústica de sala de concerto, aplausos contidos, reverb elegante.', value: 'theater acoustic session, concert hall reverb, intimate but spacious, polite crowd applause' },
+  { id: 'club', label: 'Clube / Pub', icon: '🍻', desc: 'Ambiente fechado, público próximo, ruído de bar.', value: 'small club live vibe, intimate crowd, bar background noise, close-up acoustics, pub atmosphere' },
+  { id: 'outdoor', label: 'Festival / Open Air', icon: '🎡', desc: 'Palco aberto, multidão ao fundo, acústica de ar livre.', value: 'outdoor festival stage, open air acoustics, distant crowd roar, large PA system sound' },
+  { id: 'studio_live', label: 'Estúdio (Live Session)', icon: '🎙️', desc: 'Sessão ao vivo em estúdio, som limpo mas com pegada real.', value: 'live studio session, clean but raw, real-time performance feel, studio room acoustics, no crowd' },
+  { id: 'church', label: 'Igreja / Catedral', icon: '⛪', desc: 'Reverberação longa e natural, atmosfera solene.', value: 'cathedral acoustics, long natural decay reverb, solemn sacred atmosphere' }
+];
+
+
 const fileToBase64 = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader();
   reader.readAsDataURL(file);
@@ -349,6 +359,8 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showNamingModal, setShowNamingModal] = useState(false);
   const [tempName, setTempName] = useState('');
+  const [selectedLiveEnv, setSelectedLiveEnv] = useState('');
+
   
   // ESTADOS PARA INGESTÃO DE ÁUDIO E TRILHA SONORA
   const [analysisFile, setAnalysisFile] = useState(null);
@@ -642,6 +654,8 @@ function App() {
     11. ESTRUTURA MUSICAL: O campo "musical_structure" DEVE SER SEMPRE GERADO como um objeto detalhado com blocos. O CONTEÚDO de cada bloco DEVE SER EM INGLÊS TÉCNICO. Integre as ambiências aqui para melhor timing. No modo ESSENCIAL, a estrutura deve refletir a simplicidade do arranjo.
     12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
     13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você DEVE focar em criar um prompt para uma peça comercial curta. 
+    14. ATMOSFERA AO VIVO (CRÍTICO): Se "Atmosfera ao Vivo" estiver selecionada, você DEVE incorporar as características acústicas (reverb, echo) e ambientais (crowd noise, applause) no final_prompt e nas style_tags. Use os valores fornecidos para guiar a sonoridade.
+    
     REGRAS DE OURO PARA O SUNO:
     a) NUNCA use colchetes duplos [[ ]] em volta do bloco. Use apenas colchetes simples [ ] para cada tag individual.
     b) No campo "style_tags", use apenas o essencial: "Short Jingle, Stinger, Button finish, Instant stop, [Gênero], [Voz]". Evite frases longas.
@@ -688,6 +702,8 @@ function App() {
         BPM / Andamento: ${selectedBpm || 'Automático'}
         Compasso: ${timeSignature || 'Automático'}
         Tom & Modo: ${musicalKey ? `${musicalKey} ${keyMode}` : 'Automático'}
+        Atmosfera ao Vivo: ${LIVE_ENVIRONMENTS.find(e => e.id === selectedLiveEnv)?.label || 'Nenhuma'}
+
 
         Escala: ${scale || 'Automático'}
         Progressão de Acordes: ${chordProgression || 'Automático'}
@@ -1014,6 +1030,8 @@ function App() {
     setVocalTone('normal');
     setVocalTextures([]);
     setCustomLyrics('');
+    setSelectedLiveEnv('');
+
 
     setSelectedBpm('');
     setTimeSignature('4/4');
@@ -1766,10 +1784,37 @@ function App() {
                         );
                       })}
                     </div>
+                   </div>
+                </div>
+
+               {/* ATMOSFERA AO VIVO */}
+               <div className="pt-4 border-t border-white/5">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                      Atmosfera ao Vivo
+                    </label>
+                    <span className="text-[8px] font-bold text-orange-500/50 uppercase">Ambiente & Acústica</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {LIVE_ENVIRONMENTS.map(env => (
+                      <button 
+                        key={env.id}
+                        type="button"
+                        onClick={() => setSelectedLiveEnv(selectedLiveEnv === env.id ? '' : env.id)}
+                        className={`p-2.5 rounded-xl border text-[9px] font-bold text-left transition-all flex flex-col gap-1 ${selectedLiveEnv === env.id ? 'bg-orange-500 border-orange-500 text-black shadow-lg shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-orange-500/30'}`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">{env.icon}</span>
+                          <span className="truncate uppercase tracking-tighter">{env.label}</span>
+                        </div>
+                        <div className={`text-[7px] leading-tight opacity-60 ${selectedLiveEnv === env.id ? 'text-black' : 'text-slate-500'}`}>{env.desc}</div>
+                      </button>
+                    ))}
                   </div>
                </div>
+                </div>
 
-               </div>
 
                {/* SISTEMA DE ESTRUTURA MUSICAL */}
                <div className="pt-4 border-t border-white/5">
@@ -1934,7 +1979,12 @@ function App() {
                         {emotion}
                         <button onClick={() => setEmotion('')} className="hover:text-red-400 opacity-60 hover:opacity-100 transition-all"><X className="w-3 h-3"/></button>
                       </span>}
+                      {selectedLiveEnv && <span className="text-[8px] font-bold px-2 py-1.5 bg-orange-500/10 text-orange-500 border border-orange-500/20 rounded-lg flex items-center gap-1.5">
+                        {LIVE_ENVIRONMENTS.find(e => e.id === selectedLiveEnv)?.label}
+                        <button onClick={() => setSelectedLiveEnv('')} className="hover:text-red-400 opacity-60 hover:opacity-100 transition-all"><X className="w-3 h-3"/></button>
+                      </span>}
                     </div>
+
                   )}
                </div>
 
