@@ -1160,7 +1160,7 @@ function App() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2 rounded-full text-[10px] font-black uppercase transition-all ${
+              className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase transition-all ${
                 activeTab === tab ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/20' : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -1169,7 +1169,7 @@ function App() {
           ))}
           <button
             onClick={() => setShowArranger(true)}
-            className="flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/20 hover:scale-105 transition-all group"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full text-[8px] font-black uppercase bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/20 hover:scale-105 transition-all group"
           >
             <Award className="w-4 h-4 group-hover:rotate-12 transition-transform" />
             Arranjador PRO
@@ -1190,7 +1190,7 @@ function App() {
             <h2 className="text-[11px] font-black uppercase tracking-widest">Painel de Controle</h2>
           </div>
 
-          <div className="space-y-4 min-h-[300px] mb-8">
+          <div className="space-y-4 mb-6">
             {activeTab === 'MANUAL' && (
               <textarea
                 className="w-full h-48 bg-[#0f0f0f] rounded-3xl p-6 border border-white/5 text-slate-300 text-sm leading-relaxed resize-none outline-none focus:ring-1 focus:ring-orange-500/50 transition-all shadow-inner"
