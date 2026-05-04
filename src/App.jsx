@@ -892,6 +892,7 @@ function App() {
       "mode": "MAIOR ou MENOR",
       "mood": "Sentimento principal (DEVE ser um destes: 'ALEGRE', 'MELANCÓLICO', 'TENSO', 'ÉPICO', 'NOSTÁLGICO')",
       "instruments": ["Lista de instrumentos detectados"],
+      "libraryTags": ["Lista de tags extras que combinam com o áudio (escolha entre gêneros, moods, estilos de produção e ambiência)"],
       "negativePrompt": "O que evitar no prompt final (ex: 'no electronic', 'no drums')"
     }
     
@@ -937,6 +938,9 @@ function App() {
       if (result.mood) setEmotion(result.mood);
       if (result.instruments && Array.isArray(result.instruments)) {
         setSelectedInstruments(result.instruments);
+      }
+      if (result.libraryTags && Array.isArray(result.libraryTags)) {
+        setSelectedLibraryTags(result.libraryTags);
       }
       if (result.negativePrompt) setNegativePrompt(result.negativePrompt);
       
