@@ -2289,7 +2289,7 @@ function App() {
                     {maestroAnalysis.production_tips && (
                       <div className="mt-4 pt-4 border-t border-white/5">
                         <p className="text-[9px] font-bold text-orange-500/40 uppercase mb-2">Dica de Produção:</p>
-                        <p className="text-[11px] text-slate-400">{maestroAnalysis.production_tips}</p>
+                        <p className="text-[11px] text-slate-400">{renderSafe(maestroAnalysis.production_tips)}</p>
                       </div>
                     )}
                   </div>
@@ -2319,7 +2319,7 @@ function App() {
                             {Object.entries(maestroAnalysis.musical_structure).map(([section, text]) => (
                                <div key={section} className="bg-black/5 p-4 rounded-2xl relative group">
                                   <span className="text-[8px] font-black text-orange-600 uppercase mb-1 block tracking-widest">{section}</span>
-                                  <p className="text-[10px] text-slate-700 leading-normal">{text}</p>
+                                  <p className="text-[10px] text-slate-700 leading-normal">{renderSafe(text)}</p>
                                   <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                                     <button onClick={() => insertIntoLyrics(section, text)} className="p-1.5 bg-orange-500 rounded-lg text-black hover:bg-black hover:text-orange-500 transition-all shadow-md" title="Inserir na Letra">
                                       <ArrowRight className="w-3 h-3" />
@@ -2516,7 +2516,7 @@ function App() {
                   
                   <div className="flex items-center justify-between group/name">
                     <p className="text-sm text-white font-bold truncate">
-                      {p.customName || `${p.bpm} BPM • ${renderSafe(p.key)}`}
+                      {p.customName || `${renderSafe(p.bpm)} BPM • ${renderSafe(p.key)}`}
                     </p>
                     <button 
                       onClick={() => {
