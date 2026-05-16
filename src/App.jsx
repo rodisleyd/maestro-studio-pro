@@ -27,7 +27,7 @@ const getEnvVariable = (key) => {
 const apiKey = getEnvVariable('VITE_GEMINI_API_KEY');
 
 const ALL_GENRES = [
-  "Afrobeat", "Alternative", "Ambient", "Balada Pop", "Bluegrass", "Blues", "Bossa Nova", "Brega", 
+  "Afrobeat", "Alternative", "Ambient", "A Cappella", "Balada Pop", "Bluegrass", "Blues", "Bossa Nova", "Brega", 
   "Chillwave", "Chorinho", "Classical", "Cordel", "Country", "Dancehall", "Disco", "Drum & Bass", "Dubstep", 
   "Electronic", "Flamenco", "Folk", "Forró", "Funk", "Garage Rock", "Gospel", "Grunge", "Guarania", "Hardstyle", 
   "Hip-Hop", "House", "Indie", "Indie Pop", "Indie Rock", "Industrial", "Instrumental", "J-Pop", 
@@ -214,10 +214,19 @@ const QUICK_EXAMPLES = [
   // CINEMATOGRÁFICO
   { label: 'Epic Orchestral', query: 'Orquestra completa com coros épicos e percussão de guerra', genre: 'Cinematic / Epic', category: 'Cinematic' },
   { label: 'Cyberpunk', query: 'Darksynth futurista com atmosfera distópica', genre: 'Cyberpunk / EBM', category: 'Cinematic' },
-  { label: 'Ambient', query: 'Paisagens sonoras calmas para foco e relaxamento', genre: 'Ambient', category: 'Cinematic' }
+  { label: 'Ambient', query: 'Paisagens sonoras calmas para foco e relaxamento', genre: 'Ambient', category: 'Cinematic' },
+  
+  // VOCAL
+  { label: 'A Cappella Jazz', query: 'Harmonias vocais complexas no estilo Take 6 com percussão vocal e estalos de dedo', genre: 'A Cappella / Jazz Vocal', category: 'Vocal' }
 ];
 
 const ADVANCED_INSTRUMENTS = [
+  { label: 'Vozes & Harmonias', items: [
+    { name: 'A Cappella', icon: '🎤' }, { name: 'Vocal Percussion', icon: '🥁' }, { name: 'Beatbox', icon: '🗣️' },
+    { name: 'Harmony Group', icon: '👥' }, { name: 'Gospel Choir', icon: '⛪' }, { name: 'Barbershop Quartet', icon: '💈' },
+    { name: 'Finger Snaps', icon: '🫰' }, { name: 'Hand Claps', icon: '👏' }, { name: 'Humming', icon: '👄' },
+    { name: 'Whistle', icon: '😗' }, { name: 'Falsetto', icon: '✨' }, { name: 'Jazz Scat', icon: '🎶' }
+  ]},
   { label: 'Violões & Acústicos', items: [
     { name: 'Violão Nylon', icon: '🎸' }, { name: 'Violão Aço', icon: '🎸' }, { name: 'Violão 12 Cordas', icon: '🎸' },
     { name: 'Viola Caipira', icon: '🎸' }, { name: 'Cavaquinho', icon: '🪕' }, { name: 'Fingerstyle', icon: '🤌' }, 
@@ -498,6 +507,13 @@ function App() {
       vocal: 'None',
       instruments: ['Synth Lead', 'Synth Pad', 'Drum Machine', 'Sub Bass', 'Efeitos FX'],
       negative: 'acoustic, folk, guitar, piano'
+    },
+    'Take 6': {
+      label: 'Estilo Take 6 (Jazz A Cappella)',
+      genre: 'A Cappella / Jazz Vocal',
+      vocal: 'Soulful R&B',
+      instruments: ['A Cappella', 'Vocal Percussion', 'Harmony Group', 'Jazz Scat', 'Finger Snaps'],
+      negative: 'instruments, drums, piano, bass, guitar, synth, strings, orchestration'
     }
 
   };
@@ -655,6 +671,7 @@ function App() {
     12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
     13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você DEVE focar em criar um prompt para uma peça comercial curta. 
     14. ATMOSFERA AO VIVO (CRÍTICO): Se "Atmosfera ao Vivo" estiver selecionada, você DEVE incorporar as características acústicas (reverb, echo) e ambientais (crowd noise, applause) no final_prompt e nas style_tags. Use os valores fornecidos para guiar a sonoridade.
+    15. MODO A CAPPELLA (ESTRITAMENTE VOCAL): Se o gênero for "A Cappella" ou se o preset "Take 6" for usado, você DEVE garantir que NENHUM instrumento musical seja mencionado no final_prompt ou style_tags. Use apenas termos como "human voices only", "purely vocal", "unaccompanied", "vocal harmony", "beatbox", "vocal percussion". Adicione "no instruments" e "no drums" de forma agressiva no prompt negativo e nas tags.
     
     REGRAS DE OURO PARA O SUNO:
     a) NUNCA use colchetes duplos [[ ]] em volta do bloco. Use apenas colchetes simples [ ] para cada tag individual.
