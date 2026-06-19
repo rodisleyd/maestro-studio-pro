@@ -25,6 +25,7 @@ const getEnvVariable = (key) => {
 };
 
 const apiKey = getEnvVariable('VITE_GEMINI_API_KEY');
+const apiModel = getEnvVariable('VITE_GEMINI_MODEL') || 'gemini-2.5-flash';
 
 const ALL_GENRES = [
   "Afrobeat", "Alternative", "Ambient", "A Cappella", "Balada Pop", "Bluegrass", "Blues", "Bossa Nova", "Brega", 
@@ -800,7 +801,7 @@ function App() {
         }
       }
 
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${apiModel}:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -864,7 +865,7 @@ function App() {
     `;
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${apiModel}:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -933,7 +934,7 @@ function App() {
 
     try {
       const base64Data = await fileToBase64(analysisFile);
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${apiModel}:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
