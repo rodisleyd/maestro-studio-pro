@@ -384,6 +384,11 @@ function App() {
   const videoFileInputRef = useRef(null);
   const framesInputRef = useRef(null);
 
+  // ESTADOS PARA LEITOR DE PARTITURA (PDF/IMAGENS)
+  const [scoreFile, setScoreFile] = useState(null);
+  const [isAnalyzingScore, setIsAnalyzingScore] = useState(false);
+  const scoreFileInputRef = useRef(null);
+
   const [isComparisonMode, setIsComparisonMode] = useState(false);
   const [promptA, setPromptA] = useState(null);
   const fileInputRef = useRef(null);
@@ -985,6 +990,99 @@ function App() {
       setError(`Erro na análise: ${err.message}`);
     } finally {
       setIsAnalyzingAudio(false);
+    }
+  };
+
+  const analyzeScore = async () => {
+    if (!scoreFile || !apiKey) return;
+    
+    setIsAnalyzingScore(true);
+    setError(null);
+
+    const systemPrompt = `És o "Especialista em Leitura de Partituras e OMR do Maestro Studio Pro". 
+    A tua missão é analisar visualmente a partitura musical (imagem ou PDF) e extrair os metadados exatos de arranjo e harmonia para preencher o Modo Produtor.
+    
+    Responde APENAS com um objeto JSON no seguinte formato (sem formatação extra ou markdown):
+    {
+      "genre": "Gênero sugerido com base na escrita",
+      "secondaryGenre": "Influência secundária se houver",
+      "bpm": "Label do BPM aproximado (DEVE ser um destes: 'LENTO (60-80)', 'MÉDIO (90-110)', 'MODERADO (110-130)', 'RÁPIDO (130-160)', 'MUITO RÁPIDO (160+)')",
+      "key": "Tom/Nota base identificado na partitura (ex: 'C', 'G#', 'A')",
+      "mode": "MAIOR ou MENOR",
+      "mood": "Sentimento sugerido (DEVE ser um destes: 'ALEGRE', 'MELANCÓLICO', 'TENSO', 'ÉPICO', 'NOSTÁLGICO')",
+      "instruments": ["Lista de instrumentos identificados na partitura que combinam com os disponíveis no app"],
+      "description": "Uma breve descrição do estilo e dinâmica descrita na partitura (ex: 'Arranjo de cordas dramático e melancólico com solos de piano')",
+      "negativePrompt": "O que evitar (ex: 'no synthesizer', 'no electric guitar')"
+    }
+    
+    Seja o mais fiel e preciso possível ao ler a armadura de clave, instrumentos listados nas pautas e anotações de andamento da partitura.`;
+
+    try {
+      const base64Data = await fileToBase64(scoreFile);
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${apiModel}:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: "Analise tecnicamente esta partitura musical para preencher as tags e estrutura do Modo Produtor." },
+              { inline_data: { mime_type: scoreFile.type, data: base64Data } }
+            ]
+          }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { 
+            responseMimeType: "application/json", 
+            temperature: 0.2
+          }
+        })
+      });
+
+      if (!response.ok) throw new Error("A API de análise de partitura falhou.");
+      
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error("A IA não retornou dados para a partitura.");
+      
+      const result = JSON.parse(text);
+
+      // Preencher as configurações do formulário
+      if (result.genre) setBaseGenre(result.genre);
+      if (result.secondaryGenre) setSecondaryGenre(result.secondaryGenre);
+      if (result.bpm) setSelectedBpm(result.bpm);
+      if (result.key) {
+        const k = result.key.replace('m', '');
+        if (MUSICAL_KEYS.includes(k)) setMusicalKey(k);
+      }
+      if (result.mode) setKeyMode(result.mode === 'MENOR' ? 'MENOR' : 'MAIOR');
+      if (result.mood) setEmotion(result.mood);
+      if (result.instruments && Array.isArray(result.instruments)) {
+        // Filtra apenas instrumentos válidos na lista de nomes cadastrados no aplicativo
+        const allValidNames = ADVANCED_INSTRUMENTS.flatMap(g => g.items.map(i => i.name));
+        const matchedInstruments = result.instruments.filter(instName => 
+          allValidNames.some(validName => validName.toLowerCase() === instName.toLowerCase())
+        );
+        
+        // Se a filtragem resultou em algum correspondente direto, usa
+        if (matchedInstruments.length > 0) {
+          // Normaliza o nome do instrumento para coincidir exatamente com a escrita original do app
+          const normalized = matchedInstruments.map(instName => 
+            allValidNames.find(validName => validName.toLowerCase() === instName.toLowerCase())
+          );
+          setSelectedInstruments(normalized);
+        } else {
+          setSelectedInstruments([]);
+        }
+      }
+      if (result.description) setUserQuery(result.description);
+      if (result.negativePrompt) setNegativePrompt(result.negativePrompt);
+      
+      setIsProMode(true);
+      setScoreFile(null); // Limpa o arquivo após sucesso
+    } catch (err) {
+      console.error(err);
+      setError(`Erro na análise da partitura: ${err.message}`);
+    } finally {
+      setIsAnalyzingScore(false);
     }
   };
 
@@ -1602,37 +1700,87 @@ function App() {
 
           {/* ANALISADOR DE REFERÊNCIA (INGESTÃO) - APENAS NO MODO MANUAL */}
           {activeTab === 'MANUAL' && (
-            <div className="mb-6 p-4 bg-orange-500/5 border border-orange-500/20 rounded-3xl group transition-all hover:bg-orange-500/10">
-              <div className="flex items-center justify-between mb-3">
-                <label className="text-[9px] font-black text-orange-500 uppercase tracking-widest block">Analisador de Referência</label>
-                {isAnalyzingAudio && <div className="w-3 h-3 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>}
-              </div>
-              
-              <div 
-                onClick={() => analysisFileInputRef.current.click()}
-                className={`w-full py-4 px-4 border-2 border-dashed rounded-2xl flex items-center gap-3 cursor-pointer transition-all ${analysisFile ? 'border-orange-500/50 bg-orange-500/10' : 'border-white/5 hover:bg-white/5'}`}
-              >
-                <div className={`p-2 rounded-lg ${analysisFile ? 'bg-orange-500 text-black' : 'bg-white/5 text-slate-500'}`}>
-                    <FileAudio className="w-4 h-4" />
+            <div className="space-y-4">
+              <div className="p-4 bg-orange-500/5 border border-orange-500/20 rounded-3xl group transition-all hover:bg-orange-500/10">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-[9px] font-black text-orange-500 uppercase tracking-widest block">Analisador de Referência de Áudio</label>
+                  {isAnalyzingAudio && <div className="w-3 h-3 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>}
                 </div>
-                <div className="flex-1 min-w-0">
-                    <p className={`text-[10px] font-black uppercase truncate ${analysisFile ? 'text-white' : 'text-slate-500'}`}>
-                      {analysisFile ? analysisFile.name : 'Subir Áudio (MP3/WAV)'}
-                    </p>
-                    <p className="text-[8px] text-slate-600 font-bold uppercase">Maestro irá ler as tags</p>
+                
+                <div 
+                  onClick={() => analysisFileInputRef.current.click()}
+                  className={`w-full py-4 px-4 border-2 border-dashed rounded-2xl flex items-center gap-3 cursor-pointer transition-all ${analysisFile ? 'border-orange-500/50 bg-orange-500/10' : 'border-white/5 hover:bg-white/5'}`}
+                >
+                  <div className={`p-2 rounded-lg ${analysisFile ? 'bg-orange-500 text-black' : 'bg-white/5 text-slate-500'}`}>
+                      <FileAudio className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                      <p className={`text-[10px] font-black uppercase truncate ${analysisFile ? 'text-white' : 'text-slate-500'}`}>
+                        {analysisFile ? analysisFile.name : 'Subir Áudio (MP3/WAV)'}
+                      </p>
+                      <p className="text-[8px] text-slate-600 font-bold uppercase">Maestro irá ler as tags</p>
+                  </div>
+                  <input type="file" ref={analysisFileInputRef} className="hidden" accept="audio/*" onChange={e => setAnalysisFile(e.target.files[0])} />
                 </div>
-                <input type="file" ref={analysisFileInputRef} className="hidden" accept="audio/*" onChange={e => setAnalysisFile(e.target.files[0])} />
+
+                {analysisFile && (
+                  <button 
+                    onClick={analyzeAudioReference}
+                    disabled={isAnalyzingAudio}
+                    className="w-full mt-3 py-2.5 bg-orange-500 hover:bg-orange-400 disabled:opacity-50 text-black text-[10px] font-black uppercase rounded-xl transition-all shadow-lg active:scale-95"
+                  >
+                    {isAnalyzingAudio ? 'O Maestro está ouvindo...' : 'Configurar Modo Produtor'}
+                  </button>
+                )}
               </div>
 
-              {analysisFile && (
-                <button 
-                  onClick={analyzeAudioReference}
-                  disabled={isAnalyzingAudio}
-                  className="w-full mt-3 py-2.5 bg-orange-500 hover:bg-orange-400 disabled:opacity-50 text-black text-[10px] font-black uppercase rounded-xl transition-all shadow-lg active:scale-95"
+              {/* ANALISADOR DE PARTITURA (PDF/IMAGENS) */}
+              <div className="p-4 bg-violet-500/5 border border-violet-500/20 rounded-3xl group transition-all hover:bg-violet-500/10">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-[9px] font-black text-violet-400 uppercase tracking-widest block flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+                    Leitor de Partitura (BETA)
+                  </label>
+                  {isAnalyzingScore && <div className="w-3 h-3 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>}
+                </div>
+                
+                <div 
+                  onClick={() => scoreFileInputRef.current.click()}
+                  className={`w-full py-4 px-4 border-2 border-dashed rounded-2xl flex items-center gap-3 cursor-pointer transition-all ${scoreFile ? 'border-violet-500/50 bg-violet-500/10' : 'border-white/5 hover:bg-white/5'}`}
                 >
-                  {isAnalyzingAudio ? 'O Maestro está ouvindo...' : 'Configurar Modo Produtor'}
-                </button>
-              )}
+                  <div className={`p-2 rounded-lg ${scoreFile ? 'bg-violet-600 text-white' : 'bg-white/5 text-slate-500'}`}>
+                    <Music className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-[10px] font-black uppercase truncate ${scoreFile ? 'text-white' : 'text-slate-500'}`}>
+                      {scoreFile ? scoreFile.name : 'Subir Partitura (PDF ou Imagem)'}
+                    </p>
+                    <p className="text-[8px] text-slate-600 font-bold uppercase">Maestro lerá notas, tom e instrumentos</p>
+                  </div>
+                  <input 
+                    type="file" 
+                    ref={scoreFileInputRef} 
+                    className="hidden" 
+                    accept="application/pdf,image/*" 
+                    onChange={e => setScoreFile(e.target.files[0])} 
+                  />
+                </div>
+
+                {scoreFile && (
+                  <button 
+                    onClick={analyzeScore}
+                    disabled={isAnalyzingScore}
+                    className="w-full mt-3 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white disabled:opacity-50 text-[10px] font-black uppercase rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    {isAnalyzingScore ? (
+                      <>
+                        <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Escaneando partitura...
+                      </>
+                    ) : 'Escanear Partitura com IA'}
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
