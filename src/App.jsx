@@ -27,16 +27,44 @@ const getEnvVariable = (key) => {
 const apiKey = getEnvVariable('VITE_GEMINI_API_KEY');
 const apiModel = getEnvVariable('VITE_GEMINI_MODEL') || 'gemini-2.5-flash';
 
-const ALL_GENRES = [
-  "Afrobeat", "Alternative", "Ambient", "A Cappella", "Balada Pop", "Bluegrass", "Blues", "Bossa Nova", "Brega", 
-  "Chillwave", "Chorinho", "Classical", "Cordel", "Country", "Dancehall", "Disco", "Drum & Bass", "Dubstep", 
-  "Electronic", "Flamenco", "Folk", "Forró", "Funk", "Garage Rock", "Gospel", "Grunge", "Guarania", "Hardstyle", 
-  "Hip-Hop", "House", "Indie", "Indie Pop", "Indie Rock", "Industrial", "Instrumental", "J-Pop", 
-  "Jazz", "K-Pop", "Klezmer", "Lambada", "Latin", "Lo-Fi", "Math Rock", "Metal", "MPB", "New Wave", 
-  "Ópera", "Pagode", "Phonk", "Podcast", "Pop", "Post-Rock", "Psychedelic Rock", "Punk", "R&B", 
-  "Rap", "Reggae", "Reggaeton", "Repente", "Rock", "Rockabilly", "Samba", "Sertanejo", "Sertanejo Raiz", "Sertanejo Universitário", "Ska", "Soul", "Soundtrack", 
-  "Surf Music", "Synthwave", "Tango", "Techno", "Trance", "Trap", "Valsa", "Vaporwave"
-];
+const GENRES_BY_CATEGORY = {
+  "Brasil": [
+    "Arrocha", "Axé", "Baião", "Bossa Nova", "Brega", "Carimbó", "Chorinho", "Cordel", 
+    "Forró", "Forró Eletrônico", "Forró Universitário", "Frevo", "Funk Carioca", "Guarania", 
+    "Lambada", "Maracatu", "Marchinha", "MPB", "Pagode", "Pagode Baiano", "Piseiro", 
+    "Repente", "Samba", "Samba-enredo", "Seresta", "Sertanejo Raiz", "Sertanejo Universitário", "Xote"
+  ],
+  "Rock & Metal": [
+    "Alternative Rock", "Black Metal", "Death Metal", "Doom Metal", "Emo", "Garage Rock", 
+    "Gothic Rock", "Grindcore", "Grunge", "Hard Rock", "Heavy Metal", "Indie Rock", 
+    "Math Rock", "Metal", "New Wave", "Nu Metal", "Pop Punk", "Pop Rock", "Post-Punk", 
+    "Post-Rock", "Power Metal", "Progressive Rock", "Psychedelic Rock", "Punk Rock", 
+    "Rockabilly", "Shoegaze", "Surf Music", "Thrash Metal"
+  ],
+  "Eletrônico": [
+    "Ambient", "Breakbeat", "Chillwave", "Dancehall", "Deep House", "Disco", "Downtempo", 
+    "Drum & Bass", "Dubstep", "EDM", "Electro", "Electro House", "Electronic", "Future Bass", 
+    "Gabber", "Hardcore", "Hardstyle", "House", "IDM", "Industrial Techno", "Jungle", 
+    "Lo-Fi", "Phonk", "Progressive House", "Synthpop", "Synthwave", "Techno", "Trance", "UK Garage", "Vaporwave"
+  ],
+  "Hip-Hop & Urbano": [
+    "Boom Bap", "Contemporary R&B", "Drill", "East Coast Hip-Hop", "Hip-Hop", "Neo Soul", 
+    "New Jack Swing", "Old School Hip-Hop", "R&B", "Rap", "Trap", "West Coast Hip-Hop"
+  ],
+  "Latinos & Globais": [
+    "A Cappella", "Afrobeat", "Afrobeats", "Amapiano", "Bachata", "Bluegrass", "Blues", 
+    "C-Pop", "Classical", "Country", "Cumbia", "Fado", "Flamenco", "Folk", "Gospel", 
+    "Instrumental", "J-Pop", "K-Pop", "Klezmer", "Latin Pop", "Merengue", "Morna", 
+    "Reggae", "Reggaeton", "Salsa", "Ska", "Soul", "Tango", "Valsa"
+  ],
+  "Pop & Contemporâneo": [
+    "Art Pop", "Balada Pop", "Bedroom Pop", "Dance Pop", "Dream Pop", "Electropop", 
+    "Hyperpop", "Indie", "Indie Folk", "Indie Pop", "Pop", "Soundtrack", "Teen Pop"
+  ]
+};
+
+const ALL_GENRES = Object.values(GENRES_BY_CATEGORY).flat().sort((a, b) => a.localeCompare(b));
+
 
 // Constantes de Configuração Profissional (Inspirado no Magic Prompt)
 const VOCAL_ARCHETYPES = [
@@ -181,36 +209,48 @@ const PROGGEN_STYLES = [
 const QUICK_EXAMPLES = [
   // ROCK / METAL
   { label: 'Heavy Metal', query: 'Metal pesado com bumbos duplos e solos virtuosos', genre: 'Heavy Metal', category: 'Rock' },
+  { label: 'Thrash Metal', query: 'Riffs ultra velozes de guitarra com distorção pesada e pedal duplo acelerado', genre: 'Thrash Metal', category: 'Rock' },
   { label: 'Grunge 90s', query: 'Rock alternativo sujo com guitarras distorcidas', genre: 'Grunge', category: 'Rock' },
+  { label: 'Shoegaze', query: 'Guitarras etéreas com distorção expansiva, reverb denso e vocais suaves', genre: 'Shoegaze', category: 'Rock' },
   { label: 'Indie Folk', query: 'Folk melódico com violões e harmonias vocais', genre: 'Indie Folk', category: 'Rock' },
   { label: 'Punk Rock', query: 'Punk enérgico e rápido com atitude', genre: 'Punk Rock', category: 'Rock' },
   { label: 'Rockabilly', query: 'Rock n roll clássico dos anos 50 com guitarra twang e slap bass', genre: 'Rockabilly', category: 'Rock' },
   
   // ELETRÔNICA
+  { label: 'Deep House', query: 'Batida 4x4 refinada com baixos encorpados e sintetizadores marcantes', genre: 'Deep House', category: 'Electronic' },
   { label: 'Synthwave', query: 'Viagem nostálgica aos anos 80 com sintetizadores retro', genre: 'Synthwave', category: 'Electronic' },
   { label: 'Dark Techno', query: 'Techno industrial sombrio com batida 4x4 hipnótica', genre: 'Industrial Techno', category: 'Electronic' },
   { label: 'Lo-Fi Chill', query: 'Batidas relaxantes com texturas de vinil', genre: 'Lo-Fi Hip Hop', category: 'Electronic' },
-  { label: 'House Music', query: 'Groove clássico de Chicago para as pistas', genre: 'Deep House', category: 'Electronic' },
   { label: 'Drum & Bass', query: 'Batidas rápidas e intensas com baixos profundos e sintéticos', genre: 'Drum & Bass', category: 'Electronic' },
-
+  { label: 'Future Bass', query: 'Sintetizadores flutuantes com acordes de synth vibrantes e batidas trap', genre: 'Future Bass', category: 'Electronic' },
 
   // BRASIL
-  { label: 'Bossa Nova', query: 'Samba suave com violão de nylon e voz sussurrada', genre: 'Bossa Nova / Jazz', category: 'Brasil' },
+  { label: 'Piseiro Nordestino', query: 'Piseiro moderno com teclado marcante, sanfona eletrônica e bumbo grave de paredão', genre: 'Piseiro', category: 'Brasil' },
+  { label: 'Baião Clássico', query: 'Baião tradicional com zabumba, triângulo, sanfona agitada e violão', genre: 'Baião', category: 'Brasil' },
+  { label: 'Axé da Bahia', query: 'Ritmo baiano contagiante com percussão pesada de timbau, repique e metais efusivos', genre: 'Axé', category: 'Brasil' },
+  { label: 'Bossa Nova', query: 'Samba suave com violão de nylon e voz sussurrada', genre: 'Bossa Nova', category: 'Brasil' },
   { label: 'Samba Raiz', query: 'Roda de samba clássica com cavaco e pandeiro', genre: 'Samba', category: 'Brasil' },
   { label: 'Chorinho', query: 'Choro clássico e virtuoso com ênfase no cavaquinho, violão de 7 cordas e pandeiro', genre: 'Chorinho', category: 'Brasil' },
   { label: 'Forró Pé de Serra', query: 'Ritmo nordestino animado com sanfona, triângulo e zabumba', genre: 'Forró', category: 'Brasil' },
-  { label: 'Repente Nordestino', query: 'Duelo poético improvisado com violas e métrica rigorosa', genre: 'Repente', category: 'Brasil' },
   { label: 'Funk Brasil', query: 'Batidão de favela com graves potentes', genre: 'Funk Carioca', category: 'Brasil' },
-  { label: 'MPB Moderna', query: 'Música Popular Brasileira com toques eletrônicos', genre: 'MPB / Nu-Jazz', category: 'Brasil' },
+  { label: 'MPB Moderna', query: 'Música Popular Brasileira com toques eletrônicos', genre: 'MPB', category: 'Brasil' },
   { label: 'Sertanejo Universitário', query: 'Sertanejo moderno com arranjos pop, guitarras e sanfona animada', genre: 'Sertanejo Universitário', category: 'Brasil' },
-  { label: 'Sertanejo Raiz', query: 'Sertanejo tradicional com violas caipiras e duo vocal harmônico', genre: 'Sertanejo Raiz', category: 'Brasil' },
-  { label: 'Guarania', query: 'Ritmo fronteiriço cadenciado e sentimental com violões e harpa', genre: 'Guarania', category: 'Brasil' },
 
   // URBANO
+  { label: 'Boom Bap 90s', query: 'Hip-hop 90s nostálgico com batida marcante de caixa e bumbo sujo de vinil', genre: 'Boom Bap', category: 'Urbano' },
   { label: 'Melodic Trap', query: 'Trap moderno com sintetizadores etéreos e 808s', genre: 'Melodic Trap', category: 'Urbano' },
+  { label: 'UK Drill', query: 'Sub-bass 808 deslizante com caixa syncopated e atmosfera obscura', genre: 'Drill', category: 'Urbano' },
   { label: 'Afrobeat', query: 'Ritmos africanos modernos com grooves infecciosos', genre: 'Afrobeat', category: 'Urbano' },
-  { label: 'Boom Bap', query: 'Rap clássico dos anos 90 com samplers sujos', genre: 'Old School Hip Hop', category: 'Urbano' },
   { label: 'Reggaeton', query: 'Batida dembow com vocais urbanos', genre: 'Reggaeton', category: 'Urbano' },
+
+  // LATINOS & GLOBAIS
+  { label: 'Bachata', query: 'Ritmo latino romântico com violão requinto dedilhado e bongo sensual', genre: 'Bachata', category: 'Latinos' },
+  { label: 'Amapiano', query: 'Groove sul-africano com batidas de log drum grave, piano jazzístico e shaker vibrante', genre: 'Amapiano', category: 'Latinos' },
+  { label: 'Salsa Caribenha', query: 'Salsa vibrante com sessão de metais, piano tumbao e percussão latina rica', genre: 'Salsa', category: 'Latinos' },
+
+  // POP & CONTEMPORÂNEO
+  { label: 'Hyperpop', query: 'Pop futurista hiperativo com vocais afinados, sintetizadores intensos e produção energética', genre: 'Hyperpop', category: 'Pop' },
+  { label: 'Dream Pop', query: 'Camadas de sintetizadores luminosos, guitarras ambientais e vocais etéreos', genre: 'Dream Pop', category: 'Pop' },
 
   // CINEMATOGRÁFICO
   { label: 'Epic Orchestral', query: 'Orquestra completa com coros épicos e percussão de guerra', genre: 'Cinematic / Epic', category: 'Cinematic' },
@@ -366,6 +406,9 @@ function App() {
   const [smartSuggestion, setSmartSuggestion] = useState(null);
   const audioPreviewRef = useRef(null);
   const [activePreviewGenre, setActivePreviewGenre] = useState(null);
+  const [genreCategoryFilter, setGenreCategoryFilter] = useState('Todos');
+  const [genreSearchTerm, setGenreSearchTerm] = useState('');
+  const [showAllGenres, setShowAllGenres] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showNamingModal, setShowNamingModal] = useState(false);
   const [tempName, setTempName] = useState('');
@@ -493,12 +536,75 @@ function App() {
       instruments: ['Violão Nylon', 'Piano Acústico', 'Baixo Elétrico', 'Pandeiro', 'Flauta'],
       negative: 'distorted, metal, trap'
     },
+    'Piseiro': {
+      label: 'Estilo Piseiro (Brasil)',
+      genre: 'Piseiro / Forró Eletrônico',
+      vocal: 'Male Vocal',
+      instruments: ['Accordion', 'Synth Lead', '808 Bass', 'Drum Machine'],
+      negative: 'orchestral, heavy metal, acoustic folk'
+    },
+    'Baião': {
+      label: 'Estilo Baião (Brasil)',
+      genre: 'Baião / Forró Traditional',
+      vocal: 'Male Vocal',
+      instruments: ['Accordion', 'Zabumba', 'Triangle', 'Violão Nylon'],
+      negative: 'synthwave, heavy metal, trap'
+    },
+    'Axé': {
+      label: 'Estilo Axé (Brasil)',
+      genre: 'Axé / Samba-Reggae',
+      vocal: 'Female Vocal',
+      instruments: ['Percussion', 'Brass Section', 'Electric Guitar', 'Bass'],
+      negative: 'lo-fi, melancholic, dark'
+    },
     'Chorinho': {
       label: 'Estilo Chorinho (Brasil)',
       genre: 'Chorinho / Samba-Choro',
       vocal: 'None',
       instruments: ['Cavaquinho', 'Violão Nylon', 'Violão 7 Cordas', 'Pandeiro', 'Flauta'],
       negative: 'electronic, synth, heavy drums, electric guitar, trap, metal'
+    },
+    'Thrash Metal': {
+      label: 'Estilo Thrash Metal (Metal)',
+      genre: 'Thrash Metal / Heavy Metal',
+      vocal: 'Rock Grit',
+      instruments: ['Distorted Guitar', 'Double Kick Drums', 'Electric Bass'],
+      negative: 'pop, synth, acoustic, brass'
+    },
+    'Deep House': {
+      label: 'Estilo Deep House (Eletrônica)',
+      genre: 'Deep House / Club',
+      vocal: 'Soulful R&B',
+      instruments: ['Synth Bass', 'Sub Bass', 'Drum Machine', 'Rhodes Piano'],
+      negative: 'acoustic, distorted guitar, country'
+    },
+    'Boom Bap': {
+      label: 'Estilo Boom Bap (Urbano)',
+      genre: 'Boom Bap / Old School Hip-Hop',
+      vocal: 'Rap Vocals',
+      instruments: ['Sampling', 'Snare Drums', 'Kick Drums', 'Vinyl Crackle'],
+      negative: 'auto-tune, EDM, metal'
+    },
+    'Bachata': {
+      label: 'Estilo Bachata (Latino)',
+      genre: 'Bachata / Latin Pop',
+      vocal: 'Male Vocal',
+      instruments: ['Requinto Guitar', 'Bongo', 'Guira', 'Bass Guitar'],
+      negative: 'heavy metal, techno, dubstep'
+    },
+    'Hyperpop': {
+      label: 'Estilo Hyperpop (Pop Futurista)',
+      genre: 'Hyperpop / Electropop',
+      vocal: 'Auto-tuned Vocals',
+      instruments: ['Distorted Synth', '808 Bass', 'Glitch FX', 'Electronic Drums'],
+      negative: 'acoustic, folk, traditional'
+    },
+    'Amapiano': {
+      label: 'Estilo Amapiano (Afro / Global)',
+      genre: 'Amapiano / Afro House',
+      vocal: 'African Vocals',
+      instruments: ['Log Drum Bass', 'Jazz Piano', 'Shaker', 'Sub Bass'],
+      negative: 'heavy metal, punk, rockabilly'
     },
     'Rockabilly': {
       label: 'Estilo Rockabilly (50s Rock)',
@@ -2581,38 +2687,150 @@ function App() {
                 Estúdio Virtual Ativo
               </h3>
               {activeTab === 'MANUAL' ? (
-                <>
-                  <p className="text-[10px] text-slate-600 uppercase font-bold tracking-widest mb-6 max-w-xs">
-                    Selecione rapidamente um dos gêneros disponíveis:
+                <div className="w-full max-w-4xl px-2 flex flex-col items-center">
+                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-4 text-center">
+                    Explore os gêneros disponíveis por categoria ou pesquise pelo nome:
                   </p>
 
-                  <div className="flex flex-wrap justify-center gap-2 w-full max-w-2xl px-2">
-                     {ALL_GENRES.map((genre) => (
-                       <button
-                        key={genre}
-                        onMouseEnter={() => playGenrePreview(genre)}
-                        onMouseLeave={() => stopGenrePreview()}
-                        onClick={() => {
-                           setUserQuery(`Música estilo ${genre}`);
-                           setBaseGenre(genre);
-                           setSecondaryGenre('');
-                           setActiveTab('MANUAL');
-                           window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                        className={`px-3 py-1.5 border rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap flex items-center gap-2 ${activePreviewGenre === genre ? 'bg-orange-500 border-orange-500 text-black scale-105' : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'}`}
-                       >
-                         {genre}
-                         {activePreviewGenre === genre && (
-                           <div className="flex gap-0.5 items-end h-3">
-                              <div className="w-0.5 bg-black animate-[musicBar_0.8s_ease-in-out_infinite] h-full"></div>
-                              <div className="w-0.5 bg-black animate-[musicBar_1.1s_ease-in-out_infinite] h-2/3"></div>
-                              <div className="w-0.5 bg-black animate-[musicBar_0.9s_ease-in-out_infinite] h-4/5"></div>
-                           </div>
-                         )}
-                       </button>
-                     ))}
+                  {/* INDICADOR DE GÊNERO BASE ATIVO */}
+                  {baseGenre && (
+                    <div className="mb-5 px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-2xl flex items-center gap-3 animate-in fade-in duration-300">
+                      <span className="text-[10px] font-black uppercase text-orange-400">Gênero Selecionado:</span>
+                      <span className="text-xs font-bold bg-orange-500 text-black px-3 py-1 rounded-lg flex items-center gap-1.5 shadow-md">
+                        {baseGenre}
+                      </span>
+                      <button 
+                        onClick={() => { setBaseGenre(''); setUserQuery(''); }}
+                        className="text-slate-400 hover:text-white transition-colors p-1"
+                        title="Limpar seleção"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* BARRA DE PESQUISA & ABAS DE CATEGORIA */}
+                  <div className="w-full space-y-4 mb-6">
+                    <div className="relative max-w-md mx-auto">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <input
+                        type="text"
+                        placeholder="Buscar estilo (ex: Piseiro, Deep House, Drill, Shoegaze...)"
+                        value={genreSearchTerm}
+                        onChange={(e) => setGenreSearchTerm(e.target.value)}
+                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-2.5 pl-10 pr-8 text-xs text-white outline-none focus:border-orange-500/50 transition-all placeholder:text-slate-500 shadow-inner"
+                      />
+                      {genreSearchTerm && (
+                        <button 
+                          onClick={() => setGenreSearchTerm('')}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* ABAS DE CATEGORIAS */}
+                    <div className="flex flex-wrap justify-center gap-1.5 pt-1">
+                      {['Todos', 'Brasil', 'Rock & Metal', 'Eletrônico', 'Hip-Hop & Urbano', 'Latinos & Globais', 'Pop & Contemporâneo'].map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => {
+                            setGenreCategoryFilter(cat);
+                            setShowAllGenres(false);
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer ${
+                            genreCategoryFilter === cat 
+                              ? 'bg-orange-500 text-black font-bold shadow-lg shadow-orange-500/20 scale-105' 
+                              : 'bg-white/5 border border-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </>
+
+                  {/* GRID DE BOTÕES DE ESTILO FILTRADOS */}
+                  {(() => {
+                    let filtered = [];
+                    if (genreCategoryFilter === 'Todos') {
+                      filtered = ALL_GENRES;
+                    } else {
+                      filtered = GENRES_BY_CATEGORY[genreCategoryFilter] || [];
+                    }
+
+                    if (genreSearchTerm.trim()) {
+                      filtered = filtered.filter(g => g.toLowerCase().includes(genreSearchTerm.toLowerCase().trim()));
+                    }
+
+                    const displayLimit = (genreSearchTerm.trim() || showAllGenres || genreCategoryFilter !== 'Todos') ? filtered.length : 24;
+                    const visibleGenres = filtered.slice(0, displayLimit);
+                    const hasMore = filtered.length > displayLimit;
+
+                    if (filtered.length === 0) {
+                      return (
+                        <div className="py-8 text-center text-slate-500 text-xs">
+                          Nenhum estilo encontrado para "{genreSearchTerm}".
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="w-full flex flex-col items-center gap-4">
+                        <div className="flex flex-wrap justify-center gap-2 w-full px-2 max-h-[360px] overflow-y-auto pr-1 custom-scrollbar">
+                          {visibleGenres.map((genre) => (
+                            <button
+                              key={genre}
+                              onMouseEnter={() => playGenrePreview(genre)}
+                              onMouseLeave={() => stopGenrePreview()}
+                              onClick={() => {
+                                setUserQuery(`Música estilo ${genre}`);
+                                setBaseGenre(genre);
+                                setSecondaryGenre('');
+                                setActiveTab('MANUAL');
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                              }}
+                              className={`px-3 py-1.5 border rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap flex items-center gap-2 ${
+                                baseGenre === genre 
+                                  ? 'bg-orange-500 border-orange-500 text-black scale-105 font-black shadow-lg shadow-orange-500/20' 
+                                  : activePreviewGenre === genre 
+                                  ? 'bg-orange-500/80 border-orange-500 text-black scale-105' 
+                                  : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:text-white hover:border-orange-500/30'
+                              }`}
+                            >
+                              {genre}
+                              {activePreviewGenre === genre && (
+                                <div className="flex gap-0.5 items-end h-3">
+                                  <div className="w-0.5 bg-black animate-[musicBar_0.8s_ease-in-out_infinite] h-full"></div>
+                                  <div className="w-0.5 bg-black animate-[musicBar_1.1s_ease-in-out_infinite] h-2/3"></div>
+                                  <div className="w-0.5 bg-black animate-[musicBar_0.9s_ease-in-out_infinite] h-4/5"></div>
+                                </div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+
+                        {hasMore && (
+                          <button
+                            onClick={() => setShowAllGenres(true)}
+                            className="text-[10px] font-black uppercase text-orange-400 hover:text-orange-300 bg-orange-500/10 border border-orange-500/20 px-4 py-2 rounded-xl transition-all flex items-center gap-2 mt-2 cursor-pointer hover:bg-orange-500/20"
+                          >
+                            Mostrar todos os {filtered.length} estilos disponíveis <ChevronDown className="w-3 h-3" />
+                          </button>
+                        )}
+                        {showAllGenres && filtered.length > 24 && !genreSearchTerm && genreCategoryFilter === 'Todos' && (
+                          <button
+                            onClick={() => setShowAllGenres(false)}
+                            className="text-[10px] font-black uppercase text-slate-400 hover:text-white bg-white/5 border border-white/10 px-4 py-1.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer"
+                          >
+                            Mostrar menos <ChevronUp className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
               ) : (
                 <p className="text-[10px] text-slate-600 uppercase font-bold tracking-widest mb-6 max-w-xs">
                   Preencha os dados no painel de controle para iniciar a produção.

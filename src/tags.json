@@ -5,7 +5,16 @@
     "reggae", "samba", "bossa nova", "mpb", "funk", "gospel", "country", "indie",
     "alternative", "metal", "punk", "r&b", "soul", "disco", "drill", "afrobeat",
     "latin pop", "k-pop", "j-pop", "ambient", "experimental", "folk", "grunge",
-    "hard rock", "progressive rock", "synthwave", "chillwave", "dancehall", "rockabilly"
+    "hard rock", "progressive rock", "synthwave", "chillwave", "dancehall", "rockabilly",
+    "axé", "baião", "arrocha", "piseiro", "xote", "frevo", "maracatu", "carimbó",
+    "samba-enredo", "pagode baiano", "marchinha", "forró eletrônico", "forró universitário", "seresta", "choro",
+    "heavy metal", "thrash metal", "death metal", "black metal", "power metal", "alternative rock", "pop rock",
+    "post-punk", "gothic rock", "shoegaze", "emo", "pop punk", "grindcore", "doom metal", "nu metal",
+    "deep house", "progressive house", "electro", "electro house", "future bass", "hardcore", "gabber",
+    "uk garage", "breakbeat", "jungle", "downtempo", "idm", "synthpop",
+    "boom bap", "old school hip-hop", "west coast hip-hop", "east coast hip-hop", "contemporary r&b", "neo soul", "new jack swing",
+    "salsa", "merengue", "bachata", "cumbia", "afrobeats", "amapiano", "c-pop", "fado", "morna",
+    "dance pop", "dream pop", "indie folk", "bedroom pop", "hyperpop", "art pop", "electropop", "teen pop"
   ],
   "instruments": [
     "acoustic guitar", "electric guitar", "bass", "piano", "grand piano", "upright piano",
