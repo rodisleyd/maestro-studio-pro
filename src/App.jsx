@@ -6,7 +6,7 @@ import {
   Layers, Mic2, ArrowRight, Search, Upload, 
   FileAudio, Activity, X, Save, Trash2, History, RotateCcw,
   ChevronDown, ChevronUp, Star, Edit3, Sparkles, Copy as CopyIcon, 
-  Split, Award
+  Split, Award, Check, Plus
 } from 'lucide-react';
 
 /**
@@ -398,6 +398,40 @@ function App() {
   const [selectedInstruments, setSelectedInstruments] = useState([]);
   const [vocalArchetype, setVocalArchetype] = useState('');
   const [secondaryGenre, setSecondaryGenre] = useState('');
+  const [genreSelectionTarget, setGenreSelectionTarget] = useState('primary'); // 'primary' | 'secondary'
+
+  // Lista de gêneros secundários estruturada a partir do texto separado por vírgula
+  const secondaryGenresList = useMemo(() => {
+    if (!secondaryGenre || typeof secondaryGenre !== 'string') return [];
+    return secondaryGenre
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+  }, [secondaryGenre]);
+
+  // Alterna gênero secundário acumulando separado por vírgula
+  const handleToggleSecondaryGenre = (genreToAdd) => {
+    const exists = secondaryGenresList.some(
+      g => g.toLowerCase() === genreToAdd.toLowerCase()
+    );
+    let updated;
+    if (exists) {
+      updated = secondaryGenresList.filter(
+        g => g.toLowerCase() !== genreToAdd.toLowerCase()
+      );
+    } else {
+      updated = [...secondaryGenresList, genreToAdd];
+    }
+    setSecondaryGenre(updated.join(', '));
+  };
+
+  // Remove um gênero secundário específico
+  const handleRemoveSecondaryGenre = (genreToRemove) => {
+    const updated = secondaryGenresList.filter(
+      g => g.toLowerCase() !== genreToRemove.toLowerCase()
+    );
+    setSecondaryGenre(updated.join(', '));
+  };
   const [negativePrompt, setNegativePrompt] = useState('');
   const [showExpertOptions, setShowExpertOptions] = useState(false);
   const [isProMode, setIsProMode] = useState(false);
@@ -1969,20 +2003,62 @@ function App() {
 
                {/* FUSÃO DE GÊNERO */}
                <div>
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-2">
                     <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
                       Gênero Secundário
                     </label>
-                    <span className="text-[8px] font-bold text-orange-500/50 uppercase">Fusão Híbrida</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setGenreSelectionTarget('secondary');
+                          const el = document.getElementById('genre-explorer-section');
+                          if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="text-[8px] font-bold text-yellow-400 hover:text-yellow-300 bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 px-2 py-0.5 rounded-md transition-all flex items-center gap-1 cursor-pointer"
+                        title="Escolher estilos direto no menu"
+                      >
+                        <Plus className="w-2.5 h-2.5" /> Escolher no Menu
+                      </button>
+                      <span className="text-[8px] font-bold text-orange-500/50 uppercase">Fusão Híbrida</span>
+                    </div>
                   </div>
                   <input 
-                    className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-orange-500/50 transition-all"
-                    placeholder="Ex: Trap, Melodic Pop..."
+                    className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-yellow-500/50 transition-all text-white placeholder:text-slate-600"
+                    placeholder="Ex: Trap, Melodic Pop (ou selecione no menu)..."
                     value={secondaryGenre}
                     onChange={e => setSecondaryGenre(e.target.value)}
                   />
-                  <p className="text-[8px] text-slate-600 mt-1.5 italic">Cria uma transição fluida entre estilos musicais distintos.</p>
+                  {/* Tags/Chips acumulados de gênero secundário */}
+                  {secondaryGenresList.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                      {secondaryGenresList.map((genreItem, idx) => (
+                        <span 
+                          key={idx} 
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 text-[10px] font-bold animate-in fade-in duration-200"
+                        >
+                          <span>{genreItem}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSecondaryGenre(genreItem)}
+                            className="text-yellow-400/70 hover:text-white ml-0.5 transition-colors p-0.5 rounded cursor-pointer"
+                            title={`Remover ${genreItem}`}
+                          >
+                            <X className="w-2.5 h-2.5" />
+                          </button>
+                        </span>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => setSecondaryGenre('')}
+                        className="text-[8px] font-bold text-slate-500 hover:text-red-400 underline transition-colors ml-1 cursor-pointer"
+                      >
+                        Limpar
+                      </button>
+                    </div>
+                  )}
+                  <p className="text-[8px] text-slate-600 mt-1.5 italic">Cria uma transição fluida entre estilos musicais distintos. Clique nos estilos no menu para acumular aqui.</p>
                </div>
 
                {/* DNA VOCAL */}
@@ -2687,27 +2763,115 @@ function App() {
                 Estúdio Virtual Ativo
               </h3>
               {activeTab === 'MANUAL' ? (
-                <div className="w-full max-w-4xl px-2 flex flex-col items-center">
-                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-4 text-center">
+                <div id="genre-explorer-section" className="w-full max-w-4xl px-2 flex flex-col items-center">
+                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-3 text-center">
                     Explore os gêneros disponíveis por categoria ou pesquise pelo nome:
                   </p>
 
-                  {/* INDICADOR DE GÊNERO BASE ATIVO */}
-                  {baseGenre && (
-                    <div className="mb-5 px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-2xl flex items-center gap-3 animate-in fade-in duration-300">
-                      <span className="text-[10px] font-black uppercase text-orange-400">Gênero Selecionado:</span>
-                      <span className="text-xs font-bold bg-orange-500 text-black px-3 py-1 rounded-lg flex items-center gap-1.5 shadow-md">
-                        {baseGenre}
-                      </span>
-                      <button 
-                        onClick={() => { setBaseGenre(''); setUserQuery(''); }}
-                        className="text-slate-400 hover:text-white transition-colors p-1"
-                        title="Limpar seleção"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
+                  {/* SELETOR DE DESTINO DO CLIQUE (PRINCIPAL OU SECUNDÁRIO) */}
+                  <div className="flex items-center justify-center gap-2 mb-4 bg-black/40 p-1.5 rounded-2xl border border-white/5 w-full max-w-md">
+                    <button
+                      type="button"
+                      onClick={() => setGenreSelectionTarget('primary')}
+                      className={`flex-1 py-2 px-3 rounded-xl text-[10px] font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        genreSelectionTarget === 'primary'
+                          ? 'bg-orange-500 text-black shadow-lg shadow-orange-500/20'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <span>🎯 Gênero Principal</span>
+                      {baseGenre && (
+                        <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-bold ${
+                          genreSelectionTarget === 'primary' ? 'bg-black/20 text-black' : 'bg-orange-500/20 text-orange-400'
+                        }`}>
+                          1
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setGenreSelectionTarget('secondary')}
+                      className={`flex-1 py-2 px-3 rounded-xl text-[10px] font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        genreSelectionTarget === 'secondary'
+                          ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/20'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <span>🔀 Gênero Secundário (Fusão)</span>
+                      {secondaryGenresList.length > 0 && (
+                        <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-bold ${
+                          genreSelectionTarget === 'secondary' ? 'bg-black/20 text-black' : 'bg-yellow-400/20 text-yellow-400'
+                        }`}>
+                          {secondaryGenresList.length}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* INDICADORES DE GÊNEROS ATIVOS */}
+                  {(baseGenre || secondaryGenresList.length > 0) && (
+                    <div className="w-full flex flex-wrap items-center justify-center gap-3 mb-5 animate-in fade-in duration-300">
+                      {baseGenre && (
+                        <div className="px-3.5 py-1.5 bg-orange-500/10 border border-orange-500/30 rounded-2xl flex items-center gap-2">
+                          <span className="text-[9px] font-black uppercase text-orange-400">Principal:</span>
+                          <span className="text-xs font-bold bg-orange-500 text-black px-2.5 py-0.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+                            {baseGenre}
+                          </span>
+                          <button 
+                            onClick={() => { setBaseGenre(''); setUserQuery(''); }}
+                            className="text-slate-400 hover:text-white transition-colors p-1 cursor-pointer"
+                            title="Limpar gênero principal"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+
+                      {secondaryGenresList.length > 0 && (
+                        <div className="px-3.5 py-1.5 bg-yellow-400/10 border border-yellow-400/30 rounded-2xl flex items-center flex-wrap gap-2">
+                          <span className="text-[9px] font-black uppercase text-yellow-400">Secundários ({secondaryGenresList.length}):</span>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {secondaryGenresList.map((secG, idx) => (
+                              <span 
+                                key={idx}
+                                className="text-xs font-bold bg-yellow-400 text-black px-2 py-0.5 rounded-lg flex items-center gap-1 shadow-sm"
+                              >
+                                {secG}
+                                <button
+                                  onClick={() => handleRemoveSecondaryGenre(secG)}
+                                  className="text-black/60 hover:text-black hover:bg-black/10 rounded-full p-0.5 transition-colors cursor-pointer"
+                                  title={`Remover ${secG}`}
+                                >
+                                  <X className="w-2.5 h-2.5" />
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                          <button 
+                            onClick={() => setSecondaryGenre('')}
+                            className="text-slate-400 hover:text-red-400 transition-colors p-1 ml-1 cursor-pointer"
+                            title="Limpar todos os secundários"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
+
+                  {/* INSTRUÇÃO DINÂMICA DE MODO */}
+                  <div className="text-[9px] font-bold text-center mb-3">
+                    {genreSelectionTarget === 'primary' ? (
+                      <span className="text-orange-400/90 bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full">
+                        💡 Modo Principal: Clique em um estilo para defini-lo como base da música.
+                      </span>
+                    ) : (
+                      <span className="text-yellow-400/90 bg-yellow-400/10 border border-yellow-400/20 px-3 py-1 rounded-full">
+                        ✨ Modo Secundário: Clique nos estilos para adicioná-los ou removê-los da Fusão Híbrida (acumulativo).
+                      </span>
+                    )}
+                  </div>
 
                   {/* BARRA DE PESQUISA & ABAS DE CATEGORIA */}
                   <div className="w-full space-y-4 mb-6">
@@ -2779,36 +2943,61 @@ function App() {
                     return (
                       <div className="w-full flex flex-col items-center gap-4">
                         <div className="flex flex-wrap justify-center gap-2 w-full px-2 max-h-[360px] overflow-y-auto pr-1 custom-scrollbar">
-                          {visibleGenres.map((genre) => (
-                            <button
-                              key={genre}
-                              onMouseEnter={() => playGenrePreview(genre)}
-                              onMouseLeave={() => stopGenrePreview()}
-                              onClick={() => {
-                                setUserQuery(`Música estilo ${genre}`);
-                                setBaseGenre(genre);
-                                setSecondaryGenre('');
-                                setActiveTab('MANUAL');
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                              }}
-                              className={`px-3 py-1.5 border rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap flex items-center gap-2 ${
-                                baseGenre === genre 
-                                  ? 'bg-orange-500 border-orange-500 text-black scale-105 font-black shadow-lg shadow-orange-500/20' 
-                                  : activePreviewGenre === genre 
-                                  ? 'bg-orange-500/80 border-orange-500 text-black scale-105' 
-                                  : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:text-white hover:border-orange-500/30'
-                              }`}
-                            >
-                              {genre}
-                              {activePreviewGenre === genre && (
-                                <div className="flex gap-0.5 items-end h-3">
-                                  <div className="w-0.5 bg-black animate-[musicBar_0.8s_ease-in-out_infinite] h-full"></div>
-                                  <div className="w-0.5 bg-black animate-[musicBar_1.1s_ease-in-out_infinite] h-2/3"></div>
-                                  <div className="w-0.5 bg-black animate-[musicBar_0.9s_ease-in-out_infinite] h-4/5"></div>
-                                </div>
-                              )}
-                            </button>
-                          ))}
+                          {visibleGenres.map((genre) => {
+                            const isSelectedPrimary = baseGenre === genre;
+                            const isSelectedSecondary = secondaryGenresList.some(
+                              g => g.toLowerCase() === genre.toLowerCase()
+                            );
+
+                            return (
+                              <button
+                                key={genre}
+                                onMouseEnter={() => playGenrePreview(genre)}
+                                onMouseLeave={() => stopGenrePreview()}
+                                onClick={() => {
+                                  if (genreSelectionTarget === 'secondary') {
+                                    handleToggleSecondaryGenre(genre);
+                                  } else {
+                                    setUserQuery(`Música estilo ${genre}`);
+                                    setBaseGenre(genre);
+                                    setActiveTab('MANUAL');
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                  }
+                                }}
+                                className={`px-3 py-1.5 border rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap flex items-center gap-1.5 ${
+                                  isSelectedPrimary
+                                    ? 'bg-orange-500 border-orange-500 text-black scale-105 font-black shadow-lg shadow-orange-500/20' 
+                                    : isSelectedSecondary
+                                    ? 'bg-yellow-400 border-yellow-400 text-black scale-105 font-bold shadow-lg shadow-yellow-400/20 ring-1 ring-yellow-400'
+                                    : activePreviewGenre === genre 
+                                    ? 'bg-orange-500/80 border-orange-500 text-black scale-105' 
+                                    : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:text-white hover:border-orange-500/30'
+                                }`}
+                              >
+                                {isSelectedSecondary && !isSelectedPrimary && (
+                                  <Check className="w-3 h-3 text-black stroke-[3]" />
+                                )}
+                                <span>{genre}</span>
+                                {isSelectedPrimary && (
+                                  <span className="text-[7px] uppercase font-black px-1 py-0.5 bg-black/20 text-black rounded">
+                                    Principal
+                                  </span>
+                                )}
+                                {isSelectedSecondary && !isSelectedPrimary && (
+                                  <span className="text-[7px] uppercase font-black px-1 py-0.5 bg-black/20 text-black rounded">
+                                    Fusão
+                                  </span>
+                                )}
+                                {activePreviewGenre === genre && (
+                                  <div className="flex gap-0.5 items-end h-3 ml-1">
+                                    <div className="w-0.5 bg-black animate-[musicBar_0.8s_ease-in-out_infinite] h-full"></div>
+                                    <div className="w-0.5 bg-black animate-[musicBar_1.1s_ease-in-out_infinite] h-2/3"></div>
+                                    <div className="w-0.5 bg-black animate-[musicBar_0.9s_ease-in-out_infinite] h-4/5"></div>
+                                  </div>
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
 
                         {hasMore && (
