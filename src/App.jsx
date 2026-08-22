@@ -67,6 +67,30 @@ const ALL_GENRES = Object.values(GENRES_BY_CATEGORY).flat().sort((a, b) => a.loc
 
 
 // Constantes de Configuração Profissional (Inspirado no Magic Prompt)
+
+// CONSTANTES PARA O ARQUITETO DE INTRODUÇÃO (SUNO RIGID INTRO)
+const INTRO_STYLES = [
+  { id: 'solo_instrumental', label: 'Solo Instrumental', desc: 'Apenas 1 instrumento abrindo', icon: '🎸' },
+  { id: 'buildup', label: 'Build-Up Crescente', desc: 'Começa calmo e cresce intensidade', icon: '⚡' },
+  { id: 'direct_drop', label: 'Direto ao Drop', desc: 'Sem intro, soco direto no verso/refrão', icon: '💥' },
+  { id: 'acapella', label: 'Acapella Solo', desc: 'Voz limpa antes dos instrumentos', icon: '🎙️' },
+  { id: 'spoken', label: 'Intro Falada (Spoken)', desc: 'Frase falada ou locução inicial', icon: '🗣️' },
+  { id: 'sfx_soundscape', label: 'SFX / Atmosférico', desc: 'Chuva, vinil lofi, ambiência', icon: '🌧️' },
+  { id: 'fadein', label: 'Fade-In Suave', desc: 'Volume subindo gradualmente', icon: '⏳' }
+];
+
+const INTRO_LEAD_INSTRUMENTS = [
+  'Piano Acústico', 'Violão Dedilhado (Fingerpicking)', 'Guitarra Solo', 
+  'Synth Pad Atmosférico', '808 Sub Bass', 'Bateria / Percussão Solo', 
+  'Cordas / Violinos', 'Saxofone', 'Baixo Slap / Groove'
+];
+
+const INTRO_DURATIONS = [
+  { id: 'short', label: 'Curta (~4s)', desc: '2 compassos rápidos' },
+  { id: 'medium', label: 'Padrão (~8s)', desc: '4 compassos clássicos' },
+  { id: 'long', label: 'Longa (~16s)', desc: '8 compassos progressivos' }
+];
+
 const VOCAL_ARCHETYPES = [
   { id: 'Male Vocal', label: 'Male Vocal', desc: 'Vocal Masculino (Cantado)' },
   { id: 'Female Vocal', label: 'Female Vocal', desc: 'Vocal Feminino (Cantado)' },
@@ -435,6 +459,12 @@ function App() {
   const [negativePrompt, setNegativePrompt] = useState('');
   const [showExpertOptions, setShowExpertOptions] = useState(false);
   const [isProMode, setIsProMode] = useState(false);
+    // ESTADOS PARA CONTROLE DE INTRODUÇÃO (SUNO RIGID INTRO)
+  const [introStyle, setIntroStyle] = useState('');
+  const [introInstrument, setIntroInstrument] = useState('');
+  const [introDuration, setIntroDuration] = useState('medium');
+  const [introCustomText, setIntroCustomText] = useState('');
+
   const [vocalTone, setVocalTone] = useState('normal');
   const [vocalTextures, setVocalTextures] = useState([]);
   const [smartSuggestion, setSmartSuggestion] = useState(null);
@@ -817,6 +847,18 @@ function App() {
     12. ANÁLISE VISUAL (INSIGHT VISUAL): Se uma imagem for fornecida, analise a paleta de cores, iluminação, ambiente e emoções visuais. Converta isso em elementos musicais. Ex: Tons quentes e ambientes internos sugerem Jazz, Bossa Nova ou Lofi; tons neon sugerem Synthwave; paisagens amplas e naturais sugerem Orchestral ou Ambient; cenas urbanas cinzas sugerem Industrial ou Techno.
     13. MODO JINGLE (CRÍTICO): Se o input contiver [JINGLE MODE], você DEVE focar em criar um prompt para uma peça comercial curta. 
     14. ATMOSFERA AO VIVO (CRÍTICO): Se "Atmosfera ao Vivo" estiver selecionada, você DEVE incorporar as características acústicas (reverb, echo) e ambientais (crowd noise, applause) no final_prompt e nas style_tags. Use os valores fornecidos para guiar a sonoridade.
+    16. CONTROLE RÍGIDO DE INTRODUÇÃO SUNO (CRÍTICO):
+    Se o usuário definiu parâmetros no "Controle de Introdução" (Estilo de Entrada, Instrumento Líder, Duração ou Frase/SFX):
+    a) No início do "style_tags" e no "final_prompt", priorize e enfatize a abertura solicitada (ex: "solo acoustic guitar intro, slow build-up", "spoken word intro, narrative opening", "no intro, instant drop").
+    b) No campo "musical_structure", o primeiro bloco DEVE ser a tag de Intro hiper-específica para a caixa de Letras (Lyrics) do Suno, formatada com precisão absoluta. Exemplos:
+       - Solo Instrumental: "[Intro: Instrumental only - Solo {Instrument} for {Duration}]"
+       - Build-Up: "[Intro: Slow dynamic build-up with {Instrument}, swelling energy into drop]"
+       - Spoken: "[Spoken Intro: \"{CustomText}\" (narrative spoken voice with subtle backing atmosphere)]"
+       - Acapella: "[Intro: Pure solo acapella vocals, isolated voice, no instruments]"
+       - SFX: "[Intro: Ambient soundscape {CustomText}, then instruments fade in]"
+       - Direto ao Drop: "[No Intro - Immediate Drop into Verse 1]"
+    c) Garanta que a metatag gerada no primeiro bloco seja pronta para copiar direto para a caixa de letra do Suno.
+    
     15. MODO A CAPPELLA (ESTRITAMENTE VOCAL): Se o gênero for "A Cappella" ou se o preset "Take 6" for usado, você DEVE garantir que NENHUM instrumento musical seja mencionado no final_prompt ou style_tags. Use apenas termos como "human voices only", "purely vocal", "unaccompanied", "vocal harmony", "beatbox", "vocal percussion". Adicione "no instruments" e "no drums" de forma agressiva no prompt negativo e nas tags.
     
     REGRAS DE OURO PARA O SUNO:
@@ -866,6 +908,12 @@ function App() {
         Compasso: ${timeSignature || 'Automático'}
         Tom & Modo: ${musicalKey ? `${musicalKey} ${keyMode}` : 'Automático'}
         Atmosfera ao Vivo: ${LIVE_ENVIRONMENTS.find(e => e.id === selectedLiveEnv)?.label || 'Nenhuma'}
+        
+        --- CONTROLE DE INTRODUÇÃO SUNO ---
+        Estilo de Entrada: ${introStyle ? INTRO_STYLES.find(s => s.id === introStyle)?.label : 'Padrão / Automático'}
+        Instrumento Líder da Intro: ${introInstrument || 'Automático'}
+        Duração da Intro: ${INTRO_DURATIONS.find(d => d.id === introDuration)?.label || 'Padrão (~8s)'}
+        Frase / Detalhe / SFX da Intro: ${introCustomText || 'Nenhum'}
 
 
         Escala: ${scale || 'Automático'}
@@ -1283,6 +1331,10 @@ function App() {
     setVocalArchetype('');
     setSecondaryGenre('');
     setNegativePrompt('');
+    setIntroStyle('');
+    setIntroInstrument('');
+    setIntroDuration('medium');
+    setIntroCustomText('');
     setVocalTone('normal');
     setVocalTextures([]);
     setCustomLyrics('');
@@ -2061,6 +2113,142 @@ function App() {
                   <p className="text-[8px] text-slate-600 mt-1.5 italic">Cria uma transição fluida entre estilos musicais distintos. Clique nos estilos no menu para acumular aqui.</p>
                </div>
 
+               {/* ARQUITETO DE INTRODUÇÃO (SUNO RIGID INTRO) */}
+               <div className="pt-6 border-t border-white/5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[9px] font-black text-yellow-400 uppercase tracking-widest flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-yellow-400/50"></span>
+                      Arquiteto de Introdução (Suno Rigid Intro)
+                    </label>
+                    <span className="text-[8px] font-bold text-orange-500/60 uppercase">Controle de Entrada</span>
+                  </div>
+                  <p className="text-[8px] text-slate-500 italic -mt-2">
+                    Força o Suno a obedecer a abertura da música através de dupla ancoragem (Style + Metatag na Letra).
+                  </p>
+
+                  {/* ESTILOS DE INTRODUÇÃO */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {INTRO_STYLES.map(style => {
+                      const isSelected = introStyle === style.id;
+                      return (
+                        <button
+                          key={style.id}
+                          type="button"
+                          onClick={() => setIntroStyle(isSelected ? '' : style.id)}
+                          className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                            isSelected 
+                              ? 'bg-yellow-400 border-yellow-400 text-black shadow-lg shadow-yellow-400/20 scale-[1.02]' 
+                              : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-yellow-400/30'
+                          }`}
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs">{style.icon}</span>
+                            <span className="text-[9px] font-bold truncate">{style.label}</span>
+                          </div>
+                          <div className={`text-[7px] mt-0.5 opacity-70 truncate ${isSelected ? 'text-black font-medium' : 'text-slate-500'}`}>
+                            {style.desc}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* OPÇÕES ADICIONAIS QUANDO UMA INTRO FOR SELECIONADA */}
+                  {introStyle && introStyle !== 'direct_drop' && (
+                    <div className="bg-black/30 p-3.5 rounded-2xl border border-yellow-400/10 space-y-3 animate-in fade-in duration-300">
+                      {/* INSTRUMENTO LÍDER (Se não for acapella pura) */}
+                      {introStyle !== 'acapella' && (
+                        <div>
+                          <p className="text-[8px] font-black text-yellow-400/80 uppercase tracking-widest mb-1.5">
+                            Instrumento Líder da Abertura:
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {INTRO_LEAD_INSTRUMENTS.map(inst => (
+                              <button
+                                key={inst}
+                                type="button"
+                                onClick={() => setIntroInstrument(introInstrument === inst ? '' : inst)}
+                                className={`px-2.5 py-1 rounded-lg text-[8px] font-bold border transition-all cursor-pointer ${
+                                  introInstrument === inst
+                                    ? 'bg-orange-500 border-orange-500 text-black'
+                                    : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
+                                }`}
+                              >
+                                {inst}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* DURAÇÃO DA INTRO */}
+                      <div>
+                        <p className="text-[8px] font-black text-yellow-400/80 uppercase tracking-widest mb-1.5">
+                          Duração / Compassos da Intro:
+                        </p>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {INTRO_DURATIONS.map(dur => (
+                            <button
+                              key={dur.id}
+                              type="button"
+                              onClick={() => setIntroDuration(dur.id)}
+                              className={`py-1.5 px-2 rounded-lg text-[8px] font-bold border transition-all text-center cursor-pointer ${
+                                introDuration === dur.id
+                                  ? 'bg-yellow-400 border-yellow-400 text-black shadow'
+                                  : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:bg-white/5'
+                              }`}
+                            >
+                              <div>{dur.label}</div>
+                              <div className={`text-[6.5px] opacity-60 ${introDuration === dur.id ? 'text-black' : 'text-slate-500'}`}>
+                                {dur.desc}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* FRASE / SFX / DETALHE PERSONALIZADO */}
+                      {(introStyle === 'spoken' || introStyle === 'sfx_soundscape' || introStyle === 'acapella') && (
+                        <div>
+                          <p className="text-[8px] font-black text-yellow-400/80 uppercase tracking-widest mb-1">
+                            {introStyle === 'spoken' ? 'Frase / Fala Inicial:' : introStyle === 'sfx_soundscape' ? 'Descrição do Efeito / Ambiência:' : 'Frase de Abertura Acapella:'}
+                          </p>
+                          <input
+                            type="text"
+                            value={introCustomText}
+                            onChange={(e) => setIntroCustomText(e.target.value)}
+                            placeholder={
+                              introStyle === 'spoken' 
+                                ? 'Ex: "1, 2, 3, vai...", "Bem-vindos ao espetáculo...", "Yeah, check this out..."' 
+                                : introStyle === 'sfx_soundscape'
+                                ? 'Ex: Som de chuva distante e trovão, ruído de vinil lofi, passos na água...'
+                                : 'Ex: "Oh yeah...", vocalise suave, harmonia solo...'
+                            }
+                            className="w-full bg-[#0f0f0f] border border-white/10 rounded-xl px-3 py-2 text-[10px] text-white outline-none focus:border-yellow-400/50 transition-all placeholder:text-slate-600"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {introStyle && (
+                    <div className="flex items-center justify-between px-3 py-1.5 bg-yellow-400/10 border border-yellow-400/20 rounded-xl text-[8px] text-yellow-300 font-bold">
+                      <span>✓ Configuração de Intro Ativa para a próxima geração</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIntroStyle('');
+                          setIntroInstrument('');
+                          setIntroCustomText('');
+                        }}
+                        className="text-slate-400 hover:text-red-400 underline transition-colors cursor-pointer"
+                      >
+                        Limpar Intro
+                      </button>
+                    </div>
+                  )}
+               </div>
+
                {/* DNA VOCAL */}
                <div className="pt-4 border-t border-white/5">
                   <div className="flex items-center justify-between mb-3">
@@ -2718,7 +2906,11 @@ function App() {
                         <div className="flex flex-wrap gap-2 mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
                           <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest self-center mr-2">Tags Rápidas:</span>
                           {[
-                            { label: 'Intro Falada', tag: 'Intro - spoken' },
+                            { label: 'Intro Rígida (Instrumental)', tag: 'Intro: Instrumental only, 8 bars' },
+                            { label: 'Intro Falada', tag: 'Spoken Intro: "..."' },
+                            { label: 'Contagem (1, 2, 3, 4)', tag: 'Count-in: 1, 2, 3, 4 - Drop' },
+                            { label: 'Acapella Start', tag: 'Intro: Pure Solo Acapella' },
+                            { label: 'Direto ao Drop (Sem Intro)', tag: 'No Intro - Immediate Drop' },
                             { label: 'Intro', tag: 'Intro' },
                             { label: 'Verso', tag: 'Verse' },
                             { label: 'Refrão', tag: 'Chorus' },
