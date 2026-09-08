@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import tagsData from './tags.json';
+import GuitarRigModal from './components/GuitarRigModal';
 
 import { 
   Music, Wand2, Settings2, Play, Copy, CheckCheck, AlertCircle, 
@@ -548,6 +549,8 @@ function App() {
   const [isProggenStylesOpen, setIsProggenStylesOpen] = useState(false);
 
   const [showArranger, setShowArranger] = useState(false);
+  const [showGuitarRigModal, setShowGuitarRigModal] = useState(false);
+  const [activeGuitarRig, setActiveGuitarRig] = useState(null);
   const [arrangerStep, setArrangerStep] = useState(1);
   const [arrangerData, setArrangerData] = useState({
     intention: { message: '', feeling: '', mood: '' },
@@ -904,6 +907,12 @@ function App() {
         Timbre Vocal: ${VOCAL_TONES.find(t => t.id === vocalTone)?.label || 'Normal'}
         Texturas Vocais: ${vocalTextures.length > 0 ? vocalTextures.map(id => VOCAL_TEXTURES.find(t => t.id === id)?.label).join(', ') : 'Nenhuma'}
         Instrumentos Selecionados: ${selectedInstruments.join(', ') || 'Automático'}
+        ${activeGuitarRig ? `
+        --- GUITAR RIG DE ESTÚDIO (TONE ARCHITECT & SIGNAL CHAIN) ---
+        Cadeia de Sinal da Guitarra: ${activeGuitarRig.fullPromptText}
+        Rig Selecionado: ${activeGuitarRig.displaySummary || activeGuitarRig.presetName || 'Personalizado'}
+        Diretriz de Timbre: Modele o timbre da guitarra rigorosamente conforme a cadeia de sinal acima (modelo de guitarra, captadores, saturação de amplificador, pedais de efeito e ambiência de estúdio).
+        ` : ''}
         BPM / Andamento: ${selectedBpm || 'Automático'}
         Compasso: ${timeSignature || 'Automático'}
         Tom & Modo: ${musicalKey ? `${musicalKey} ${keyMode}` : 'Automático'}
@@ -1259,6 +1268,7 @@ function App() {
           setSelectedInstruments(normalized);
         } else {
           setSelectedInstruments([]);
+    setActiveGuitarRig(null);
         }
       }
       if (result.description) setUserQuery(result.description);
@@ -1419,6 +1429,24 @@ function App() {
     }
   };
 
+  const handleInsertGuitarLyricsTag = (tag) => {
+    const insertText = `\n${tag}\n`;
+    const textarea = lyricsTextareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const currentVal = customLyrics;
+      const newVal = currentVal.substring(0, start) + insertText + currentVal.substring(end);
+      setCustomLyrics(newVal);
+      setTimeout(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + insertText.length;
+        textarea.focus();
+      }, 0);
+    } else {
+      setCustomLyrics(prev => prev + insertText);
+    }
+  };
+
   const playGenrePreview = (genre) => {
     // 1. Limpar qualquer áudio tocando
     if (audioPreviewRef.current) {
@@ -1497,6 +1525,21 @@ function App() {
               {tab}
             </button>
           ))}
+          <button
+            onClick={() => setShowGuitarRigModal(true)}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[8px] font-black uppercase transition-all group ${
+              activeGuitarRig 
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-black shadow-lg shadow-orange-500/30 scale-105 ring-2 ring-orange-400' 
+                : 'bg-gradient-to-r from-amber-600/20 to-orange-600/20 text-amber-300 border border-orange-500/30 hover:bg-orange-500 hover:text-black'
+            }`}
+            title="Laboratório de Guitarras, Pedais e Amplificadores"
+          >
+            <span>🎸</span>
+            <span>Guitar Rig PRO</span>
+            {activeGuitarRig && (
+              <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping ml-0.5"></span>
+            )}
+          </button>
           <button
             onClick={() => setShowArranger(true)}
             className="flex items-center gap-2 px-4 py-1.5 rounded-full text-[8px] font-black uppercase bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/20 hover:scale-105 transition-all group"
@@ -2525,7 +2568,43 @@ function App() {
                </div>
 
                {/* ORQUESTRADOR AVANÇADO */}
-               <div className="pt-4 border-t border-white/5">
+               <div className="pt-4 border-t border-white/5 space-y-3">
+                  {/* BANNER ATIVO GUITAR RIG PRO */}
+                  {activeGuitarRig && (
+                    <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-orange-500/15 via-amber-500/10 to-black border border-orange-500/30 rounded-2xl animate-in fade-in duration-300">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">🎸</span>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[9px] font-black uppercase tracking-wider text-orange-400">Guitar Rig Ativo</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
+                          </div>
+                          <span className="text-[10px] text-slate-200 font-bold block truncate max-w-[180px] md:max-w-xs">
+                            {activeGuitarRig.displaySummary || activeGuitarRig.presetName || 'Cadeia Customizada'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setShowGuitarRigModal(true)}
+                          className="px-2.5 py-1 bg-orange-500 text-black font-black text-[9px] uppercase rounded-lg hover:bg-orange-400 transition-all shadow-sm"
+                        >
+                          Ajustar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveGuitarRig(null)}
+                          className="p-1 text-slate-500 hover:text-red-400 transition-colors"
+                          title="Desativar Rig de Guitarra"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2">
                   <button 
                     type="button"
                     onClick={() => setShowOrchestrator(!showOrchestrator)}
@@ -2540,6 +2619,17 @@ function App() {
                     </div>
                     {showOrchestrator ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowGuitarRigModal(true)}
+                    className="p-3.5 bg-gradient-to-br from-orange-500/20 to-amber-600/10 border border-orange-500/30 hover:border-orange-500 text-orange-400 hover:text-white rounded-2xl transition-all flex flex-col items-center justify-center shrink-0 group"
+                    title="Abrir Laboratório de Guitarras e Pedais"
+                  >
+                    <span className="text-base group-hover:scale-110 transition-transform">🎸</span>
+                    <span className="text-[7px] font-black uppercase tracking-tighter mt-0.5 text-orange-300">Rig PRO</span>
+                  </button>
+                </div>
 
                   <div className={`transition-all duration-300 overflow-hidden ${showOrchestrator ? 'max-h-[600px] opacity-100 mt-3' : 'max-h-0 opacity-0'}`}>
                     <div className="space-y-6 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar bg-black/40 p-5 rounded-2xl border border-white/5">
@@ -3308,6 +3398,15 @@ function App() {
       )}
 
       {/* MODAL PROGGEN */}
+      {/* MODAL GUITAR RIG PRO */}
+      <GuitarRigModal
+        isOpen={showGuitarRigModal}
+        onClose={() => setShowGuitarRigModal(false)}
+        currentRig={activeGuitarRig}
+        onApplyRig={(rig) => setActiveGuitarRig(rig)}
+        onInsertLyricsTag={handleInsertGuitarLyricsTag}
+      />
+
       {/* MODAL ARRANJADOR PRO */}
       {showArranger && (
         <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[60] flex items-center justify-center p-0 md:p-10 overflow-hidden">
