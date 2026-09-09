@@ -127,9 +127,9 @@ export default function AcousticGuitarModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* CABEÇALHO */}
-        <div className="flex items-center justify-between p-5 sm:px-8 border-b border-white/10 bg-gradient-to-r from-amber-950/30 via-[#161616] to-[#111111]">
+        <div className="flex items-center justify-between p-5 sm:px-8 border-b border-white/10 bg-gradient-to-r from-amber-950/30 via-[#161616] to-[#111111] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-xl shadow-lg shadow-amber-500/20">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-xl shadow-lg shadow-amber-500/20 shrink-0">
               🎸
             </div>
             <div>
@@ -149,7 +149,7 @@ export default function AcousticGuitarModal({
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
+            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-all cursor-pointer shrink-0"
             title="Fechar Modal"
           >
             <X className="w-5 h-5" />
@@ -157,11 +157,11 @@ export default function AcousticGuitarModal({
         </div>
 
         {/* NAVEGAÇÃO DE ABAS */}
-        <div className="flex border-b border-white/10 bg-black/40 px-5 sm:px-8 gap-2 overflow-x-auto custom-scrollbar">
+        <div className="flex border-b border-white/10 bg-black/40 px-5 sm:px-8 gap-2 overflow-x-auto custom-scrollbar shrink-0">
           <button
             type="button"
             onClick={() => setActiveTab('PRESETS')}
-            className={`py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-wider border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+            className={`py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-wider border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer shrink-0 ${
               activeTab === 'PRESETS'
                 ? 'border-amber-500 text-amber-400'
                 : 'border-transparent text-slate-400 hover:text-white'
@@ -174,7 +174,7 @@ export default function AcousticGuitarModal({
           <button
             type="button"
             onClick={() => setActiveTab('CUSTOM')}
-            className={`py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-wider border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+            className={`py-3 px-4 text-[10px] sm:text-xs font-black uppercase tracking-wider border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer shrink-0 ${
               activeTab === 'CUSTOM'
                 ? 'border-amber-500 text-amber-400'
                 : 'border-transparent text-slate-400 hover:text-white'
@@ -186,7 +186,7 @@ export default function AcousticGuitarModal({
         </div>
 
         {/* CONTEÚDO PRINCIPAL (COM SCROLL) */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-8 custom-scrollbar space-y-6">
+        <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:p-8 custom-scrollbar space-y-6">
           {activeTab === 'PRESETS' ? (
             /* ================= ABA PRESETS ================= */
             <div className="space-y-4">
@@ -593,7 +593,7 @@ export default function AcousticGuitarModal({
         </div>
 
         {/* RODAPÉ COM RESUMO ATIVO E BOTÕES DE AÇÃO */}
-        <div className="p-4 sm:px-8 border-t border-white/10 bg-[#0d0d0d] space-y-3">
+        <div className="p-4 sm:px-8 border-t border-white/10 bg-[#0d0d0d] space-y-3 shrink-0">
           {/* CADEIA DE SINAL ACÚSTICA SINTETIZADA */}
           <div className="p-3 bg-black/60 rounded-2xl border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
