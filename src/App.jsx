@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import tagsData from './tags.json';
 import GuitarRigModal from './components/GuitarRigModal';
+import AcousticGuitarModal from './components/AcousticGuitarModal';
 
 import { 
   Music, Wand2, Settings2, Play, Copy, CheckCheck, AlertCircle, 
   Layers, Mic2, ArrowRight, Search, Upload, 
   FileAudio, Activity, X, Save, Trash2, History, RotateCcw,
   ChevronDown, ChevronUp, Star, Edit3, Sparkles, Copy as CopyIcon, 
-  Split, Award, Check, Plus
+  Split, Award, Check, Plus, Sliders
 } from 'lucide-react';
 
 /**
@@ -551,6 +552,8 @@ function App() {
   const [showArranger, setShowArranger] = useState(false);
   const [showGuitarRigModal, setShowGuitarRigModal] = useState(false);
   const [activeGuitarRig, setActiveGuitarRig] = useState(null);
+  const [showAcousticGuitarModal, setShowAcousticGuitarModal] = useState(false);
+  const [activeAcousticRig, setActiveAcousticRig] = useState(null);
   const [arrangerStep, setArrangerStep] = useState(1);
   const [arrangerData, setArrangerData] = useState({
     intention: { message: '', feeling: '', mood: '' },
@@ -912,6 +915,12 @@ function App() {
         Cadeia de Sinal da Guitarra: ${activeGuitarRig.fullPromptText}
         Rig Selecionado: ${activeGuitarRig.displaySummary || activeGuitarRig.presetName || 'Personalizado'}
         Diretriz de Timbre: Modele o timbre da guitarra rigorosamente conforme a cadeia de sinal acima (modelo de guitarra, captadores, saturação de amplificador, pedais de efeito e ambiência de estúdio).
+        ` : ''}
+        ${activeAcousticRig ? `
+        --- ACOUSTIC GUITAR STUDIO (VIOLÃO DE AÇO & MODELAGEM DE ESTÚDIO) ---
+        Cadeia Acústica do Violão de Aço: ${activeAcousticRig.fullPromptText}
+        Violão Selecionado: ${activeAcousticRig.displaySummary || activeAcousticRig.presetName || 'Personalizado'}
+        Diretriz de Timbre: Modele o violão de corda de aço com rigor e fidelidade à cadeia acústica acima (formato do corpo/shape, madeiras, tipo de cordas de aço, técnica de dedilhado/strumming, intensidade de ataque, microfonação de estúdio e efeitos analógicos).
         ` : ''}
         BPM / Andamento: ${selectedBpm || 'Automático'}
         Compasso: ${timeSignature || 'Automático'}
@@ -1378,6 +1387,8 @@ function App() {
     setSceneContext('');
     setSceneFrames([]);
     setSceneFramePreviews([]);
+    setActiveGuitarRig(null);
+    setActiveAcousticRig(null);
   };
 
   const insertIntoLyrics = (section, text) => {
@@ -1430,6 +1441,24 @@ function App() {
   };
 
   const handleInsertGuitarLyricsTag = (tag) => {
+    const insertText = `\n${tag}\n`;
+    const textarea = lyricsTextareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const currentVal = customLyrics;
+      const newVal = currentVal.substring(0, start) + insertText + currentVal.substring(end);
+      setCustomLyrics(newVal);
+      setTimeout(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + insertText.length;
+        textarea.focus();
+      }, 0);
+    } else {
+      setCustomLyrics(prev => prev + insertText);
+    }
+  };
+
+  const handleInsertAcousticLyricsTag = (tag) => {
     const insertText = `\n${tag}\n`;
     const textarea = lyricsTextareaRef.current;
     if (textarea) {
@@ -2604,12 +2633,11 @@ function App() {
                         <button onClick={() => setSelectedLiveEnv('')} className="hover:text-red-400 opacity-60 hover:opacity-100 transition-all"><X className="w-3 h-3"/></button>
                       </span>}
                     </div>
-
                   )}
                </div>
 
-               {/* ORQUESTRADOR AVANÇADO */}
-               <div className="pt-4 border-t border-white/5 space-y-3">
+                {/* ORQUESTRADOR AVANÇADO */}
+                <div className="pt-4 border-t border-white/5 space-y-3">
                   {/* BANNER ATIVO GUITAR RIG PRO */}
                   {activeGuitarRig && (
                     <div className="flex items-center justify-between gap-2.5 p-3 bg-gradient-to-r from-orange-500/15 via-amber-500/10 to-black/80 border border-orange-500/30 rounded-2xl animate-in fade-in duration-300 w-full overflow-hidden">
@@ -2641,6 +2669,44 @@ function App() {
                           onClick={() => setActiveGuitarRig(null)}
                           className="p-1 text-slate-400 hover:text-red-400 transition-colors shrink-0 cursor-pointer"
                           title="Desativar Rig de Guitarra"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* BANNER ATIVO ACOUSTIC GUITAR STUDIO */}
+                  {activeAcousticRig && (
+                    <div className="flex items-center justify-between gap-2.5 p-3 bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-black/80 border border-amber-500/40 rounded-2xl animate-in fade-in duration-300 w-full overflow-hidden shadow-lg shadow-amber-500/5">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <span className="text-lg shrink-0">🎸</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[9px] font-black uppercase tracking-wider text-amber-400 truncate">Violão de Aço Ativo</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0"></span>
+                          </div>
+                          <span 
+                            className="text-[10px] text-slate-200 font-bold block truncate w-full"
+                            title={activeAcousticRig.displaySummary || activeAcousticRig.presetName || 'Cadeia Acústica Personalizada'}
+                          >
+                            {activeAcousticRig.displaySummary || activeAcousticRig.presetName || 'Cadeia Acústica Personalizada'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setShowAcousticGuitarModal(true)}
+                          className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-black font-black text-[9px] uppercase rounded-lg transition-all shadow-sm shrink-0 whitespace-nowrap cursor-pointer active:scale-95"
+                        >
+                          Ajustar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveAcousticRig(null)}
+                          className="p-1 text-slate-400 hover:text-red-400 transition-colors shrink-0 cursor-pointer"
+                          title="Desativar Violão de Aço"
                         >
                           <X className="w-3.5 h-3.5" />
                         </button>
@@ -2686,23 +2752,59 @@ function App() {
                           <div className="flex flex-wrap gap-2">
                             {group.items.map(item => {
                               const isSelected = selectedInstruments.includes(item.name);
+                              const isAcousticSteel = item.name === 'Violão Aço' || item.name === 'Violão 12 Cordas';
+                              const isAcousticRigActive = isAcousticSteel && activeAcousticRig;
+
                               return (
                                 <div key={item.name} className="flex items-center gap-1">
                                   <button 
                                     type="button"
                                     onClick={() => {
-                                      if (isSelected) setSelectedInstruments(selectedInstruments.filter(i => i !== item.name));
-                                      else setSelectedInstruments([...selectedInstruments, item.name]);
+                                      if (isSelected) {
+                                        setSelectedInstruments(selectedInstruments.filter(i => i !== item.name));
+                                      } else {
+                                        setSelectedInstruments([...selectedInstruments, item.name]);
+                                        if (isAcousticSteel && !activeAcousticRig) {
+                                          setShowAcousticGuitarModal(true);
+                                        }
+                                      }
                                     }}
-                                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[9px] font-bold transition-all ${isSelected ? 'bg-orange-500 text-black border-orange-500 shadow-md shadow-orange-500/20' : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-orange-500/30 hover:text-white'}`}
+                                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[9px] font-bold transition-all cursor-pointer ${
+                                      isAcousticRigActive
+                                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-black border-amber-400 shadow-md shadow-amber-500/30 ring-1 ring-amber-300'
+                                        : isSelected 
+                                          ? 'bg-orange-500 text-black border-orange-500 shadow-md shadow-orange-500/20' 
+                                          : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-orange-500/30 hover:text-white'
+                                    }`}
                                   >
                                     <span className="text-xs">{item.icon}</span>
                                     <span>{item.name}</span>
+                                    {isAcousticRigActive && (
+                                      <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping ml-0.5"></span>
+                                    )}
                                   </button>
+
+                                  {/* BOTÃO PRO PARA ABRIR O LABORATÓRIO DE VIOLÃO DE AÇO */}
+                                  {isAcousticSteel && (
+                                    <button
+                                      type="button"
+                                      onClick={() => setShowAcousticGuitarModal(true)}
+                                      className={`px-2 py-2 rounded-xl border transition-all text-[8px] font-black uppercase flex items-center gap-1 cursor-pointer ${
+                                        activeAcousticRig
+                                          ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 hover:bg-amber-500 hover:text-black'
+                                          : 'bg-white/5 border-white/10 text-amber-400/80 hover:bg-amber-500/20 hover:text-amber-300'
+                                      }`}
+                                      title="Abrir Laboratório de Violão de Aço PRO (Modelagem de Estúdio)"
+                                    >
+                                      <span>PRO</span>
+                                      <Sliders className="w-2.5 h-2.5" />
+                                    </button>
+                                  )}
+
                                   {isProMode && (
                                     <button 
                                       onClick={() => insertTag(item, group.label.includes('SFX') ? 'sfx' : 'structural')}
-                                      className="p-2 bg-white/5 hover:bg-orange-500 hover:text-black rounded-xl border border-white/5 transition-all"
+                                      className="p-2 bg-white/5 hover:bg-orange-500 hover:text-black rounded-xl border border-white/5 transition-all cursor-pointer"
                                       title="Inserir na Letra"
                                     >
                                       <ArrowRight className="w-3 h-3" />
@@ -3449,6 +3551,20 @@ function App() {
         currentRig={activeGuitarRig}
         onApplyRig={(rig) => setActiveGuitarRig(rig)}
         onInsertLyricsTag={handleInsertGuitarLyricsTag}
+      />
+
+      {/* MODAL ACOUSTIC GUITAR STUDIO */}
+      <AcousticGuitarModal
+        isOpen={showAcousticGuitarModal}
+        onClose={() => setShowAcousticGuitarModal(false)}
+        currentRig={activeAcousticRig}
+        onApplyRig={(rig) => {
+          setActiveAcousticRig(rig);
+          if (rig && !selectedInstruments.includes('Violão Aço')) {
+            setSelectedInstruments(prev => [...prev, 'Violão Aço']);
+          }
+        }}
+        onInsertLyricsTag={handleInsertAcousticLyricsTag}
       />
 
       {/* MODAL ARRANJADOR PRO */}
