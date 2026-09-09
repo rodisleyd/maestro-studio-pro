@@ -2170,7 +2170,7 @@ function App() {
                   </p>
 
                   {/* ESTILOS DE INTRODUÇÃO */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {INTRO_STYLES.map(style => {
                       const isSelected = introStyle === style.id;
                       return (
@@ -2178,17 +2178,20 @@ function App() {
                           key={style.id}
                           type="button"
                           onClick={() => setIntroStyle(isSelected ? '' : style.id)}
-                          className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                          title={`${style.label} — ${style.desc}`}
+                          className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[62px] relative group ${
                             isSelected 
-                              ? 'bg-yellow-400 border-yellow-400 text-black shadow-lg shadow-yellow-400/20 scale-[1.02]' 
-                              : 'bg-[#0f0f0f] border-white/5 text-slate-400 hover:border-yellow-400/30'
+                              ? 'bg-yellow-400 border-yellow-400 text-black shadow-lg shadow-yellow-400/20 scale-[1.01] ring-2 ring-yellow-400/40' 
+                              : 'bg-[#0f0f0f] border-white/5 text-slate-300 hover:border-yellow-400/40 hover:bg-white/[0.02]'
                           }`}
                         >
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-xs">{style.icon}</span>
-                            <span className="text-[9px] font-bold truncate">{style.label}</span>
+                          <div className="flex items-start gap-1.5">
+                            <span className="text-sm shrink-0 leading-none mt-0.5">{style.icon}</span>
+                            <span className={`text-[10px] font-bold leading-tight ${isSelected ? 'text-black font-extrabold' : 'text-slate-200 group-hover:text-yellow-400'}`}>
+                              {style.label}
+                            </span>
                           </div>
-                          <div className={`text-[7px] mt-0.5 opacity-70 truncate ${isSelected ? 'text-black font-medium' : 'text-slate-500'}`}>
+                          <div className={`text-[8px] mt-1.5 leading-snug line-clamp-2 ${isSelected ? 'text-black/85 font-medium' : 'text-slate-500'}`}>
                             {style.desc}
                           </div>
                         </button>
@@ -2274,22 +2277,60 @@ function App() {
                     </div>
                   )}
 
-                  {introStyle && (
-                    <div className="flex items-center justify-between px-3 py-1.5 bg-yellow-400/10 border border-yellow-400/20 rounded-xl text-[8px] text-yellow-300 font-bold">
-                      <span>✓ Configuração de Intro Ativa para a próxima geração</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIntroStyle('');
-                          setIntroInstrument('');
-                          setIntroCustomText('');
-                        }}
-                        className="text-slate-400 hover:text-red-400 underline transition-colors cursor-pointer"
-                      >
-                        Limpar Intro
-                      </button>
-                    </div>
-                  )}
+                  {introStyle && (() => {
+                    const selectedObj = INTRO_STYLES.find(s => s.id === introStyle);
+                    if (!selectedObj) return null;
+                    return (
+                      <div className="p-3 bg-yellow-400/10 border border-yellow-400/30 rounded-2xl flex items-start justify-between gap-2.5 animate-in fade-in duration-200">
+                        <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                          <span className="text-xl shrink-0 mt-0.5">{selectedObj.icon}</span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[9px] font-black uppercase tracking-wider text-yellow-400">
+                                Intro Ativa:
+                              </span>
+                              <span className="text-[10px] font-bold text-white truncate">
+                                {selectedObj.label}
+                              </span>
+                            </div>
+                            <p className="text-[8.5px] text-slate-300 mt-0.5 leading-snug">
+                              {selectedObj.desc}
+                            </p>
+                            {(introInstrument || introDuration || introCustomText) && (
+                              <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                {introInstrument && (
+                                  <span className="text-[7.5px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30 px-1.5 py-0.5 rounded">
+                                    Líder: {introInstrument}
+                                  </span>
+                                )}
+                                {introDuration && (
+                                  <span className="text-[7.5px] font-bold bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 px-1.5 py-0.5 rounded">
+                                    {INTRO_DURATIONS.find(d => d.id === introDuration)?.label}
+                                  </span>
+                                )}
+                                {introCustomText && (
+                                  <span className="text-[7.5px] font-bold bg-white/10 text-slate-200 px-1.5 py-0.5 rounded truncate max-w-[160px]" title={introCustomText}>
+                                    "{introCustomText}"
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIntroStyle('');
+                            setIntroInstrument('');
+                            setIntroCustomText('');
+                          }}
+                          className="text-[8px] font-bold text-slate-400 hover:text-red-400 underline transition-colors cursor-pointer shrink-0 ml-1"
+                        >
+                          Limpar
+                        </button>
+                      </div>
+                    );
+                  })()}
                </div>
 
                {/* DNA VOCAL */}
@@ -2571,31 +2612,34 @@ function App() {
                <div className="pt-4 border-t border-white/5 space-y-3">
                   {/* BANNER ATIVO GUITAR RIG PRO */}
                   {activeGuitarRig && (
-                    <div className="flex items-center justify-between p-3.5 bg-gradient-to-r from-orange-500/15 via-amber-500/10 to-black border border-orange-500/30 rounded-2xl animate-in fade-in duration-300">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">🎸</span>
-                        <div>
+                    <div className="flex items-center justify-between gap-2.5 p-3 bg-gradient-to-r from-orange-500/15 via-amber-500/10 to-black/80 border border-orange-500/30 rounded-2xl animate-in fade-in duration-300 w-full overflow-hidden">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <span className="text-lg shrink-0">🎸</span>
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[9px] font-black uppercase tracking-wider text-orange-400">Guitar Rig Ativo</span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
+                            <span className="text-[9px] font-black uppercase tracking-wider text-orange-400 truncate">Guitar Rig Ativo</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse shrink-0"></span>
                           </div>
-                          <span className="text-[10px] text-slate-200 font-bold block truncate max-w-[180px] md:max-w-xs">
+                          <span 
+                            className="text-[10px] text-slate-200 font-bold block truncate w-full"
+                            title={activeGuitarRig.displaySummary || activeGuitarRig.presetName || 'Cadeia Customizada'}
+                          >
                             {activeGuitarRig.displaySummary || activeGuitarRig.presetName || 'Cadeia Customizada'}
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1 shrink-0">
                         <button
                           type="button"
                           onClick={() => setShowGuitarRigModal(true)}
-                          className="px-2.5 py-1 bg-orange-500 text-black font-black text-[9px] uppercase rounded-lg hover:bg-orange-400 transition-all shadow-sm"
+                          className="px-2.5 py-1 bg-orange-500 hover:bg-orange-400 text-black font-black text-[9px] uppercase rounded-lg transition-all shadow-sm shrink-0 whitespace-nowrap cursor-pointer active:scale-95"
                         >
                           Ajustar
                         </button>
                         <button
                           type="button"
                           onClick={() => setActiveGuitarRig(null)}
-                          className="p-1 text-slate-500 hover:text-red-400 transition-colors"
+                          className="p-1 text-slate-400 hover:text-red-400 transition-colors shrink-0 cursor-pointer"
                           title="Desativar Rig de Guitarra"
                         >
                           <X className="w-3.5 h-3.5" />
