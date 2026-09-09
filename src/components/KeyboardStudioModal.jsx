@@ -15,13 +15,15 @@ import {
   KEYBOARD_EFFECTS,
   KEYBOARD_PRESETS,
   buildKeyboardPrompt,
-  buildKeyboardLyricsTag
+  buildKeyboardLyricsTag,
+  getOrchestratorNameForInstrument
 } from '../keyboardStudioData';
 
 export default function KeyboardStudioModal({
   isOpen,
   onClose,
   currentRig,
+  initialInstrumentId,
   onApplyRig,
   onInsertLyricsTag
 }) {
@@ -34,8 +36,9 @@ export default function KeyboardStudioModal({
   // Estado do Rig de Teclado
   const [rigState, setRigState] = useState(() => {
     if (currentRig) return { ...currentRig };
+    const instId = initialInstrumentId || 'fender_rhodes';
     return {
-      instrumentId: 'fender_rhodes',
+      instrumentId: instId,
       techniqueId: 'expressive_dynamic',
       registerId: 'mid_register',
       timbreId: 'warm_vintage',
@@ -45,6 +48,25 @@ export default function KeyboardStudioModal({
       presetName: 'Fender Rhodes Neo-Soul & Velvet Groove'
     };
   });
+
+  // Atualiza estado quando o modal abre ou initialInstrumentId muda
+  React.useEffect(() => {
+    if (isOpen) {
+      if (currentRig) {
+        setRigState({ ...currentRig });
+      } else if (initialInstrumentId) {
+        setRigState(prev => ({
+          ...prev,
+          instrumentId: initialInstrumentId,
+          isPreset: false,
+          presetName: ''
+        }));
+        // Seleciona aba personalizada para focar no instrumento clicado
+        setActiveTab('CUSTOM');
+        setCustomSubTab('INSTRUMENT');
+      }
+    }
+  }, [isOpen, currentRig, initialInstrumentId]);
 
   if (!isOpen) return null;
 
@@ -97,9 +119,11 @@ export default function KeyboardStudioModal({
 
   // Aplica o Rig e fecha modal
   const handleApply = () => {
+    const targetInstrumentName = getOrchestratorNameForInstrument(rigState.instrumentId);
     onApplyRig({
       ...rigState,
       fullPromptText,
+      targetInstrumentName,
       displaySummary: `${selectedInstrument.shortName} • ${selectedTimbre?.name.split(' ')[0] || 'Quente'} • ${selectedRole?.name.split(' ')[0] || 'Base'}`
     });
     onClose();

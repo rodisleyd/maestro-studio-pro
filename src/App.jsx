@@ -3,6 +3,7 @@ import tagsData from './tags.json';
 import GuitarRigModal from './components/GuitarRigModal';
 import AcousticGuitarModal from './components/AcousticGuitarModal';
 import KeyboardStudioModal from './components/KeyboardStudioModal';
+import { getDefaultInstrumentForOrchestratorName } from './keyboardStudioData';
 
 import { 
   Music, Wand2, Settings2, Play, Copy, CheckCheck, AlertCircle, 
@@ -557,6 +558,7 @@ function App() {
   const [activeAcousticRig, setActiveAcousticRig] = useState(null);
   const [showKeyboardStudioModal, setShowKeyboardStudioModal] = useState(false);
   const [activeKeyboardRig, setActiveKeyboardRig] = useState(null);
+  const [keyboardModalInitialInst, setKeyboardModalInitialInst] = useState(null);
   const [arrangerStep, setArrangerStep] = useState(1);
   const [arrangerData, setArrangerData] = useState({
     intention: { message: '', feeling: '', mood: '' },
@@ -1594,21 +1596,6 @@ function App() {
             <span>🎸</span>
             <span>Guitar Rig PRO</span>
             {activeGuitarRig && (
-              <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping ml-0.5"></span>
-            )}
-          </button>
-          <button
-            onClick={() => setShowKeyboardStudioModal(true)}
-            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[8px] font-black uppercase transition-all group ${
-              activeKeyboardRig 
-                ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-black shadow-lg shadow-cyan-500/30 scale-105 ring-2 ring-cyan-300' 
-                : 'bg-gradient-to-r from-cyan-600/20 to-blue-600/20 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500 hover:text-black'
-            }`}
-            title="Laboratório de Pianos, Órgãos e Sintetizadores PRO"
-          >
-            <span>🎹</span>
-            <span>Keyboard Studio PRO</span>
-            {activeKeyboardRig && (
               <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping ml-0.5"></span>
             )}
           </button>
@@ -2820,16 +2807,6 @@ function App() {
                     <span className="text-base group-hover:scale-110 transition-transform">🎸</span>
                     <span className="text-[7px] font-black uppercase tracking-tighter mt-0.5 text-orange-300">Rig PRO</span>
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setShowKeyboardStudioModal(true)}
-                    className="p-3.5 bg-gradient-to-br from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 hover:border-cyan-500 text-cyan-400 hover:text-white rounded-2xl transition-all flex flex-col items-center justify-center shrink-0 group"
-                    title="Abrir Laboratório de Teclados e Sintetizadores PRO"
-                  >
-                    <span className="text-base group-hover:scale-110 transition-transform">🎹</span>
-                    <span className="text-[7px] font-black uppercase tracking-tighter mt-0.5 text-cyan-300">Keys PRO</span>
-                  </button>
                 </div>
 
                   <div className={`transition-all duration-300 overflow-hidden ${showOrchestrator ? 'max-h-[600px] opacity-100 mt-3' : 'max-h-0 opacity-0'}`}>
@@ -2845,13 +2822,14 @@ function App() {
                               const isSelected = selectedInstruments.includes(item.name);
                               const isAcousticSteel = item.name === 'Violão Aço' || item.name === 'Violão 12 Cordas';
                               const isAcousticRigActive = isAcousticSteel && activeAcousticRig;
-                              const isKeyboardOrSynth = [
+
+                              const KEYBOARD_STUDIO_INSTRUMENTS = [
                                 'Piano Acústico', 'Piano de Cauda', 'Piano Elétrico (Rhodes)', 
                                 'Wurlitzer', 'Órgão Hammond', 'Órgão de Tubos', 'Clavinete', 
-                                'Cravo', 'Mellotron', 'Synth Lead', 'Synth Pad', 'Synth Bass', 
-                                'Arpeggiator', 'Wavetable Synth', 'Modular Synth', 'FM Synth'
-                              ].includes(item.name);
-                              const isKeyboardRigActive = isKeyboardOrSynth && activeKeyboardRig;
+                                'Synth Lead', 'Synth Pad', 'Synth Bass', 'FM Synth'
+                              ];
+                              const isKeyboardStudioInst = KEYBOARD_STUDIO_INSTRUMENTS.includes(item.name);
+                              const isKeyboardRigActive = isKeyboardStudioInst && activeKeyboardRig && (activeKeyboardRig.targetInstrumentName === item.name);
 
                               return (
                                 <div key={item.name} className="flex items-center gap-1">
@@ -2860,11 +2838,16 @@ function App() {
                                     onClick={() => {
                                       if (isSelected) {
                                         setSelectedInstruments(selectedInstruments.filter(i => i !== item.name));
+                                        if (isKeyboardRigActive) {
+                                          setActiveKeyboardRig(null);
+                                        }
                                       } else {
                                         setSelectedInstruments([...selectedInstruments, item.name]);
                                         if (isAcousticSteel && !activeAcousticRig) {
                                           setShowAcousticGuitarModal(true);
-                                        } else if (isKeyboardOrSynth && !activeKeyboardRig) {
+                                        } else if (isKeyboardStudioInst && !activeKeyboardRig) {
+                                          const instId = getDefaultInstrumentForOrchestratorName(item.name);
+                                          setKeyboardModalInitialInst(instId);
                                           setShowKeyboardStudioModal(true);
                                         }
                                       }
@@ -2904,16 +2887,22 @@ function App() {
                                   )}
 
                                   {/* BOTÃO PRO PARA ABRIR O LABORATÓRIO DE TECLADOS & SYNTHS */}
-                                  {isKeyboardOrSynth && (
+                                  {isKeyboardStudioInst && (
                                     <button
                                       type="button"
-                                      onClick={() => setShowKeyboardStudioModal(true)}
+                                      onClick={() => {
+                                        const instId = isKeyboardRigActive && activeKeyboardRig?.instrumentId 
+                                          ? activeKeyboardRig.instrumentId 
+                                          : getDefaultInstrumentForOrchestratorName(item.name);
+                                        setKeyboardModalInitialInst(instId);
+                                        setShowKeyboardStudioModal(true);
+                                      }}
                                       className={`px-2 py-2 rounded-xl border transition-all text-[8px] font-black uppercase flex items-center gap-1 cursor-pointer ${
-                                        activeKeyboardRig
+                                        isKeyboardRigActive
                                           ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 hover:bg-cyan-500 hover:text-black'
                                           : 'bg-white/5 border-white/10 text-cyan-400/80 hover:bg-cyan-500/20 hover:text-cyan-300'
                                       }`}
-                                      title="Abrir Laboratório de Teclados, Pianos e Sintetizadores PRO"
+                                      title={`Abrir Laboratório de ${item.name} PRO`}
                                     >
                                       <span>PRO</span>
                                       <Sliders className="w-2.5 h-2.5" />
@@ -3691,10 +3680,12 @@ function App() {
         isOpen={showKeyboardStudioModal}
         onClose={() => setShowKeyboardStudioModal(false)}
         currentRig={activeKeyboardRig}
+        initialInstrumentId={keyboardModalInitialInst}
         onApplyRig={(rig) => {
           setActiveKeyboardRig(rig);
-          if (rig && !selectedInstruments.includes('Piano Acústico') && !selectedInstruments.includes('Piano de Cauda') && !selectedInstruments.includes('Synth Lead')) {
-            setSelectedInstruments(prev => [...prev, 'Piano Acústico']);
+          const target = rig?.targetInstrumentName || 'Piano Acústico';
+          if (rig && !selectedInstruments.includes(target)) {
+            setSelectedInstruments(prev => [...prev, target]);
           }
         }}
         onInsertLyricsTag={handleInsertKeyboardLyricsTag}

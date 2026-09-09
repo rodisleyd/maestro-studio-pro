@@ -857,3 +857,88 @@ export function buildKeyboardLyricsTag(rig, tagType = 'intro') {
   }
   return `[${typeName}: ${instrument.shortName}]`;
 }
+
+/**
+ * Retorna o nome correspondente no Orquestrador para um instrumento do Keyboard Studio
+ */
+export function getOrchestratorNameForInstrument(instrumentId) {
+  switch (instrumentId) {
+    case 'steinway_grand':
+    case 'bosendorfer_imperial':
+    case 'kawai_grand':
+    case 'cinematic_grand':
+      return 'Piano de Cauda';
+    case 'yamaha_cfx_c7':
+    case 'upright_piano':
+    case 'felt_piano':
+    case 'honky_tonk':
+      return 'Piano Acústico';
+    case 'fender_rhodes':
+    case 'yamaha_cp70':
+      return 'Piano Elétrico (Rhodes)';
+    case 'wurlitzer':
+      return 'Wurlitzer';
+    case 'clavinet_d6':
+      return 'Clavinete';
+    case 'hammond_b3':
+    case 'vox_continental':
+    case 'farfisa_compact':
+      return 'Órgão Hammond';
+    case 'church_pipe_organ':
+      return 'Órgão de Tubos';
+    case 'minimoog_d':
+    case 'roland_sh101':
+      return 'Synth Bass';
+    case 'roland_juno_106':
+    case 'roland_d50':
+      return 'Synth Pad';
+    case 'roland_jupiter_8':
+    case 'prophet_5':
+    case 'oberheim_obxa':
+    case 'korg_ms20':
+    case 'arp_odyssey':
+      return 'Synth Lead';
+    case 'yamaha_dx7_synth':
+    case 'yamaha_dx7_epiano':
+      return 'FM Synth';
+    case 'korg_m1':
+    case 'yamaha_motif':
+    case 'korg_kronos':
+    case 'nord_stage_modern':
+      return 'Piano Acústico';
+    default:
+      return 'Piano Acústico';
+  }
+}
+
+/**
+ * Retorna o ID de instrumento padrão no Keyboard Studio a partir do nome no Orquestrador
+ */
+export function getDefaultInstrumentForOrchestratorName(orchestratorName) {
+  switch (orchestratorName) {
+    case 'Piano Acústico':
+      return 'yamaha_cfx_c7';
+    case 'Piano de Cauda':
+      return 'steinway_grand';
+    case 'Piano Elétrico (Rhodes)':
+      return 'fender_rhodes';
+    case 'Wurlitzer':
+      return 'wurlitzer';
+    case 'Clavinete':
+      return 'clavinet_d6';
+    case 'Órgão Hammond':
+      return 'hammond_b3';
+    case 'Órgão de Tubos':
+      return 'church_pipe_organ';
+    case 'Synth Bass':
+      return 'minimoog_d';
+    case 'Synth Pad':
+      return 'roland_juno_106';
+    case 'Synth Lead':
+      return 'roland_jupiter_8';
+    case 'FM Synth':
+      return 'yamaha_dx7_synth';
+    default:
+      return 'steinway_grand';
+  }
+}
