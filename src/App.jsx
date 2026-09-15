@@ -996,14 +996,9 @@ function App() {
     
     REGRAS DE OURO PARA O SUNO:
     a) NUNCA use colchetes duplos [[ ]] em volta do bloco. Use apenas colchetes simples [ ] para cada tag individual.
-    b) No campo "style_tags", use apenas o essencial: "Short Jingle, Stinger, Button finish, Instant stop, [Gênero], [Voz]". Evite frases longas.
-    c) No campo "musical_structure", crie o bloco "🔥 COPIE PARA A CAIXA DE LETRAS (LYRICS)" exatamente assim:
-    [Intro]
-    [Main Instrumental Hook]
-    [End]
-    [Stop]
-    [Silence]
-    d) Nas "production_tips", avise: "Verifique se você copiou APENAS as tags com colchetes simples. Se houver colchetes duplos, o Suno ignorará o comando de parar."
+    b) No campo "style_tags", use apenas o essencial (Gênero, Instrumentos, Produção, SFX). Evite frases longas.
+    c) No campo "musical_structure", crie um objeto com cada seção da música como chave ("Intro", "Verse 1", "Chorus", "Bridge", "Outro") e o valor correspondente contendo a descrição e metatags específicas.
+    d) Nas "production_tips", forneça dicas práticas de mixagem e geração.
     
     JSON:
     {
@@ -1685,7 +1680,32 @@ function App() {
     setActivePreviewGenre(null);
   };
 
-  const renderSafe = (v) => (typeof v === 'object' ? JSON.stringify(v) : v || "");
+  const renderSafe = (v) => {
+    if (v === null || v === undefined) return "";
+    if (Array.isArray(v)) return v.join('\n\n');
+    if (typeof v === 'object') return JSON.stringify(v);
+    return v || "";
+  };
+
+  const copyFullStructure = () => {
+    if (!maestroAnalysis?.musical_structure) return;
+    let fullText = '';
+    if (typeof maestroAnalysis.musical_structure === 'object') {
+      const parts = [];
+      Object.entries(maestroAnalysis.musical_structure).forEach(([section, val]) => {
+        if (section.toLowerCase().includes('copie para')) return; // ignora chave auxiliar se existir
+        if (Array.isArray(val)) {
+          parts.push(val.join('\n\n'));
+        } else if (val) {
+          parts.push(`[${section}: ${val}]`);
+        }
+      });
+      fullText = parts.join('\n\n');
+    } else {
+      fullText = String(maestroAnalysis.musical_structure);
+    }
+    copyPrompt(fullText);
+  };
 
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-12 font-sans selection:bg-orange-500/30">
@@ -3429,17 +3449,29 @@ function App() {
                     {/* ESTRUTURA MUSICAL (SE HOUVER) */}
                     {maestroAnalysis.musical_structure && (
                       <div className="space-y-4 pt-6 border-t border-black/5">
-                         <h5 className="text-[10px] font-black uppercase opacity-40">Estrutura da Composição</h5>
+                         <div className="flex items-center justify-between">
+                           <h5 className="text-[10px] font-black uppercase opacity-40">Estrutura da Composição</h5>
+                           <button 
+                             type="button"
+                             onClick={copyFullStructure}
+                             className="text-[9px] font-black text-orange-600 hover:text-black uppercase flex items-center gap-1.5 bg-orange-100/80 hover:bg-orange-200 px-3 py-1.5 rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
+                             title="Copia toda a estrutura formatada pronta para a caixa Lyrics do Suno"
+                           >
+                             <CopyIcon className="w-3.5 h-3.5" /> Copiar Estrutura Completa p/ Letra
+                           </button>
+                         </div>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {Object.entries(maestroAnalysis.musical_structure).map(([section, text]) => (
+                            {Object.entries(maestroAnalysis.musical_structure)
+                              .filter(([section, text]) => text !== null && text !== undefined && text !== '')
+                              .map(([section, text]) => (
                                <div key={section} className="bg-black/5 p-4 rounded-2xl relative group">
                                   <span className="text-[8px] font-black text-orange-600 uppercase mb-1 block tracking-widest">{section}</span>
-                                  <p className="text-[10px] text-slate-700 leading-normal">{renderSafe(text)}</p>
+                                  <p className="text-[10px] text-slate-700 leading-normal whitespace-pre-wrap">{renderSafe(text)}</p>
                                   <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                                    <button onClick={() => insertIntoLyrics(section, text)} className="p-1.5 bg-orange-500 rounded-lg text-black hover:bg-black hover:text-orange-500 transition-all shadow-md" title="Inserir na Letra">
+                                    <button onClick={() => insertIntoLyrics(section, Array.isArray(text) ? text.join('\n\n') : text)} className="p-1.5 bg-orange-500 rounded-lg text-black hover:bg-black hover:text-orange-500 transition-all shadow-md" title="Inserir na Letra">
                                       <ArrowRight className="w-3 h-3" />
                                     </button>
-                                    <button onClick={() => copyPrompt(`[${section}]\n[${text}]`)} className="p-1.5 bg-white/80 rounded-lg hover:bg-orange-500 hover:text-white transition-all shadow-md" title="Copiar Seção">
+                                    <button onClick={() => copyPrompt(Array.isArray(text) ? text.join('\n\n') : `[${section}]\n[${text}]`)} className="p-1.5 bg-white/80 rounded-lg hover:bg-orange-500 hover:text-white transition-all shadow-md" title="Copiar Seção">
                                       <CopyIcon className="w-3 h-3 text-slate-700 hover:text-white" />
                                     </button>
                                   </div>
