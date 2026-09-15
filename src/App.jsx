@@ -925,7 +925,7 @@ function App() {
         --- ACOUSTIC GUITAR STUDIO (VIOLÃO DE AÇO & MODELAGEM DE ESTÚDIO) ---
         Cadeia Acústica do Violão de Aço: ${activeAcousticRig.fullPromptText}
         Violão Selecionado: ${activeAcousticRig.displaySummary || activeAcousticRig.presetName || 'Personalizado'}
-        Diretriz de Timbre: Modele o violão de corda de aço com rigor e fidelidade à cadeia acústica acima (formato do corpo/shape, madeiras, tipo de cordas de aço, técnica de dedilhado/strumming, intensidade de ataque, microfonação de estúdio e efeitos analógicos).
+        Diretriz de Timbre: Modele o violão de corda de aço com rigor e fidelidade à cadeia acústica acima (formato do corpo/shape, afinação, posição física do capotraste com shapes abertos transpostos para o tom sonoro real, madeiras, tipo de cordas de aço, técnica de dedilhado/strumming, intensidade de ataque, microfonação de estúdio e efeitos analógicos).
         ` : ''}
         ${activeKeyboardRig ? `
         --- KEYBOARD & SYNTHESIZER STUDIO PRO (MODELAGEM DE TECLADOS & SINTETIZADORES) ---
