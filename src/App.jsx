@@ -69,6 +69,66 @@ const GENRES_BY_CATEGORY = {
 
 const ALL_GENRES = Object.values(GENRES_BY_CATEGORY).flat().sort((a, b) => a.localeCompare(b));
 
+// CONSTANTES PARA O SISTEMA AVANÇADO DE EXCLUSÃO DO SUNO (SUNO EXCLUDE ENGINE)
+export const SUNO_EXCLUSION_CHIPS = [
+  {
+    id: 'no_drums',
+    label: 'Sem Bateria / Percussão',
+    icon: '🥁',
+    positiveTags: 'drumless, percussion-free, stripped-down acoustic, non-percussive flow, pure acoustic',
+    excludeTokens: 'drums, percussion, drum kit, beat, snare, kick, hi-hat, cymbals, electronic drums, trap beat, breaks',
+    desc: 'Usa "drumless" no estilo e bloqueia caixas, bumbos e pratos no Exclude Styles.'
+  },
+  {
+    id: 'no_electronic',
+    label: 'Sem Eletrônicos / Synths',
+    icon: '⚡',
+    positiveTags: '100% organic, purely acoustic instruments, authentic natural tones',
+    excludeTokens: 'electronic, synthesizer, synth, synths, edm, synthwave, techno, dance beat, digital pads, vocoder',
+    desc: 'Remove sintetizadores, timbres artificiais e batidas eletrônicas.'
+  },
+  {
+    id: 'no_bass',
+    label: 'Sem Baixo / Sub-Bass',
+    icon: '🎸',
+    positiveTags: 'bassless, high-register, intimate lightweight arrangement',
+    excludeTokens: 'bass, bass guitar, bassline, 808, sub-bass, heavy low-end, bass drop',
+    desc: 'Remove linhas graves pesadas para foco puro em violão, piano e voz.'
+  },
+  {
+    id: 'no_distortion',
+    label: 'Sem Distorção / Rock Pesado',
+    icon: '🔥',
+    positiveTags: 'clean tone, warm pristine acoustic, unamplified, gentle strumming',
+    excludeTokens: 'distortion, electric guitar, heavy metal, overdrive, high-gain, fuzzy, screaming guitar, power chords',
+    desc: 'Remove guitarras elétricas pesadas, overdrive e timbres estridentes.'
+  },
+  {
+    id: 'no_vocals',
+    label: '100% Instrumental',
+    icon: '🗣️',
+    positiveTags: 'instrumental only, pure instrumental performance, wordless',
+    excludeTokens: 'vocals, vocal, singing, male vocal, female vocal, choir, backing vocals, singer, voice, spoken, narration',
+    desc: 'Garante faixa estritamente instrumental sem vozes nem sussurros.'
+  },
+  {
+    id: 'no_autotune',
+    label: 'Sem Autotune / Efeito Robô',
+    icon: '🤖',
+    positiveTags: 'raw organic vocal, natural human delivery, unpolished emotional voice',
+    excludeTokens: 'autotune, auto-tune, vocoder, pitch-corrected, robotic vocals, synthetic voice, vocal processing',
+    desc: 'Voz 100% humana, crua e natural sem afinação digital aparente.'
+  },
+  {
+    id: 'no_orchestra',
+    label: 'Sem Orquestra / Épico',
+    icon: '🎻',
+    positiveTags: 'intimate small combo, minimalist arrangement, solo or duo focus',
+    excludeTokens: 'orchestra, orchestral strings, symphonic, cinematic swells, brass section, timpani, epic strings',
+    desc: 'Evita violinos sinfônicos e arranjos orquestrais grandiosos.'
+  }
+];
+
 
 // Constantes de Configuração Profissional (Inspirado no Magic Prompt)
 
@@ -461,6 +521,48 @@ function App() {
     setSecondaryGenre(updated.join(', '));
   };
   const [negativePrompt, setNegativePrompt] = useState('');
+  const [selectedExclusionChips, setSelectedExclusionChips] = useState([]);
+  const [excludeStylesCopied, setExcludeStylesCopied] = useState(false);
+
+  const toggleExclusionChip = (chipId) => {
+    setSelectedExclusionChips(prev => 
+      prev.includes(chipId) ? prev.filter(id => id !== chipId) : [...prev, chipId]
+    );
+  };
+
+  const getComputedExcludeStyles = () => {
+    const tokens = new Set();
+    selectedExclusionChips.forEach(chipId => {
+      const chip = SUNO_EXCLUSION_CHIPS.find(c => c.id === chipId);
+      if (chip) {
+        chip.excludeTokens.split(',').forEach(t => {
+          const clean = t.trim();
+          if (clean) tokens.add(clean.toLowerCase());
+        });
+      }
+    });
+    if (negativePrompt) {
+      negativePrompt.split(/[,;\n]+/).forEach(raw => {
+        const cleaned = raw.replace(/\b(no|sem|without|never|not|free)\b/gi, '').trim();
+        if (cleaned) tokens.add(cleaned.toLowerCase());
+      });
+    }
+    if (maestroAnalysis?.exclude_styles) {
+      maestroAnalysis.exclude_styles.split(/[,;\n]+/).forEach(raw => {
+        const cleaned = raw.replace(/\b(no|sem|without|never|not)\b/gi, '').trim();
+        if (cleaned) tokens.add(cleaned.toLowerCase());
+      });
+    }
+    return Array.from(tokens).join(', ');
+  };
+
+  const handleCopyExcludeStyles = (overrideText) => {
+    const textToCopy = overrideText || getComputedExcludeStyles();
+    if (!textToCopy) return;
+    navigator.clipboard.writeText(textToCopy);
+    setExcludeStylesCopied(true);
+    setTimeout(() => setExcludeStylesCopied(false), 2500);
+  };
   const [showExpertOptions, setShowExpertOptions] = useState(false);
   const [isProMode, setIsProMode] = useState(false);
     // ESTADOS PARA CONTROLE DE INTRODUÇÃO (SUNO RIGID INTRO)
@@ -870,7 +972,21 @@ function App() {
        - Direto ao Drop: "[No Intro - Immediate Drop into Verse 1]"
     c) Garanta que a metatag gerada no primeiro bloco seja pronta para copiar direto para a caixa de letra do Suno.
     
-    15. MODO A CAPPELLA (ESTRITAMENTE VOCAL): Se o gênero for "A Cappella" ou se o preset "Take 6" for usado, você DEVE garantir que NENHUM instrumento musical seja mencionado no final_prompt ou style_tags. Use apenas termos como "human voices only", "purely vocal", "unaccompanied", "vocal harmony", "beatbox", "vocal percussion". Adicione "no instruments" e "no drums" de forma agressiva no prompt negativo e nas tags.
+    15. MODO A CAPPELLA (ESTRITAMENTE VOCAL): Se o gênero for "A Cappella" ou se o preset "Take 6" for usado, você DEVE garantir que NENHUM instrumento musical seja mencionado no final_prompt ou style_tags. Use apenas termos como "human voices only", "purely vocal", "unaccompanied", "vocal harmony", "beatbox", "vocal percussion". Coloque todos os instrumentos musicais no campo "exclude_styles".
+    
+    17. REGRA DE OURO PARA PROMPT NEGATIVO & EXCLUSÃO DO SUNO (CRÍTICO ABSOLUTO):
+    O Suno e Udio NÃO compreendem negações lógicas no campo de estilo! Ao ler expressões como "no drums", a atenção da IA foca na palavra "drums" e INJETA bateria e percussão na música.
+    a) NUNCA use a palavra "no [instrumento]" ou "without [instrumento]" dentro de "final_prompt" ou "style_tags".
+    b) No "style_tags" e "final_prompt", use OBRIGATORIAMENTE antítese positiva consagrada da IA:
+       - Se bateria for excluída: use termos como "drumless", "percussion-free", "stripped-down acoustic", "pure acoustic", "non-percussive flow".
+       - Se eletrônicos forem excluídos: use "100% organic acoustic", "authentic natural instruments".
+       - Se baixo for excluído: use "bassless", "high-register airy arrangement".
+       - Se distorção/guitarra elétrica for excluída: use "clean tone", "pure unamplified acoustic", "warm clean guitars".
+       - Se vocais forem excluídos: use "instrumental only", "pure instrumental performance", "wordless".
+    c) CAMPO DEDICADO "exclude_styles" (PARA O CAMPO EXCLUDE DO SUNO):
+       Gere SEMPRE uma lista limpa de substantivos em inglês separados por vírgula SEM a palavra "no" (ex: "drums, percussion, drum kit, beat, snare, kick, hi-hat, cymbals, electronic drums, trap beat").
+    d) NA "musical_structure":
+       O Suno obedece fortemente às metatags de letra! Se bateria for excluída, inclua tags de seção como [Verse: Solo Acoustic, Drumless] ou [Chorus: Intimate, Percussion-Free].
     
     REGRAS DE OURO PARA O SUNO:
     a) NUNCA use colchetes duplos [[ ]] em volta do bloco. Use apenas colchetes simples [ ] para cada tag individual.
@@ -891,6 +1007,7 @@ function App() {
       "style_analysis": "Análise em PT-BR (inclua a interpretação visual se houver imagem)",
       "instruments": ["Lista"],
       "style_tags": "Tags em EN (MAX 120 chars, SFX First). SIGA A HIERARQUIA: [SFX] > Genre > Instruments > Vocals > Mood > Production.",
+      "exclude_styles": "Lista de substantivos em inglês para a caixa Exclude Styles do Suno (ex: drums, percussion, kick, snare, cymbals)",
       "final_prompt": "Master Prompt curto em EN",
       "production_tips": "Dicas em PT-BR",
       "musical_structure": null
@@ -949,7 +1066,11 @@ function App() {
         Progressão de Acordes: ${chordProgression || 'Automático'}
         Groove / Feel: ${groove || 'Automático'}
         Emoção Musical: ${emotion || 'Automático'}
-        Excluir (Prompt Negativo): ${negativePrompt || 'Nenhum'}
+        --- SISTEMA DE FILTRO NEGATIVO & EXCLUSÃO INTELIGENTE ---
+        Chips de Exclusão Ativos: ${selectedExclusionChips.map(id => SUNO_EXCLUSION_CHIPS.find(c => c.id === id)?.label).filter(Boolean).join(', ') || 'Nenhum'}
+        Antítese Positiva para Style/Prompt: ${selectedExclusionChips.map(id => SUNO_EXCLUSION_CHIPS.find(c => c.id === id)?.positiveTags).filter(Boolean).join(', ') || 'Nenhuma'}
+        Tokens Obrigatórios para o campo Exclude Styles: ${selectedExclusionChips.map(id => SUNO_EXCLUSION_CHIPS.find(c => c.id === id)?.excludeTokens).filter(Boolean).join(', ') || 'Nenhum'}
+        Exclusão Textual Extra Informada: ${negativePrompt || 'Nenhuma'}
         
         --- SISTEMA DE TAGS INTELIGENTES ---
         Modo de Geração: ${generationMode.toUpperCase()}
@@ -3039,19 +3160,88 @@ function App() {
                 </div>
 
 
-               {/* PROMPT NEGATIVO */}
-               <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Filtro de Pureza (Negativo)</label>
-                    <span className="text-[8px] font-bold text-red-500/50 uppercase">Exclusão</span>
+               {/* FILTRO DE EXCLUSÃO INTELIGENTE (SUNO EXCLUDE ENGINE) */}
+               <div className="p-3.5 bg-gradient-to-b from-red-950/25 to-black/70 rounded-2xl border border-red-500/30 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                      <label className="text-[9px] font-black text-red-400 uppercase tracking-wider">
+                        Filtro de Exclusão (Anti-Token Suno)
+                      </label>
+                    </div>
+                    <span className="text-[8px] font-bold px-2 py-0.5 rounded bg-red-500/10 text-red-300 border border-red-500/20">
+                      {selectedExclusionChips.length} ativos
+                    </span>
                   </div>
-                  <input 
-                    className="w-full bg-[#0f0f0f] border border-white/5 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-red-500/50 transition-all"
-                    placeholder="Ex: no drums, no piano..."
-                    value={negativePrompt}
-                    onChange={e => setNegativePrompt(e.target.value)}
-                  />
-                  <p className="text-[8px] text-slate-600 mt-1.5 italic">Remove elementos indesejados da composição final.</p>
+
+                  <p className="text-[8.5px] text-slate-400 leading-snug">
+                    O Suno ignora "No drums" e toca bateria. O Maestro converte em <strong>"drumless"</strong> no estilo e alimenta o campo oficial <em>Exclude Styles</em> sem a palavra "no".
+                  </p>
+
+                  {/* Chips de Exclusão Rápida */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    {SUNO_EXCLUSION_CHIPS.map((chip) => {
+                      const isSelected = selectedExclusionChips.includes(chip.id);
+                      return (
+                        <button
+                          key={chip.id}
+                          type="button"
+                          onClick={() => toggleExclusionChip(chip.id)}
+                          className={`p-2 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between gap-1.5 group ${
+                            isSelected
+                              ? 'bg-red-500/20 border-red-500 text-white shadow-sm ring-1 ring-red-500/50'
+                              : 'bg-black/50 border-white/5 text-slate-400 hover:border-red-500/30 hover:text-white'
+                          }`}
+                          title={chip.desc}
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="text-xs shrink-0">{chip.icon}</span>
+                            <span className="text-[9px] font-bold truncate">
+                              {chip.label}
+                            </span>
+                          </div>
+                          <span className={`w-3.5 h-3.5 rounded-md border flex items-center justify-center shrink-0 text-[8px] font-black ${
+                            isSelected ? 'bg-red-500 border-red-500 text-black' : 'border-white/20'
+                          }`}>
+                            {isSelected ? '✓' : ''}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Exclusão Textual Extra */}
+                  <div className="pt-1.5 border-t border-white/5">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[8px] font-bold text-slate-400 uppercase">
+                        Exclusões Extras por Texto:
+                      </span>
+                      {(selectedExclusionChips.length > 0 || negativePrompt) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedExclusionChips([]);
+                            setNegativePrompt('');
+                          }}
+                          className="text-[7.5px] font-bold text-red-400 hover:text-red-300 uppercase cursor-pointer"
+                        >
+                          Limpar Filtros
+                        </button>
+                      )}
+                    </div>
+                    <input 
+                      className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-red-500/50 transition-all font-mono"
+                      placeholder="Ex: screaming, trumpet, accordion..."
+                      value={negativePrompt}
+                      onChange={e => setNegativePrompt(e.target.value)}
+                    />
+                    <div className="text-[7.5px] text-slate-500 mt-1 flex items-center gap-1 font-mono truncate">
+                      <span>➔ Exclude Styles:</span>
+                      <span className="text-red-300/80 truncate">
+                        {getComputedExcludeStyles() || 'Nenhum token ativo'}
+                      </span>
+                    </div>
+                  </div>
                </div>
             </div>
           )}
@@ -3228,6 +3418,36 @@ function App() {
                       </div>
                     )}
 
+                    {/* CAIXA DEDICADA SUNO EXCLUDE STYLES (PROMPT NEGATIVO OFICIAL) */}
+                    {(maestroAnalysis.exclude_styles || getComputedExcludeStyles()) && (
+                      <div className="mt-6 pt-6 border-t border-black/5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                            <span className="text-[9px] font-black uppercase text-red-600 tracking-widest">
+                              Suno Exclude Styles (Prompt Negativo Oficial)
+                            </span>
+                            <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-[8px] font-bold">
+                              Cole na caixa "Exclude Styles" do Suno
+                            </span>
+                          </div>
+                          <button 
+                            type="button"
+                            onClick={() => handleCopyExcludeStyles(maestroAnalysis.exclude_styles || getComputedExcludeStyles())} 
+                            className="px-3 py-1.5 bg-red-600 hover:bg-black text-white rounded-xl text-[9px] font-black uppercase transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 self-start sm:self-auto"
+                          >
+                            {excludeStylesCopied ? <><CheckCheck className="w-3.5 h-3.5 text-green-300" /> Copiado p/ Suno!</> : <><CopyIcon className="w-3.5 h-3.5" /> Copiar Exclude Styles</>}
+                          </button>
+                        </div>
+                        <div className="bg-red-50/90 p-4 rounded-2xl text-[10.5px] font-mono font-bold text-red-900 border border-red-200 select-all leading-relaxed shadow-inner">
+                          {renderSafe(maestroAnalysis.exclude_styles || getComputedExcludeStyles())}
+                        </div>
+                        <p className="text-[8px] text-slate-500 mt-1.5 leading-normal">
+                          💡 <strong>Por que funciona:</strong> No Suno v3.5/v4/v4.5/v6, cole este texto no campo <em>"Exclude Styles"</em> do Custom Mode. O Maestro já eliminou a palavra "no" para garantir que a IA não gere bateria ou instrumentos por engano!
+                        </p>
+                      </div>
+                    )}
+
                     {/* MONTADOR DE LETRAS */}
                     <div className="mt-8 pt-6 border-t-2 border-orange-500/20">
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
@@ -3250,6 +3470,8 @@ function App() {
                         <div className="flex flex-wrap gap-2 mb-4 animate-in fade-in slide-in-from-top-2 duration-300">
                           <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest self-center mr-2">Tags Rápidas:</span>
                           {[
+                            { label: 'Sem Bateria (Drumless)', tag: 'Intro: Solo Acoustic, Drumless' },
+                            { label: 'Percussão Zero', tag: 'Verse: Intimate, Percussion-free' },
                             { label: 'Intro Rígida (Instrumental)', tag: 'Intro: Instrumental only, 8 bars' },
                             { label: 'Intro Falada', tag: 'Spoken Intro: "..."' },
                             { label: 'Contagem (1, 2, 3, 4)', tag: 'Count-in: 1, 2, 3, 4 - Drop' },
