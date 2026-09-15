@@ -523,6 +523,7 @@ function App() {
   const [negativePrompt, setNegativePrompt] = useState('');
   const [selectedExclusionChips, setSelectedExclusionChips] = useState([]);
   const [excludeStylesCopied, setExcludeStylesCopied] = useState(false);
+  const [sunoTier, setSunoTier] = useState('free'); // 'free' | 'pro'
 
   const toggleExclusionChip = (chipId) => {
     setSelectedExclusionChips(prev => 
@@ -983,10 +984,15 @@ function App() {
        - Se baixo for excluído: use "bassless", "high-register airy arrangement".
        - Se distorção/guitarra elétrica for excluída: use "clean tone", "pure unamplified acoustic", "warm clean guitars".
        - Se vocais forem excluídos: use "instrumental only", "pure instrumental performance", "wordless".
-    c) CAMPO DEDICADO "exclude_styles" (PARA O CAMPO EXCLUDE DO SUNO):
+    c) CAMPO DEDICADO "exclude_styles" (PARA O CAMPO EXCLUDE DO SUNO PRO):
        Gere SEMPRE uma lista limpa de substantivos em inglês separados por vírgula SEM a palavra "no" (ex: "drums, percussion, drum kit, beat, snare, kick, hi-hat, cymbals, electronic drums, trap beat").
     d) NA "musical_structure":
        O Suno obedece fortemente às metatags de letra! Se bateria for excluída, inclua tags de seção como [Verse: Solo Acoustic, Drumless] ou [Chorus: Intimate, Percussion-Free].
+    
+    18. ADAPTAÇÃO PARA O PLANO DO SUNO (SUNO FREE vs SUNO PRO):
+    Plano ativo no momento: ${sunoTier === 'free' ? 'SUNO FREE / MINI (NÃO possui o campo Exclude Styles)' : 'SUNO PRO / PREMIER (Possui o campo Exclude Styles)'}.
+    - SE FOR SUNO FREE: O usuário NÃO TEM a caixa "Exclude Styles". Use a técnica "Lyrics Style Injection": na primeira linha da "musical_structure", inclua obrigatoriamente a tag [Style: ...], ex: [Style: Pure Acoustic, Drumless, Intimate Atmosphere], e reforce tags como [Verse: Drumless] nas seções.
+    - SE FOR SUNO PRO: Gere a lista limpa no campo "exclude_styles" para a caixa dedicada.
     
     REGRAS DE OURO PARA O SUNO:
     a) NUNCA use colchetes duplos [[ ]] em volta do bloco. Use apenas colchetes simples [ ] para cada tag individual.
@@ -1067,6 +1073,7 @@ function App() {
         Groove / Feel: ${groove || 'Automático'}
         Emoção Musical: ${emotion || 'Automático'}
         --- SISTEMA DE FILTRO NEGATIVO & EXCLUSÃO INTELIGENTE ---
+        Plano do Suno Selecionado: ${sunoTier === 'free' ? 'SUNO FREE / MINI (Sem caixa Exclude Styles - usar injeção agressiva no Style e metatag [Style: ...] na Letra)' : 'SUNO PRO / PREMIER (Com caixa Exclude Styles)'}
         Chips de Exclusão Ativos: ${selectedExclusionChips.map(id => SUNO_EXCLUSION_CHIPS.find(c => c.id === id)?.label).filter(Boolean).join(', ') || 'Nenhum'}
         Antítese Positiva para Style/Prompt: ${selectedExclusionChips.map(id => SUNO_EXCLUSION_CHIPS.find(c => c.id === id)?.positiveTags).filter(Boolean).join(', ') || 'Nenhuma'}
         Tokens Obrigatórios para o campo Exclude Styles: ${selectedExclusionChips.map(id => SUNO_EXCLUSION_CHIPS.find(c => c.id === id)?.excludeTokens).filter(Boolean).join(', ') || 'Nenhum'}
@@ -3166,7 +3173,7 @@ function App() {
                     <div className="flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                       <label className="text-[9px] font-black text-red-400 uppercase tracking-wider">
-                        Filtro de Exclusão (Anti-Token Suno)
+                        Filtro de Exclusão (Anti-Token)
                       </label>
                     </div>
                     <span className="text-[8px] font-bold px-2 py-0.5 rounded bg-red-500/10 text-red-300 border border-red-500/20">
@@ -3174,8 +3181,46 @@ function App() {
                     </span>
                   </div>
 
+                  {/* SELETOR DE PLANO DO SUNO (FREE vs PRO) */}
+                  <div className="flex items-center gap-1.5 p-1 bg-black/60 rounded-xl border border-white/5">
+                    <button
+                      type="button"
+                      onClick={() => setSunoTier('free')}
+                      className={`flex-1 py-1.5 px-2 rounded-lg text-[9px] font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        sunoTier === 'free'
+                          ? 'bg-amber-500 text-black shadow-sm'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                      title="Suno Free / V6 mini: Não possui caixa Exclude Styles. O Maestro injeta antíteses no Style e na Letra."
+                    >
+                      <span>🎁</span>
+                      <span>Suno Free / Mini</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSunoTier('pro')}
+                      className={`flex-1 py-1.5 px-2 rounded-lg text-[9px] font-black uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        sunoTier === 'pro'
+                          ? 'bg-red-600 text-white shadow-sm'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                      title="Suno Pro / Premier: Possui caixa oficial Exclude Styles. O Maestro gera a lista de tokens para colar."
+                    >
+                      <span>💎</span>
+                      <span>Suno Pro (Exclude)</span>
+                    </button>
+                  </div>
+
                   <p className="text-[8.5px] text-slate-400 leading-snug">
-                    O Suno ignora "No drums" e toca bateria. O Maestro converte em <strong>"drumless"</strong> no estilo e alimenta o campo oficial <em>Exclude Styles</em> sem a palavra "no".
+                    {sunoTier === 'free' ? (
+                      <>
+                        <strong className="text-amber-400">Modo Suno Free ativo:</strong> Como a versão gratuita não tem a caixa <em>"Exclude Styles"</em>, o Maestro injeta termos como <code className="text-amber-300 font-mono">drumless</code> no estilo e tags <code className="text-amber-300 font-mono">[Style: ...]</code> no topo da letra.
+                      </>
+                    ) : (
+                      <>
+                        <strong className="text-red-400">Modo Suno Pro ativo:</strong> O Maestro gera a lista pura de tokens negativos para você copiar e colar diretamente no campo oficial <em>"Exclude Styles"</em> do Suno.
+                      </>
+                    )}
                   </p>
 
                   {/* Chips de Exclusão Rápida */}
@@ -3418,34 +3463,69 @@ function App() {
                       </div>
                     )}
 
-                    {/* CAIXA DEDICADA SUNO EXCLUDE STYLES (PROMPT NEGATIVO OFICIAL) */}
-                    {(maestroAnalysis.exclude_styles || getComputedExcludeStyles()) && (
-                      <div className="mt-6 pt-6 border-t border-black/5">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
-                          <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                            <span className="text-[9px] font-black uppercase text-red-600 tracking-widest">
-                              Suno Exclude Styles (Prompt Negativo Oficial)
-                            </span>
-                            <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-[8px] font-bold">
-                              Cole na caixa "Exclude Styles" do Suno
-                            </span>
+                    {/* CONTROLE DE EXCLUSÃO SUNO: FREE vs PRO */}
+                    {sunoTier === 'free' ? (
+                      /* BANNER OTIMIZADO PARA SUNO FREE */
+                      (selectedExclusionChips.length > 0 || negativePrompt || maestroAnalysis.exclude_styles) && (
+                        <div className="mt-6 pt-6 border-t border-black/5">
+                          <div className="p-4 bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-transparent border border-amber-500/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                            <div className="flex items-start gap-2.5">
+                              <span className="text-xl shrink-0 mt-0.5">🎁</span>
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider">
+                                    Otimizado para Suno Free / V6 Mini
+                                  </span>
+                                  <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[8px] font-bold border border-amber-500/30">
+                                    Sem Caixa Exclude
+                                  </span>
+                                </div>
+                                <p className="text-[8.5px] text-slate-300 leading-relaxed">
+                                  Como a versão gratuita não possui a caixa <em>"Exclude Styles"</em>, o Maestro injetou termos de antítese consagrados (ex: <code className="text-amber-300 font-mono">drumless</code>) diretamente no <strong>Style Prompt</strong> acima e comandos <code className="text-amber-300 font-mono">[Style: Drumless...]</code> nas <strong>Metatags da Letra</strong> abaixo!
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setSunoTier('pro')}
+                              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-[8.5px] font-bold uppercase transition-all shrink-0 cursor-pointer self-start sm:self-auto border border-white/10"
+                              title="Clique aqui se você usa o Suno Pro e tem a caixa Exclude Styles"
+                            >
+                              Mudar p/ Suno Pro 💎
+                            </button>
                           </div>
-                          <button 
-                            type="button"
-                            onClick={() => handleCopyExcludeStyles(maestroAnalysis.exclude_styles || getComputedExcludeStyles())} 
-                            className="px-3 py-1.5 bg-red-600 hover:bg-black text-white rounded-xl text-[9px] font-black uppercase transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 self-start sm:self-auto"
-                          >
-                            {excludeStylesCopied ? <><CheckCheck className="w-3.5 h-3.5 text-green-300" /> Copiado p/ Suno!</> : <><CopyIcon className="w-3.5 h-3.5" /> Copiar Exclude Styles</>}
-                          </button>
                         </div>
-                        <div className="bg-red-50/90 p-4 rounded-2xl text-[10.5px] font-mono font-bold text-red-900 border border-red-200 select-all leading-relaxed shadow-inner">
-                          {renderSafe(maestroAnalysis.exclude_styles || getComputedExcludeStyles())}
+                      )
+                    ) : (
+                      /* CAIXA DEDICADA SUNO EXCLUDE STYLES (PROMPT NEGATIVO OFICIAL SUNO PRO) */
+                      (maestroAnalysis.exclude_styles || getComputedExcludeStyles()) && (
+                        <div className="mt-6 pt-6 border-t border-black/5">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                              <span className="text-[9px] font-black uppercase text-red-600 tracking-widest">
+                                Suno Exclude Styles (Prompt Negativo Oficial)
+                              </span>
+                              <span className="px-2 py-0.5 rounded bg-red-100 text-red-700 text-[8px] font-bold">
+                                Cole na caixa "Exclude Styles" do Suno Pro
+                              </span>
+                            </div>
+                            <button 
+                              type="button"
+                              onClick={() => handleCopyExcludeStyles(maestroAnalysis.exclude_styles || getComputedExcludeStyles())} 
+                              className="px-3 py-1.5 bg-red-600 hover:bg-black text-white rounded-xl text-[9px] font-black uppercase transition-all shadow-sm flex items-center gap-1.5 cursor-pointer active:scale-95 self-start sm:self-auto"
+                            >
+                              {excludeStylesCopied ? <><CheckCheck className="w-3.5 h-3.5 text-green-300" /> Copiado p/ Suno!</> : <><CopyIcon className="w-3.5 h-3.5" /> Copiar Exclude Styles</>}
+                            </button>
+                          </div>
+                          <div className="bg-red-50/90 p-4 rounded-2xl text-[10.5px] font-mono font-bold text-red-900 border border-red-200 select-all leading-relaxed shadow-inner">
+                            {renderSafe(maestroAnalysis.exclude_styles || getComputedExcludeStyles())}
+                          </div>
+                          <p className="text-[8px] text-slate-500 mt-1.5 leading-normal">
+                            💡 <strong>Por que funciona:</strong> No Suno Pro, cole este texto no campo <em>"Exclude Styles"</em>. O Maestro já eliminou a palavra "no" para garantir que a IA não gere bateria ou instrumentos por engano!
+                          </p>
                         </div>
-                        <p className="text-[8px] text-slate-500 mt-1.5 leading-normal">
-                          💡 <strong>Por que funciona:</strong> No Suno v3.5/v4/v4.5/v6, cole este texto no campo <em>"Exclude Styles"</em> do Custom Mode. O Maestro já eliminou a palavra "no" para garantir que a IA não gere bateria ou instrumentos por engano!
-                        </p>
-                      </div>
+                      )
                     )}
 
                     {/* MONTADOR DE LETRAS */}
